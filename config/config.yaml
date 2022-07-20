@@ -1,0 +1,8 @@
+server:
+  address: 0.0.0.0:2022
+  mode: debug
+  db: beyond.db
+log:
+  filename: log/beyond.log
+  max_size: 50
+  max_age: 3
