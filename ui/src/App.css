@@ -1,0 +1,17 @@
+@import '~antd/dist/antd.css';
+
+.logo {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.site-layout .site-layout-background {
+  background: #fff;
+}
+
+/* TODO 自定义 trigger 而不是覆盖 antd 的内置样式 */
+.ant-layout-sider-trigger {
+  background: white;
+  color: #1890ff;
+}
