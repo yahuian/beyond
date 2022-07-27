@@ -13,7 +13,7 @@ const routers = [
     key: '/news',
     icon: <StarTwoTone />,
     label: (
-      <NavLink to="/news">订阅信息</NavLink>
+      <NavLink to="/news">新闻</NavLink>
     ),
     component: <News />
   },
@@ -21,19 +21,19 @@ const routers = [
     key: '/bill',
     icon: <MoneyCollectTwoTone />,
     label: (
-      <NavLink to="/bill">每日记账</NavLink>
+      <NavLink to="/bill">账本</NavLink>
     ),
     component: <Bill />
   },
 ]
 
 export default function App() {
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   return (
     <BrowserRouter>
       <Layout style={{ minHeight: '100vh', }}>
         <Sider
-          collapsedWidth='60'
+          collapsedWidth='60' width='120'
           collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}
           style={{ background: 'white' }}
         >

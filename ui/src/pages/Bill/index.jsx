@@ -1,160 +1,156 @@
-import { Space, Table, Tag } from 'antd';
-import { AndroidOutlined, AppleOutlined } from '@ant-design/icons';
-import { Tabs } from 'antd';
-import React from 'react';
+import { React, useState, useEffect } from 'react';
+import { Table, Typography, Tabs, message, DatePicker } from 'antd';
+import axios from 'axios'
+import moment from 'moment';
+
+const { TabPane } = Tabs;
+const { Text } = Typography;
+const { RangePicker } = DatePicker;
+
+const weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
 const columns = [
   {
-    title: 'Name',
+    title: '类型',
+    dataIndex: 'kind',
+    render: (_, { kind }) => (
+      kind === 'income' ? '收入' : '支出'
+    ),
+    filters: [
+      {
+        text: '收入',
+        value: 'income',
+      },
+      {
+        text: '支出',
+        value: 'pay',
+      }
+    ]
+  },
+  {
+    title: '金额',
+    dataIndex: 'money',
+    render: (_, { kind, money }) => (
+      kind === 'income' ? <Text type='success' strong>+{money}</Text> :
+        <Text strong>-{money}</Text>
+    )
+  },
+  {
+    title: '创建时间',
+    dataIndex: 'created_at',
+    render: (v) => {
+      return moment(v).format('YYYY-MM-DD') + " " + weeks[moment().day()]
+    },
+    filterDropdown: props => <DatetimeDropDown {...props} />,
+  },
+  {
+    title: '名称',
     dataIndex: 'name',
-    key: 'name',
-    render: (text) => <a href='www.baidu.com'>{text}</a>,
   },
   {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
+    title: '分类',
+    dataIndex: 'type',
   },
   {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address',
+    title: '账本',
+    dataIndex: 'ledger',
   },
   {
-    title: 'Tags',
-    key: 'tags',
-    dataIndex: 'tags',
-    render: (_, { tags }) => (
-      <>
-        {tags.map((tag) => {
-          let color = tag.length > 5 ? 'geekblue' : 'green';
-
-          if (tag === 'loser') {
-            color = 'volcano';
-          }
-
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </>
-    ),
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (_, record) => (
-      <Space size="middle">
-        <a href='www.baidu.com'>Invite {record.name}</a>
-        <a href='www.baidu.com'>Delete</a>
-      </Space>
-    ),
-  },
+    title: '备注',
+    dataIndex: 'note',
+  }
 ];
-
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '4',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '5',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '6',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '7',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '8',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '9',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '10',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '11',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '12',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-];
-
-const { TabPane } = Tabs;
 
 export default function Bill() {
-  return (
-    <div>
-      <Tabs defaultActiveKey="1">
-        <TabPane tab={<span> <AppleOutlined />Tab 1 </span>} key="1"></TabPane>
-        <TabPane tab={<span><AndroidOutlined />Tab 2</span>} key="2"></TabPane>
-      </Tabs>
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+  });
 
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={{ size: 'small', total: (data.length), defaultPageSize: 20 }} />
+  const fetchData = (params = {}) => {
+    const query = {
+      "page": params.pagination.current,
+      "size": params.pagination.pageSize,
+      "kind": params.kind,
+    }
+    if (params.created_at instanceof Array) {
+      query.created_at = [params.created_at[0].format('YYYY-MM-DD'), params.created_at[1].format('YYYY-MM-DD')]
+    }
+
+    setLoading(true);
+    axios.get(`http://192.168.1.12:2022/api/bill/details`, {
+      params: { ...query }
+    }).then(
+      response => {
+        setData(response.data.data);
+        setLoading(false);
+        setPagination({
+          ...params.pagination,
+          total: response.data.count,
+        });
+      },
+      error => {
+        setLoading(false);
+        message.error(error.message);
+      }
+    )
+  };
+
+  useEffect(
+    () => { fetchData({ pagination }) }, []
+  );
+
+  const handleTableChange = (newPagination, filters, sorter) => {
+    fetchData({
+      sortField: sorter.field,
+      sortOrder: sorter.order,
+      pagination: newPagination,
+      ...filters,
+    });
+  };
+
+  return (
+    <Tabs defaultActiveKey="1">
+      <TabPane tab={<span>明细</span>} key="details">
+        <Table
+          columns={columns}
+          rowKey={(record) => record.id}
+          dataSource={data}
+          pagination={pagination}
+          loading={loading}
+          onChange={handleTableChange}
+        />
+      </TabPane>
+    </Tabs>
+  )
+}
+
+const DatetimeDropDown = ({
+  setSelectedKeys,
+  selectedKeys,
+  confirm,
+  setFilters,
+  clearFilters
+}) => {
+  return (
+    <div style={{ padding: 8 }}>
+      <RangePicker
+        value={selectedKeys}
+        onChange={(dates) => {
+          setSelectedKeys(dates)
+          if (!dates || dates.length !== 2) {
+            clearFilters?.()
+            confirm()
+          } else {
+            confirm()
+          }
+          if (setFilters) {
+            setFilters()
+          }
+        }}
+      />
     </div>
   )
 }

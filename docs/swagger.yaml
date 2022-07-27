@@ -1,0 +1,163 @@
+basePath: /api
+definitions:
+  ctx.IDList:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    required:
+    - ids
+    type: object
+  ctx.Response:
+    properties:
+      count:
+        type: integer
+      data: {}
+      msg:
+        type: string
+    type: object
+  db.BillDetails:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      kind:
+        description: income(收入) pay(支出)
+        type: string
+      ledger:
+        type: string
+      money:
+        type: number
+      name:
+        type: string
+      note:
+        type: string
+      type:
+        type: string
+    type: object
+  details.createParam:
+    properties:
+      kind:
+        enum:
+        - income
+        - pay
+        type: string
+      ledger:
+        maxLength: 20
+        type: string
+      money:
+        type: number
+      name:
+        maxLength: 20
+        type: string
+      note:
+        maxLength: 200
+        type: string
+      type:
+        maxLength: 20
+        type: string
+    required:
+    - money
+    type: object
+info:
+  contact: {}
+  title: beyond api
+paths:
+  /bill/details:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/ctx.IDList'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ctx.Response'
+      summary: 删除明细
+      tags:
+      - bill
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: size
+        in: query
+        name: size
+        type: integer
+      - description: id
+        in: query
+        name: id[]
+        type: integer
+      - description: kind
+        in: query
+        name: kind[]
+        type: string
+      - description: type
+        in: query
+        name: type[]
+        type: string
+      - description: ledger
+        in: query
+        name: ledger[]
+        type: string
+      - description: created_at
+        in: query
+        name: created_at[]
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/db.BillDetails'
+                  type: array
+              type: object
+      summary: 查询明细
+      tags:
+      - bill
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/details.createParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/db.BillDetails'
+              type: object
+      summary: 增加明细
+      tags:
+      - bill
+swagger: "2.0"
