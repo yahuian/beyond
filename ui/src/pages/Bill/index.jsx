@@ -1,5 +1,6 @@
 import { React, useState, useEffect } from 'react';
-import { Table, Typography, Tabs, message, DatePicker } from 'antd';
+import { Table, Typography, Tabs, message, DatePicker, Button } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
 import axios from 'axios'
 import moment from 'moment';
 import CreateButton from './create';
@@ -65,13 +66,11 @@ const columns = [
 export default function Bill() {
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-  });
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const [refresh, setRefresh] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-  const fetchData = (params = {}) => {
+  const fetchData = (params) => {
     const query = {
       "page": params.pagination.current,
       "size": params.pagination.pageSize,
@@ -80,7 +79,6 @@ export default function Bill() {
     if (params.created_at instanceof Array) {
       query.created_at = [params.created_at[0].format('YYYY-MM-DD'), params.created_at[1].format('YYYY-MM-DD')]
     }
-
     setLoading(true);
     axios.get(`http://192.168.1.12:2022/api/bill/details`, {
       params: { ...query }
@@ -94,14 +92,42 @@ export default function Bill() {
         });
       },
       error => {
-        setLoading(false);
         message.error(error.message);
       }
-    )
+    );
+  };
+
+  const deleteData = () => {
+    setLoading(true);
+    const payload = JSON.stringify({ ids: selectedRowKeys })
+    axios.delete('http://192.168.1.12:2022/api/bill/details', {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: payload
+    }).then(
+      response => {
+        message.success(response.data.msg);
+        setLoading(false);
+        setSelectedRowKeys([]);
+      },
+      error => {
+        message.error(error.message);
+      }
+    );
+  };
+
+  const hasSelected = selectedRowKeys.length > 0;
+  const onSelectChange = (newSelectedRowKeys) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
   };
 
   useEffect(
-    () => { fetchData({ pagination }) }, [refresh]
+    () => { fetchData({ pagination }) }, [refresh, loading]
   );
 
   const onChange = (newPagination, filters, sorter) => {
@@ -116,6 +142,14 @@ export default function Bill() {
   return (
     <Tabs defaultActiveKey="1">
       <TabPane tab={<span>明细</span>} key="details">
+        <Button
+          style={{ marginBottom: 16, }}
+          type="primary"
+          onClick={deleteData}
+          disabled={!hasSelected}
+        >
+          <DeleteOutlined />删除
+        </Button>
         <CreateButton refresh={refresh} setRefresh={setRefresh} />
         <Table
           columns={columns}
@@ -124,6 +158,7 @@ export default function Bill() {
           pagination={pagination}
           loading={loading}
           onChange={onChange}
+          rowSelection={rowSelection}
         />
       </TabPane>
     </Tabs>

@@ -7,7 +7,6 @@ export default function CreateButton({ refresh, setRefresh }) {
   const [visible, setVisible] = useState(false);
 
   const onCreate = (values) => {
-    console.log('Received values of form: ', values);
     const payload = JSON.stringify(values)
     axios.post(`http://192.168.1.12:2022/api/bill/details`, payload, {
       headers: {
@@ -31,7 +30,7 @@ export default function CreateButton({ refresh, setRefresh }) {
         type="primary"
         onClick={() => setVisible(true)}
       >
-        <PlusOutlined />记一笔
+        <PlusOutlined />记账
       </Button>
       <CreateForm
         visible={visible}
@@ -47,7 +46,7 @@ const CreateForm = ({ visible, onCreate, onCancel }) => {
   return (
     <Modal
       visible={visible}
-      title="记一笔"
+      title="记账"
       okText="Create"
       cancelText="Cancel"
       onCancel={onCancel}
