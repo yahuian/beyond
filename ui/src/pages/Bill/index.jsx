@@ -1,9 +1,11 @@
 import { React, useState, useEffect } from 'react';
-import { Table, Typography, Tabs, message, DatePicker, Button } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import {
+  Table, Typography, Tabs, message, DatePicker, Button,
+  Form, Input, Modal, Radio, InputNumber,
+} from 'antd';
+import { DeleteOutlined, PlusOutlined, AndroidOutlined } from '@ant-design/icons';
 import axios from 'axios'
 import moment from 'moment';
-import CreateButton from './create';
 
 const { TabPane } = Tabs;
 const { Text } = Typography;
@@ -20,12 +22,12 @@ const columns = [
     ),
     filters: [
       {
-        text: '收入',
-        value: 'income',
-      },
-      {
         text: '支出',
         value: 'pay',
+      },
+      {
+        text: '收入',
+        value: 'income',
       }
     ]
   },
@@ -68,6 +70,7 @@ export default function Bill() {
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const [refresh, setRefresh] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const fetchData = (params) => {
@@ -109,6 +112,7 @@ export default function Bill() {
       response => {
         message.success(response.data.msg);
         setLoading(false);
+        setRefresh(!refresh)
         setSelectedRowKeys([]);
       },
       error => {
@@ -126,8 +130,26 @@ export default function Bill() {
     onChange: onSelectChange,
   };
 
+  const onCreate = (values) => {
+    const payload = JSON.stringify(values)
+    axios.post(`http://192.168.1.12:2022/api/bill/details`, payload, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(
+      response => {
+        message.success(response.data.msg);
+        setRefresh(!refresh)
+      },
+      error => {
+        message.error(error.message);
+      }
+    )
+    setVisible(false);
+  };
+
   useEffect(
-    () => { fetchData({ pagination }) }, [refresh, loading]
+    () => { fetchData({ pagination }) }, [refresh]
   );
 
   const onChange = (newPagination, filters, sorter) => {
@@ -140,17 +162,37 @@ export default function Bill() {
   };
 
   return (
-    <Tabs defaultActiveKey="1">
-      <TabPane tab={<span>明细</span>} key="details">
-        <Button
-          style={{ marginBottom: 16, }}
-          type="primary"
-          onClick={deleteData}
-          disabled={!hasSelected}
-        >
-          <DeleteOutlined />删除
-        </Button>
-        <CreateButton refresh={refresh} setRefresh={setRefresh} />
+    <Tabs
+      defaultActiveKey="details"
+    >
+      <TabPane
+        tab={<span>收支明细</span>}
+        key="details"
+      >
+        <div style={{ marginBottom: 16 }}>
+          <Button
+            danger
+            ghost
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={deleteData}
+            disabled={!hasSelected}
+          >
+            <DeleteOutlined />删除
+          </Button>
+          <Button
+            type="dashed"
+            onClick={() => setVisible(true)}
+            disabled={hasSelected}
+          >
+            <PlusOutlined />记账
+          </Button>
+          <CreateForm
+            visible={visible}
+            onCreate={onCreate}
+            onCancel={() => setVisible(false)}
+          />
+        </div>
         <Table
           columns={columns}
           rowKey={(record) => record.id}
@@ -160,6 +202,14 @@ export default function Bill() {
           onChange={onChange}
           rowSelection={rowSelection}
         />
+      </TabPane>
+      <TabPane
+        tab={<span>模板管理</span>}
+        key="template"
+      >
+        <div>
+          Hello,World!
+        </div>
       </TabPane>
     </Tabs>
   )
@@ -192,3 +242,64 @@ const DatetimeDropDown = ({
     </div>
   )
 }
+
+const CreateForm = ({ visible, onCreate, onCancel }) => {
+  const [form] = Form.useForm();
+  return (
+    <Modal
+      visible={visible}
+      title="记账"
+      okText="Create"
+      cancelText="Cancel"
+      onCancel={onCancel}
+      onOk={() => {
+        form
+          .validateFields()
+          .then((values) => {
+            form.resetFields();
+            onCreate(values);
+          })
+          .catch((info) => {
+            console.log('Validate Failed:', info);
+          });
+      }}
+    >
+      <Form
+        form={form}
+        layout="horizontal"
+        name="form_in_modal"
+        initialValues={{
+          kind: 'pay',
+        }}
+      >
+        <Form.Item name="kind" label="类型">
+          <Radio.Group>
+            <Radio value="pay">支出</Radio>
+            <Radio value="income">收入</Radio>
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item name="money" label="金额" rules={[
+          {
+            required: true,
+            message: '请输入金额',
+          }
+        ]}>
+          <InputNumber />
+        </Form.Item>
+        <Form.Item name="name" label="名称"
+        >
+          <Input type="textarea" />
+        </Form.Item>
+        <Form.Item name="type" label="分类">
+          <Input type="textarea" />
+        </Form.Item>
+        <Form.Item name="ledger" label="账本">
+          <Input type="textarea" />
+        </Form.Item>
+        <Form.Item name="note" label="备注">
+          <Input type="textarea" />
+        </Form.Item>
+      </Form>
+    </Modal >
+  );
+};
