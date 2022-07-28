@@ -2,6 +2,7 @@ import { React, useState, useEffect } from 'react';
 import { Table, Typography, Tabs, message, DatePicker } from 'antd';
 import axios from 'axios'
 import moment from 'moment';
+import CreateButton from './create';
 
 const { TabPane } = Tabs;
 const { Text } = Typography;
@@ -68,6 +69,7 @@ export default function Bill() {
     current: 1,
     pageSize: 10,
   });
+  const [refresh, setRefresh] = useState(false);
 
   const fetchData = (params = {}) => {
     const query = {
@@ -99,10 +101,10 @@ export default function Bill() {
   };
 
   useEffect(
-    () => { fetchData({ pagination }) }, []
+    () => { fetchData({ pagination }) }, [refresh]
   );
 
-  const handleTableChange = (newPagination, filters, sorter) => {
+  const onChange = (newPagination, filters, sorter) => {
     fetchData({
       sortField: sorter.field,
       sortOrder: sorter.order,
@@ -114,13 +116,14 @@ export default function Bill() {
   return (
     <Tabs defaultActiveKey="1">
       <TabPane tab={<span>明细</span>} key="details">
+        <CreateButton refresh={refresh} setRefresh={setRefresh} />
         <Table
           columns={columns}
           rowKey={(record) => record.id}
           dataSource={data}
           pagination={pagination}
           loading={loading}
-          onChange={handleTableChange}
+          onChange={onChange}
         />
       </TabPane>
     </Tabs>
