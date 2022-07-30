@@ -14,5 +14,9 @@ func Router(e *gin.RouterGroup) {
 		Details.POST("", ctx.Handle(details.Create))
 		Details.GET("", ctx.Handle(details.List))
 		Details.DELETE("", ctx.Handle(details.Delete))
+		Chart := Details.Group("/chart")
+		{
+			Chart.GET("/pie", ctx.Handle(details.Pie))
+		}
 	}
 }

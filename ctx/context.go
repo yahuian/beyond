@@ -61,7 +61,7 @@ func (c *Context) GetIDList() (IDList, error) {
 }
 
 /*
-Query build and validate query param to struct, struct param is pointer
+BuildQuery build and validate query param to struct, struct param is pointer
 form tag is query param and json tag is table column name
 
 type Temp struct {
@@ -75,7 +75,7 @@ will generate ("name = ? AND id IN ?", "tom", []uint(1,2))
 created_at is a special tag and every table must have created_at column
 see `service/bill/details/list.go` for more example
 */
-func (c *Context) Query(structP any) (string, []any, error) {
+func (c *Context) BuildQuery(structP any) (string, []any, error) {
 	if err := c.ShouldBindQuery(structP); err != nil {
 		return "", nil, errorx.Wrap(err)
 	}

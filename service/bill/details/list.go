@@ -33,7 +33,7 @@ func List(c *ctx.Context) {
 		c.BadRequest(err)
 		return
 	}
-	query, args, err := c.Query(&listParam{})
+	query, args, err := c.BuildQuery(&listParam{})
 	if err != nil {
 		c.BadRequest(err)
 		return

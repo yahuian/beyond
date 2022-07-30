@@ -3,9 +3,10 @@ import {
   Table, Typography, Tabs, message, DatePicker, Button,
   Form, Input, Modal, Radio, InputNumber,
 } from 'antd';
-import { DeleteOutlined, PlusOutlined, AndroidOutlined } from '@ant-design/icons';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import axios from 'axios'
 import moment from 'moment';
+import { NameChart } from './chart';
 
 const { TabPane } = Tabs;
 const { Text } = Typography;
@@ -202,6 +203,12 @@ export default function Bill() {
           onChange={onChange}
           rowSelection={rowSelection}
         />
+      </TabPane>
+      <TabPane
+        tab={<span>统计分析</span>}
+        key="chart"
+      >
+        <NameChart/>
       </TabPane>
       <TabPane
         tab={<span>模板管理</span>}

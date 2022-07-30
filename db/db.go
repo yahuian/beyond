@@ -13,6 +13,10 @@ var (
 	client *gorm.DB
 )
 
+func Client() *gorm.DB {
+	return client
+}
+
 func Connect() error {
 	// TODO replace logger with logx
 	conn, err := gorm.Open(sqlite.Open(config.Val.Server.DB), &gorm.Config{})

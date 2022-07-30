@@ -37,6 +37,13 @@ definitions:
       type:
         type: string
     type: object
+  details.base:
+    properties:
+      key:
+        type: string
+      value:
+        type: number
+    type: object
   details.createParam:
     properties:
       kind:
@@ -158,6 +165,50 @@ paths:
                   $ref: '#/definitions/db.BillDetails'
               type: object
       summary: 增加明细
+      tags:
+      - bill
+  /bill/details/chart/pie:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: which field to aggregate
+        enum:
+        - name
+        - type
+        in: query
+        name: field
+        type: string
+      - description: kind
+        enum:
+        - income
+        - pay
+        in: query
+        name: kind
+        type: string
+      - description: created_at
+        in: query
+        name: created_at[]
+        type: string
+      - description: ledger
+        in: query
+        name: ledger[]
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/details.base'
+                  type: array
+              type: object
+      summary: 饼图
       tags:
       - bill
 swagger: "2.0"

@@ -160,6 +160,77 @@
                     }
                 }
             }
+        },
+        "/bill/details/chart/pie": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bill"
+                ],
+                "summary": "饼图",
+                "parameters": [
+                    {
+                        "enum": [
+                            "name",
+                            "type"
+                        ],
+                        "type": "string",
+                        "description": "which field to aggregate",
+                        "name": "field",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "income",
+                            "pay"
+                        ],
+                        "type": "string",
+                        "description": "kind",
+                        "name": "kind",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "created_at",
+                        "name": "created_at[]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "ledger",
+                        "name": "ledger[]",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/details.base"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -216,6 +287,17 @@
                 },
                 "type": {
                     "type": "string"
+                }
+            }
+        },
+        "details.base": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
                 }
             }
         },
