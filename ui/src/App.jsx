@@ -49,9 +49,6 @@ export default function App() {
               </Routes>
             </div>
           </Content>
-          <Footer style={{ textAlign: 'center' }}>
-            Powered by <a href='https://github.com/YahuiAn/beyond'>YahuiAn/beyond</a>
-          </Footer>
         </Layout>
       </Layout>
     </BrowserRouter>

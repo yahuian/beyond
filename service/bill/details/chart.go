@@ -55,7 +55,13 @@ func Pie(c *ctx.Context) {
 		return
 	}
 
-	// time.Sleep(2 * time.Second)
+	if field == "type" {
+		for i := range res {
+			if res[i].Key == "" {
+				res[i].Key = "未分类"
+			}
+		}
+	}
 
 	c.SuccessWith(ctx.Response{
 		Msg:  "success",
