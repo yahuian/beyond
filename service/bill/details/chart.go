@@ -9,7 +9,7 @@ import (
 
 type basicParam struct {
 	Kind      []string `form:"kind" json:"kind" validate:"dive,oneof=income pay"`
-	CreatedAt []string `form:"created_at[]" json:"created_at" validate:"omitempty,len=2,dive,datetime=2006-01-02"`
+	CreatedAt []string `form:"created_at[]" json:"created_at" validate:"omitempty,len=2,dive,datetime=2006-01-02 15:04:05"`
 	Ledger    []string `form:"ledger[]" json:"ledger"`
 }
 
@@ -46,7 +46,7 @@ func Pie(c *ctx.Context) {
 		return
 	}
 
-	var res []base
+	res := make([]base, 0) // fix ui chart error when response data is null
 	err = db.Client().Select(selectVal).Model(db.BillDetails{}).
 		Where(query, args...).Group(field).Order("value desc").Scan(&res).Error
 	if err != nil {

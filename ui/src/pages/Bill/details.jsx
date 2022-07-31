@@ -7,6 +7,7 @@ import { DeleteOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import axios from 'axios'
 import moment from 'moment';
 import { DatetimeDropDown } from '../../components';
+import { DateShowFormat, FormatDateQuery } from '../../utils/date';
 
 const { Text } = Typography;
 
@@ -42,7 +43,7 @@ const columns = [
     title: '创建时间',
     dataIndex: 'created_at',
     render: (v) => {
-      return moment(v).format('YYYY-MM-DD') + " " + weeks[moment().day()]
+      return moment(v).format(DateShowFormat) + " " + weeks[moment().day()]
     },
     filterDropdown: props => <DatetimeDropDown {...props} />,
   },
@@ -79,7 +80,7 @@ export default function Details() {
       "kind": params.kind,
     }
     if (params.created_at instanceof Array) {
-      query.created_at = [params.created_at[0].format('YYYY-MM-DD'), params.created_at[1].format('YYYY-MM-DD')]
+      query.created_at = FormatDateQuery(params.created_at)
     }
     setLoading(true);
     axios.get(`http://192.168.1.12:2022/api/bill/details`, {

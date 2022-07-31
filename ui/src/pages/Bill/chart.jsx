@@ -1,39 +1,57 @@
 import { React, useState, useEffect } from 'react';
-import { message, Col, Row, Select } from 'antd';
+import { message, Col, Row, Select, DatePicker } from 'antd';
 import { Pie, WordCloud } from '@ant-design/plots';
 import axios from 'axios'
-import { DatetimeDropDown } from '../../components';
+import moment from 'moment';
+import { DateQueryFormat, FormatDateQuery } from '../../utils/date';
 
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 export default function Chart() {
   const defaultKind = 'pay'
+  const defaultDate = [
+    moment().startOf('month'),
+    moment().endOf('month')
+  ]
 
   const [param, setParam] = useState({
-    kind: defaultKind
+    kind: defaultKind,
+    created_at: [
+      defaultDate[0].format(DateQueryFormat),
+      defaultDate[1].format(DateQueryFormat),
+    ]
   });
-
-  const onSelect = (value) => {
-    setParam({ kind: value })
-  };
 
   return (
     <div>
       <Row>
         <Col>
-          <div style={{ padding: 8 }}>
-            <Select
-              defaultValue={defaultKind}
-              style={{ width: 70 }}
-              onChange={onSelect}
-            >
-              <Option value="pay">支出</Option>
-              <Option value="income">收入</Option>
-            </Select>
-          </div>
+          <Select
+            defaultValue={defaultKind}
+            style={{ width: 70 }}
+            onChange={(value) => {
+              setParam(pre => {
+                return { ...pre, kind: value }
+              })
+            }}
+          >
+            <Option value="pay">支出</Option>
+            <Option value="income">收入</Option>
+          </Select>
         </Col>
         <Col>
-          <DatetimeDropDown />
+          <div style={{ paddingLeft: 8 }}>
+            <RangePicker
+              style={{ width: 230 }}
+              defaultValue={defaultDate}
+              onChange={(values) => {
+                setParam(pre => {
+                  return { ...pre, created_at: FormatDateQuery(values) }
+                })
+              }}
+            />
+          </div>
         </Col>
       </Row>
       <Row>
@@ -58,8 +76,8 @@ const PieChart = ({ param }) => {
   const getData = () => {
     axios.get(`http://192.168.1.12:2022/api/bill/details/chart/pie`, {
       params: {
-        "field": "type",
-        ...param,
+        field: "type",
+        ...param
       }
     }).then(
       response => {
@@ -105,7 +123,7 @@ const NameChart = ({ param }) => {
   const getData = () => {
     axios.get(`http://192.168.1.12:2022/api/bill/details/chart/pie`, {
       params: {
-        "field": "name",
+        field: "name",
         ...param
       }
     }).then(
@@ -138,3 +156,4 @@ const NameChart = ({ param }) => {
 
 // BUG 页面缩放后词云图会变白
 // TODO 饼图支持下钻（名称二级饼图）
+// TODO 日期选择框选第二个图标会立刻刷新

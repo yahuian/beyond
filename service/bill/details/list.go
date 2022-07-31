@@ -11,7 +11,7 @@ type listParam struct {
 	Kind      []string `form:"kind[]" json:"kind" validate:"dive,oneof=income pay"`
 	Type      []string `form:"type[]" json:"type"`
 	Ledger    []string `form:"ledger[]" json:"ledger"`
-	CreatedAt []string `form:"created_at[]" json:"created_at" validate:"omitempty,len=2,dive,datetime=2006-01-02"`
+	CreatedAt []string `form:"created_at[]" json:"created_at" validate:"omitempty,len=2,dive,datetime=2006-01-02 15:04:05"`
 }
 
 // @Summary 查询明细
