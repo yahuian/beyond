@@ -17,3 +17,6 @@
 # local dev files
 log
 beyond.db
+
+# air
+tmp
