@@ -10,6 +10,7 @@
     "mapstructure",
     "oneof",
     "Sider",
+    "STRFTIME",
     "validatex",
     "yahuian"
   ]

@@ -161,6 +161,67 @@
                 }
             }
         },
+        "/bill/details/chart/line": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bill"
+                ],
+                "summary": "折线图",
+                "parameters": [
+                    {
+                        "enum": [
+                            "week",
+                            "month",
+                            "year"
+                        ],
+                        "type": "string",
+                        "description": "date",
+                        "name": "date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "income",
+                            "pay"
+                        ],
+                        "type": "string",
+                        "description": "kind",
+                        "name": "kind",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/details.base"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/bill/details/chart/pie": {
             "get": {
                 "consumes": [

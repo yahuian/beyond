@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from 'react';
 import { message, Col, Row, Select, DatePicker } from 'antd';
-import { Pie, WordCloud } from '@ant-design/plots';
+import { Pie, WordCloud, Line } from '@ant-design/plots';
 import axios from 'axios'
 import moment from 'moment';
 import { DateQueryFormat, FormatDateQuery } from '../../utils/date';
@@ -8,7 +8,85 @@ import { DateQueryFormat, FormatDateQuery } from '../../utils/date';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-export default function Chart() {
+// 折线图统计部分
+export function ChartLine() {
+  const defaultKind = 'pay'
+
+  const [kind, setKind] = useState(defaultKind);
+
+  return (
+    <div style={{ paddingBottom: 16 }}>
+      <div style={{ paddingBottom: 16 }}>
+        <Row>
+          <Col>
+            <Select
+              defaultValue={defaultKind}
+              style={{ width: 70 }}
+              onChange={(value) => {
+                setKind(value)
+              }}
+            >
+              <Option value="pay">支出</Option>
+              <Option value="income">收入</Option>
+            </Select>
+          </Col>
+        </Row>
+      </div>
+      <Row>
+        <Col span={8}>
+          <div style={{ height: 300 }}><LineChart kind={kind} date='week' /></div>
+        </Col>
+        <Col span={8}>
+          <div style={{ height: 300 }}><LineChart kind={kind} date='month' /></div>
+        </Col>
+        <Col span={8}>
+          <div style={{ height: 300 }}><LineChart kind={kind} date='year' /></div>
+        </Col>
+      </Row>
+    </div>
+  )
+}
+
+const LineChart = (param) => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    getData();
+  }, [param]);
+
+  const getData = () => {
+    axios.get(`http://192.168.1.12:2022/api/bill/details/chart/line`, {
+      params: param,
+    }).then(
+      response => {
+        setData(response.data.data);
+      },
+      error => {
+        message.error(error.message);
+      }
+    );
+  };
+
+  const config = {
+    data,
+    xField: 'key',
+    yField: 'value',
+    xAxis: {
+      tickCount: 12,
+    },
+    annotations: [
+      {
+        type: 'text',
+        content: param.date,
+      }
+    ]
+  };
+
+  return <Line {...config} />;
+};
+
+// 饼图统计部分
+export function ChartPie() {
   const defaultKind = 'pay'
   const defaultDate = [
     moment().startOf('month'),
@@ -24,7 +102,7 @@ export default function Chart() {
   });
 
   return (
-    <div>
+    <div style={{ paddingTop: 16 }} >
       <Row>
         <Col>
           <Select

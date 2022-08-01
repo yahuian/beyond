@@ -36,5 +36,23 @@ func Connect() error {
 
 	client = conn
 
+	// if err := initData(); err != nil {
+	// 	return errorx.Wrap(err)
+	// }
+
 	return nil
 }
+
+// func initData() error {
+// 	{
+// 		t, _ := time.Parse("2006-01-02 15:04:05", "2017-03-02 15:04:05")
+// 		data := []BillDetails{
+// 			{Name: "西瓜", Money: 800.8, Kind: "pay", Type: "水果", Ledger: "", Note: "", CreatedAt: t},
+// 		}
+// 		if err := Client().Create(data).Error; err != nil {
+// 			return errorx.Wrap(err)
+// 		}
+// 	}
+
+// 	return nil
+// }

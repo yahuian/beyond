@@ -167,6 +167,44 @@ paths:
       summary: 增加明细
       tags:
       - bill
+  /bill/details/chart/line:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: date
+        enum:
+        - week
+        - month
+        - year
+        in: query
+        name: date
+        required: true
+        type: string
+      - description: kind
+        enum:
+        - income
+        - pay
+        in: query
+        name: kind
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/details.base'
+                  type: array
+              type: object
+      summary: 折线图
+      tags:
+      - bill
   /bill/details/chart/pie:
     get:
       consumes:

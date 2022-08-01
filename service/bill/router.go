@@ -17,6 +17,7 @@ func Router(e *gin.RouterGroup) {
 		Chart := Details.Group("/chart")
 		{
 			Chart.GET("/pie", ctx.Handle(details.Pie))
+			Chart.GET("/line", ctx.Handle(details.Line))
 		}
 	}
 }

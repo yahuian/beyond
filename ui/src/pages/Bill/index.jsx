@@ -1,7 +1,7 @@
 import { React } from 'react';
 import { Tabs } from 'antd';
 import Details from './details';
-import Chart from './chart';
+import { ChartPie, ChartLine } from './chart';
 
 const { TabPane } = Tabs;
 
@@ -14,7 +14,9 @@ export default function Bill() {
         <Details />
       </TabPane>
       <TabPane tab={<span>统计分析</span>} key="chart">
-        <Chart />
+        <ChartLine />
+        <div style={{ padding: '8px 0px 8px 0px', backgroundColor: '#f0f2f5' }} />
+        <ChartPie />
       </TabPane>
       <TabPane tab={<span>模板管理</span>} key="template" >
         <div>
