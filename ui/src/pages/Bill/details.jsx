@@ -74,17 +74,14 @@ export default function Details() {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const fetchData = (params) => {
-    const query = {
-      "page": params.pagination.current,
-      "size": params.pagination.pageSize,
-      "kind": params.kind,
-    }
-    if (params.created_at instanceof Array) {
-      query.created_at = FormatDateQuery(params.created_at)
-    }
     setLoading(true);
     axios.get(`http://192.168.1.12:2022/api/bill/details`, {
-      params: { ...query }
+      params: {
+        "page": params.pagination.current,
+        "size": params.pagination.pageSize,
+        "kind": params.kind,
+        "created_at": FormatDateQuery(params.created_at)
+      }
     }).then(
       response => {
         setData(response.data.data);
