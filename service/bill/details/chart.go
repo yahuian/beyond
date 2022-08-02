@@ -7,6 +7,7 @@ import (
 	"github.com/yahuian/beyond/db"
 	"github.com/yahuian/gox/errorx"
 	"github.com/yahuian/gox/logx"
+	"github.com/yahuian/gox/slicex"
 )
 
 type pieParam struct {
@@ -58,11 +59,12 @@ func Pie(c *ctx.Context) {
 	}
 
 	if field == "type" {
-		for i := range res {
-			if res[i].Key == "" {
+		slicex.Map(res, func(i int, v base) base {
+			if v.Key == "" {
 				res[i].Key = "未分类"
 			}
-		}
+			return v
+		})
 	}
 
 	c.SuccessWith(ctx.Response{

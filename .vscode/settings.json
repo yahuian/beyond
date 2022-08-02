@@ -10,6 +10,7 @@
     "mapstructure",
     "oneof",
     "Sider",
+    "slicex",
     "STRFTIME",
     "validatex",
     "yahuian"
