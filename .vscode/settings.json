@@ -3,6 +3,7 @@
     "antd",
     "datetime",
     "errorx",
+    "filex",
     "gonic",
     "gorm",
     "Infof",

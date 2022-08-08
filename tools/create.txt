@@ -1,0 +1,39 @@
+package {{.Service}}
+
+import (
+	"time"
+
+	"github.com/yahuian/beyond/ctx"
+	"github.com/yahuian/beyond/db"
+	"github.com/yahuian/gox/logx"
+)
+
+type createParam struct {
+}
+
+// @Summary TODO
+// @Tags    bill
+// @Accept  json
+// @Produce json
+// @param   payload body     createParam true "request payload"
+// @Success 200     {object} ctx.Response{data=db.{{.Model}}}
+// @Router  TODO [post]
+func Create(c *ctx.Context) {
+	var param createParam
+	if err := c.BindJSON(&param); err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	data := &db.{{.Model}}{
+		CreatedAt: time.Now(),
+	}
+
+	if err := db.Create(data); err != nil {
+		logx.Errorf("%+v", err)
+		c.InternalErr(err)
+		return
+	}
+
+	c.SuccessWith(ctx.Response{Msg: "success", Data: data})
+}
