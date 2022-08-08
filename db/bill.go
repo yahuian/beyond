@@ -15,3 +15,12 @@ type BillDetails struct {
 	Note      string    `gorm:"comment:备注" json:"note,omitempty"`
 	CreatedAt time.Time `gorm:"comment:创建时间" json:"created_at"`
 }
+
+// BillTemplate 模板
+type BillTemplate struct {
+	ID        uint64    `gorm:"primaryKey" json:"id"`
+	Name      string    `gorm:"comment:名称" json:"name"`
+	Kind      string    `gorm:"comment:类型" json:"kind"` // type(分类) ledger(账本)
+	Note      string    `gorm:"comment:备注" json:"note,omitempty"`
+	CreatedAt time.Time `gorm:"comment:创建时间" json:"created_at"`
+}

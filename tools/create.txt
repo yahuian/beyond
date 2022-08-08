@@ -12,7 +12,7 @@ type createParam struct {
 }
 
 // @Summary TODO
-// @Tags    bill
+// @Tags    {{.Service}}
 // @Accept  json
 // @Produce json
 // @param   payload body     createParam true "request payload"

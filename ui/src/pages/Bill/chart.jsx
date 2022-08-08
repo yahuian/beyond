@@ -47,8 +47,6 @@ export function ChartLine() {
   )
 }
 
-// TODO 收入和支出做到同一张图片中
-
 const LineChart = (param) => {
   const [data, setData] = useState([]);
 

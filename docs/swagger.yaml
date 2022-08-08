@@ -37,6 +37,20 @@ definitions:
       type:
         type: string
     type: object
+  db.BillTemplate:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      kind:
+        description: type(分类) ledger(账本)
+        type: string
+      name:
+        type: string
+      note:
+        type: string
+    type: object
   details.base:
     properties:
       key:
@@ -67,6 +81,24 @@ definitions:
         type: string
     required:
     - money
+    type: object
+  template.createParam:
+    properties:
+      kind:
+        description: type(分类) ledger(账本)
+        enum:
+        - type
+        - ledger
+        type: string
+      name:
+        maxLength: 20
+        type: string
+      note:
+        maxLength: 200
+        type: string
+    required:
+    - kind
+    - name
     type: object
 info:
   contact: {}
@@ -247,6 +279,89 @@ paths:
                   type: array
               type: object
       summary: 饼图
+      tags:
+      - bill
+  /bill/template:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/ctx.IDList'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ctx.Response'
+      summary: 删除模板
+      tags:
+      - bill
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: size
+        in: query
+        name: size
+        type: integer
+      - description: id
+        in: query
+        name: id[]
+        type: integer
+      - description: created_at
+        in: query
+        name: created_at[]
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/db.BillTemplate'
+                  type: array
+              type: object
+      summary: 模板列表
+      tags:
+      - bill
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/template.createParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/db.BillTemplate'
+              type: object
+      summary: 添加模板
       tags:
       - bill
 swagger: "2.0"

@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/yahuian/beyond/ctx"
 	"github.com/yahuian/beyond/service/bill/details"
+	"github.com/yahuian/beyond/service/bill/template"
 )
 
 func Router(e *gin.RouterGroup) {
@@ -19,5 +20,12 @@ func Router(e *gin.RouterGroup) {
 			Chart.GET("/pie", ctx.Handle(details.Pie))
 			Chart.GET("/line", ctx.Handle(details.Line))
 		}
+	}
+
+	Template := r.Group("/template")
+	{
+		Template.POST("", ctx.Handle(template.Create))
+		Template.GET("", ctx.Handle(template.List))
+		Template.DELETE("", ctx.Handle(template.Delete))
 	}
 }

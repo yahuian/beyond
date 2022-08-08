@@ -2,6 +2,7 @@ import { React } from 'react';
 import { Tabs } from 'antd';
 import Details from './details';
 import { ChartPie, ChartLine } from './chart';
+import Template from './template';
 
 const { TabPane } = Tabs;
 
@@ -19,9 +20,7 @@ export default function Bill() {
         <ChartPie />
       </TabPane>
       <TabPane tab={<span>模板管理</span>} key="template" >
-        <div>
-          Hello,World!
-        </div>
+        <Template />
       </TabPane>
     </Tabs>
   )

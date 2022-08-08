@@ -1,4 +1,4 @@
-package {{.Service}}
+package template
 
 import (
 	"github.com/yahuian/beyond/ctx"
@@ -6,13 +6,13 @@ import (
 	"github.com/yahuian/gox/logx"
 )
 
-// @Summary TODO
-// @Tags    {{.Service}}
+// @Summary 删除模板
+// @Tags    bill
 // @Accept  json
 // @Produce json
 // @param   payload body     ctx.IDList true "request payload"
 // @Success 200     {object} ctx.Response
-// @Router  TODO [delete]
+// @Router  /bill/template [delete]
 func Delete(c *ctx.Context) {
 	param, err := c.GetIDList()
 	if err != nil {
@@ -20,7 +20,7 @@ func Delete(c *ctx.Context) {
 		return
 	}
 
-	if err := db.DeleteByID[db.{{.Model}}](param.IDS...); err != nil {
+	if err := db.DeleteByID[db.BillTemplate](param.IDS...); err != nil {
 		logx.Errorf("%+v", err)
 		c.InternalErr(err)
 		return

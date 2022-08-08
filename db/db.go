@@ -27,6 +27,7 @@ func Connect() error {
 	// auto migrate
 	schemas := []any{
 		BillDetails{},
+		BillTemplate{},
 	}
 	for _, v := range schemas {
 		if err := conn.AutoMigrate(v); err != nil {
