@@ -1,13 +1,13 @@
 import { React, useState, useEffect } from 'react';
 import {
-  Table, Typography, message, Button,
+  Table, Typography, Button,
   Form, Input, Modal, Radio, InputNumber,
 } from 'antd';
 import { DeleteOutlined, PlusSquareOutlined } from '@ant-design/icons';
-import axios from 'axios'
 import moment from 'moment';
 import { DatetimeDropDown } from '../../components';
 import { DateShowFormat, FormatDateQuery } from '../../utils/date';
+import { request } from '../../utils/request';
 
 const { Text } = Typography;
 
@@ -75,48 +75,42 @@ export default function Details() {
 
   const fetchData = (params) => {
     setLoading(true);
-    axios.get(`http://192.168.1.12:2022/api/bill/details`, {
+    request.get(`/bill/details`, {
       params: {
         "page": params.pagination.current,
         "size": params.pagination.pageSize,
         "kind": params.kind,
         "created_at": FormatDateQuery(params.created_at)
       }
-    }).then(
-      response => {
-        setData(response.data.data);
-        setLoading(false);
-        setPagination({
-          ...params.pagination,
-          total: response.data.count,
-        });
-      },
-      error => {
-        message.error(error.message);
-      }
-    );
+    }).then(function (response) {
+      setData(response.data.data);
+      setLoading(false);
+      setPagination({
+        ...params.pagination,
+        total: response.data.count,
+      });
+    }).catch(function (error) {
+      setLoading(false);
+    })
   };
 
   // TODO 增加二次确认机制
   const deleteData = () => {
     setLoading(true);
     const payload = JSON.stringify({ ids: selectedRowKeys })
-    axios.delete('http://192.168.1.12:2022/api/bill/details', {
+    request.delete('/bill/details', {
       headers: {
         'Content-Type': 'application/json'
       },
       data: payload
-    }).then(
-      response => {
-        message.success(response.data.msg);
-        setLoading(false);
-        setRefresh(!refresh)
-        setSelectedRowKeys([]);
-      },
-      error => {
-        message.error(error.message);
-      }
-    );
+    }).then(function (response) {
+      setLoading(false);
+      setRefresh(!refresh)
+      setSelectedRowKeys([]);
+    }
+    ).catch(function (error) {
+      setLoading(false);
+    })
   };
 
   const hasSelected = selectedRowKeys.length > 0;
@@ -130,19 +124,13 @@ export default function Details() {
 
   const onCreate = (values) => {
     const payload = JSON.stringify(values)
-    axios.post(`http://192.168.1.12:2022/api/bill/details`, payload, {
+    request.post(`/bill/details`, payload, {
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then(
-      response => {
-        message.success(response.data.msg);
-        setRefresh(!refresh)
-      },
-      error => {
-        message.error(error.message);
-      }
-    )
+    }).then(function (response) {
+      setRefresh(!refresh)
+    })
     setVisible(false);
   };
 

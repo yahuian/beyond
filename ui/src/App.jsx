@@ -6,7 +6,7 @@ import './App.css';
 import News from './pages/News';
 import Bill from './pages/Bill';
 
-const { Content, Footer, Sider } = Layout;
+const { Content, Sider } = Layout;
 
 const routers = [
   {

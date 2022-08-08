@@ -1,9 +1,9 @@
 import { React, useState, useEffect } from 'react';
-import { message, Col, Row, Select, DatePicker } from 'antd';
+import { Col, Row, Select, DatePicker } from 'antd';
 import { Pie, WordCloud, Line } from '@ant-design/plots';
-import axios from 'axios'
 import moment from 'moment';
 import { DateQueryFormat, FormatDateQuery } from '../../utils/date';
+import { request } from '../../utils/request';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -47,6 +47,8 @@ export function ChartLine() {
   )
 }
 
+// TODO 收入和支出做到同一张图片中
+
 const LineChart = (param) => {
   const [data, setData] = useState([]);
 
@@ -55,16 +57,11 @@ const LineChart = (param) => {
   }, [param]);
 
   const getData = () => {
-    axios.get(`http://192.168.1.12:2022/api/bill/details/chart/line`, {
+    request.get(`/bill/details/chart/line`, {
       params: param,
-    }).then(
-      response => {
-        setData(response.data.data);
-      },
-      error => {
-        message.error(error.message);
-      }
-    );
+    }).then(function (response) {
+      setData(response.data.data);
+    });
   };
 
   const config = {
@@ -152,19 +149,14 @@ const PieChart = ({ param }) => {
   }, [param]);
 
   const getData = () => {
-    axios.get(`http://192.168.1.12:2022/api/bill/details/chart/pie`, {
+    request.get(`/bill/details/chart/pie`, {
       params: {
         field: "type",
         ...param
       }
-    }).then(
-      response => {
-        setData(response.data.data);
-      },
-      error => {
-        message.error(error.message);
-      }
-    );
+    }).then(function (response) {
+      setData(response.data.data);
+    });
   };
 
   const config = {
@@ -199,19 +191,14 @@ const NameChart = ({ param }) => {
   }, [param]);
 
   const getData = () => {
-    axios.get(`http://192.168.1.12:2022/api/bill/details/chart/pie`, {
+    request.get(`/bill/details/chart/pie`, {
       params: {
         field: "name",
         ...param
       }
-    }).then(
-      response => {
-        setData(response.data.data);
-      },
-      error => {
-        message.error(error.message);
-      }
-    );
+    }).then(function (response) {
+      setData(response.data.data);
+    });
   };
 
   const config = {
