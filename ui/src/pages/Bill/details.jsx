@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from 'react';
 import {
-  Table, Typography, Button,
+  Table, Typography, Button, Select,
   Form, Input, Modal, Radio, InputNumber,
 } from 'antd';
 import { DeleteOutlined, PlusSquareOutlined } from '@ant-design/icons';
@@ -10,6 +10,7 @@ import { DateShowFormat, FormatDateQuery } from '../../utils/date';
 import { request } from '../../utils/request';
 
 const { Text } = Typography;
+const { Option } = Select;
 
 const weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
@@ -187,7 +188,32 @@ export default function Details() {
 }
 
 const CreateForm = ({ visible, onCreate, onCancel }) => {
+  const [typeData, setTypeData] = useState([]);
+  const [ledgerData, setLedgerData] = useState([]);
   const [form] = Form.useForm();
+
+  useEffect(
+    // TODO 超过 100 时支持远程搜索
+    () => {
+      request.get(`/bill/template`, {
+        params: {
+          "size": 100,
+          "kind": ["type"],
+        }
+      }).then(function (response) {
+        setTypeData(response.data.data);
+      });
+      request.get(`/bill/template`, {
+        params: {
+          "size": 100,
+          "kind": ["ledger"],
+        }
+      }).then(function (response) {
+        setLedgerData(response.data.data);
+      })
+    }, []
+  );
+
   return (
     <Modal
       visible={visible}
@@ -234,10 +260,22 @@ const CreateForm = ({ visible, onCreate, onCancel }) => {
           <Input type="textarea" />
         </Form.Item>
         <Form.Item name="type" label="分类">
-          <Input type="textarea" />
+          <Select showSearch allowClear >
+            {
+              typeData.map((v) => {
+                return <Option value={v.name}>{v.name}</Option>
+              })
+            }
+          </Select>
         </Form.Item>
         <Form.Item name="ledger" label="账本">
-          <Input type="textarea" />
+          <Select showSearch allowClear>
+            {
+              ledgerData.map((v) => {
+                return <Option value={v.name}>{v.name}</Option>
+              })
+            }
+          </Select>
         </Form.Item>
         <Form.Item name="note" label="备注">
           <Input type="textarea" />

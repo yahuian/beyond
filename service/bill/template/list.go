@@ -8,6 +8,7 @@ import (
 
 type listParam struct {
 	ID        []uint   `form:"id[]" json:"id"`
+	Kind      []string `form:"kind[]" json:"kind" validate:"dive,oneof=type ledger"`
 	CreatedAt []string `form:"created_at[]" json:"created_at" validate:"omitempty,len=2,dive,datetime=2006-01-02 15:04:05"`
 }
 
