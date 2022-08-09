@@ -20,3 +20,6 @@ beyond.db
 
 # air
 tmp
+
+# yarn build
+dist

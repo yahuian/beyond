@@ -1,9 +1,11 @@
 package router
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/yahuian/beyond/config"
 	"github.com/yahuian/beyond/service/bill"
@@ -26,6 +28,16 @@ func Init() error {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+
+	// 注册前端页面
+	r.Use(static.Serve("/", static.LocalFile("./dist", false)))
+	r.LoadHTMLFiles("./dist/index.html")
+	pages := []string{"bill", "news"}
+	for _, v := range pages {
+		r.GET(v, func(c *gin.Context) {
+			c.HTML(http.StatusOK, "index.html", nil)
+		})
+	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
