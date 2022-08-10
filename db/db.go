@@ -3,9 +3,9 @@ package db
 import (
 	"reflect"
 
+	"github.com/glebarez/sqlite"
 	"github.com/yahuian/beyond/config"
 	"github.com/yahuian/gox/errorx"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
