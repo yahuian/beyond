@@ -10,6 +10,7 @@
     "logx",
     "mapstructure",
     "oneof",
+    "redbook",
     "Sider",
     "slicex",
     "STRFTIME",

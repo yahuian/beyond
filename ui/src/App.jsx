@@ -1,22 +1,23 @@
 import { React, useState } from 'react';
 import { BrowserRouter, NavLink, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
-import { StarTwoTone, MoneyCollectTwoTone, } from '@ant-design/icons';
+import { StarTwoTone, MoneyCollectTwoTone, SettingTwoTone } from '@ant-design/icons';
 import './App.css';
 import News from './pages/News';
 import Bill from './pages/Bill';
+import System from './pages/System';
 
 const { Content, Sider } = Layout;
 
 const routers = [
-  {
-    key: '/news',
-    icon: <StarTwoTone />,
-    label: (
-      <NavLink to="/news">订阅信息</NavLink>
-    ),
-    component: <News />
-  },
+  // {
+  //   key: '/news',
+  //   icon: <StarTwoTone />,
+  //   label: (
+  //     <NavLink to="/news">订阅信息</NavLink>
+  //   ),
+  //   component: <News />
+  // },
   {
     key: '/bill',
     icon: <MoneyCollectTwoTone />,
@@ -24,6 +25,14 @@ const routers = [
       <NavLink to="/bill">每日记账</NavLink>
     ),
     component: <Bill />
+  },
+  {
+    key: '/system',
+    icon: <SettingTwoTone />,
+    label: (
+      <NavLink to="/system">系统设置</NavLink>
+    ),
+    component: <System />
   },
 ]
 
