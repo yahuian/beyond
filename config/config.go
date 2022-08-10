@@ -1,10 +1,16 @@
 package config
 
 import (
+	"bytes"
+	_ "embed"
+
 	"github.com/spf13/viper"
 	"github.com/yahuian/gox/errorx"
 	"github.com/yahuian/gox/validatex"
 )
+
+//go:embed config.yaml
+var sysConfig []byte
 
 var Val struct {
 	Server struct {
@@ -20,19 +26,42 @@ var Val struct {
 }
 
 func Init(name string) error {
-	viper.SetConfigFile(name)
-
-	if err := viper.ReadInConfig(); err != nil {
+	// 读取用户的配置
+	user := viper.New()
+	user.SetConfigFile(name)
+	if err := user.ReadInConfig(); err != nil {
 		return errorx.Wrap(err)
 	}
 
-	if err := viper.Unmarshal(&Val); err != nil {
+	// 系统默认配置
+	sys := viper.New()
+	sys.SetConfigType("yaml")
+	if err := sys.ReadConfig(bytes.NewReader(sysConfig)); err != nil {
 		return errorx.Wrap(err)
 	}
 
+	// 合并配置
+	res := viper.New()
+	for _, key := range sys.AllKeys() {
+		if v := user.Get(key); v != nil {
+			res.Set(key, v)
+		} else {
+			res.Set(key, sys.Get(key))
+		}
+	}
+
+	// 校验
+	if err := res.Unmarshal(&Val); err != nil {
+		return errorx.Wrap(err)
+	}
 	if err := validatex.Struct(&Val); err != nil {
 		return errorx.Wrap(err)
 	}
 
+	// 写入最终配置文件
+	res.SetConfigFile(name)
+	if err := res.WriteConfig(); err != nil {
+		return errorx.Wrap(err)
+	}
 	return nil
 }

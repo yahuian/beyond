@@ -17,6 +17,7 @@
 # local dev files
 log
 beyond.db
+config/dev.yaml
 
 # air
 tmp

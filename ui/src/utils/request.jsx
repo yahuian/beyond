@@ -2,7 +2,7 @@ import axios from 'axios'
 import { message } from 'antd'
 
 export const request = axios.create({
-  baseURL: 'http://192.168.1.10:2022/api'
+  baseURL: 'http://localhost:2022/api'
 })
 
 // Add a response interceptor
