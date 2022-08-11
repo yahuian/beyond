@@ -1,0 +1,33 @@
+on:
+  release:
+    types: [created]
+
+jobs:
+  releases-matrix:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: ["386", amd64, arm64]
+        exclude:
+          - goarch: "386"
+            goos: darwin
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.5.0
+      - run: cd ui && yarn install --registry https://registry.npm.taobao.org/ && yarn build
+
+      - uses: wangyoucao577/go-release-action@v1.30
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          goversion: "1.18"
+          binary_name: "beyond"
+          extra_files: config/config.yaml dist
+          md5sum: false
+          build_flags: -trimpath -a
+          ldflags: '-extldflags "-static"'

@@ -1,9 +1,8 @@
 import { React, useState } from 'react';
 import { BrowserRouter, NavLink, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
-import { StarTwoTone, MoneyCollectTwoTone, SettingTwoTone } from '@ant-design/icons';
+import { MoneyCollectTwoTone, SettingTwoTone } from '@ant-design/icons';
 import './App.css';
-import News from './pages/News';
 import Bill from './pages/Bill';
 import System from './pages/System';
 

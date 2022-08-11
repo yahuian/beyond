@@ -22,7 +22,7 @@ func main() {
 
 	// init config
 	var configFile string
-	flag.StringVar(&configFile, "config", "config/config.yaml", "config file path")
+	flag.StringVar(&configFile, "config", "config.yaml", "config file path")
 	flag.Parse()
 	if err := config.Init(configFile); err != nil {
 		panic(fmt.Sprintf("%+v", err))

@@ -52,6 +52,7 @@ const LineChart = (param) => {
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line
   }, [param]);
 
   const getData = () => {
@@ -144,6 +145,7 @@ const PieChart = ({ param }) => {
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line
   }, [param]);
 
   const getData = () => {
@@ -186,6 +188,7 @@ const NameChart = ({ param }) => {
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line
   }, [param]);
 
   const getData = () => {

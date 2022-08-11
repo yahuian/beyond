@@ -136,6 +136,7 @@ export default function Details() {
   };
 
   useEffect(
+    // eslint-disable-next-line
     () => { fetchData({ pagination }) }, [refresh]
   );
 
