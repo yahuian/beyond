@@ -10,6 +10,8 @@ import (
 
 	"github.com/yahuian/gox/logx"
 	"github.com/yahuian/gox/validatex"
+
+	_ "github.com/yahuian/beyond/docs"
 )
 
 // @title    beyond api
@@ -35,7 +37,7 @@ func main() {
 		MaxAge:   config.Val.Log.MaxAge,
 	}
 	logx.Init(file)
-	defer logx.Sync()
+	defer logx.Sync() //nolint:errcheck
 	logx.SetLevel(logx.DebugLevel)
 
 	// init db

@@ -2,6 +2,7 @@
   "cSpell.words": [
     "antd",
     "datetime",
+    "errcheck",
     "errorx",
     "filex",
     "gonic",
@@ -9,6 +10,7 @@
     "Infof",
     "logx",
     "mapstructure",
+    "nolint",
     "oneof",
     "redbook",
     "Sider",

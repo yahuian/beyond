@@ -13,7 +13,6 @@ import (
 
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	_ "github.com/yahuian/beyond/docs"
 )
 
 func Init() error {
