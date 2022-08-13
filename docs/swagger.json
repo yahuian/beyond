@@ -176,6 +176,7 @@
                 "parameters": [
                     {
                         "enum": [
+                            "day",
                             "week",
                             "month",
                             "year"

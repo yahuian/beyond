@@ -206,6 +206,7 @@ paths:
       parameters:
       - description: date
         enum:
+        - day
         - week
         - month
         - year

@@ -186,6 +186,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "enum": [
+                            "day",
                             "week",
                             "month",
                             "year"

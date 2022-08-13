@@ -33,13 +33,16 @@ export function ChartLine() {
         </Row>
       </div>
       <Row>
-        <Col span={8}>
+        <Col span={6}>
+          <div style={{ height: 300 }}><LineChart kind={kind} date='day' /></div>
+        </Col>
+        <Col span={6}>
           <div style={{ height: 300 }}><LineChart kind={kind} date='week' /></div>
         </Col>
-        <Col span={8}>
+        <Col span={6}>
           <div style={{ height: 300 }}><LineChart kind={kind} date='month' /></div>
         </Col>
-        <Col span={8}>
+        <Col span={6}>
           <div style={{ height: 300 }}><LineChart kind={kind} date='year' /></div>
         </Col>
       </Row>

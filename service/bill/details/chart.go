@@ -2,6 +2,9 @@ package details
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/yahuian/beyond/ctx"
 	"github.com/yahuian/beyond/db"
@@ -81,7 +84,7 @@ type lineParam struct {
 // @Tags    bill
 // @Accept  json
 // @Produce json
-// @Param   date query    string true  "date" Enums(week,month,year)
+// @Param   date query    string true  "date" Enums(day,week,month,year)
 // @Param   kind query    string false "kind" Enums(income, pay)
 // @Success 200          {object} ctx.Response{data=[]base}
 // @Router  /bill/details/chart/line [get]
@@ -92,16 +95,21 @@ func Line(c *ctx.Context) {
 		return
 	}
 
-	var flag string
+	var (
+		flag  string
+		limit = 12
+	)
 	switch c.Query("date") {
+	case "day":
+		flag, limit = "%m-%d", 31
 	case "week":
-		flag = "%W"
+		flag = "%Y-%W"
 	case "month":
 		flag = "%m"
 	case "year":
 		flag = "%Y"
 	default:
-		c.BadRequest(errorx.New("date param must be week/month/year"))
+		c.BadRequest(errorx.New("date param must be day/week/month/year"))
 		return
 	}
 	selectVal := fmt.Sprintf(`SUM(money) as value, STRFTIME("%s", created_at) as key`, flag)
@@ -109,15 +117,46 @@ func Line(c *ctx.Context) {
 
 	res := make([]base, 0)
 	err = db.Client().Select(selectVal).Model(db.BillDetails{}).
-		Where(query, args...).Group(groupBy).Limit(12).Scan(&res).Error
+		Where(query, args...).Group(groupBy).Limit(limit).Scan(&res).Error
 	if err != nil {
 		logx.Errorf("%+v", err)
 		c.InternalErr(err)
 		return
 	}
 
+	if c.Query("date") == "week" {
+		slicex.Map(res, func(i int, v base) base {
+			list := strings.Split(v.Key, "-")
+			year, _ := strconv.Atoi(list[0])
+			week, _ := strconv.Atoi(list[1])
+			res[i].Key = weekEnd(year, week)
+			return v
+		})
+	}
+
 	c.SuccessWith(ctx.Response{
 		Msg:  "success",
 		Data: res,
 	})
+}
+
+// https://stackoverflow.com/a/52303730
+func weekEnd(year, week int) string {
+	// Start from the middle of the year:
+	t := time.Date(year, 7, 1, 0, 0, 0, 0, time.UTC)
+
+	// Roll back to Monday:
+	if wd := t.Weekday(); wd == time.Sunday {
+		t = t.AddDate(0, 0, -6)
+	} else {
+		t = t.AddDate(0, 0, -int(wd)+1)
+	}
+
+	// Difference in weeks:
+	_, w := t.ISOWeek()
+	t = t.AddDate(0, 0, (week-w)*7)
+
+	t = t.AddDate(0, 0, 6)
+
+	return t.Format("01-02")
 }
