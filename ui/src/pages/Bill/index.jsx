@@ -10,6 +10,7 @@ export default function Bill() {
   return (
     <Tabs
       defaultActiveKey="details"
+      destroyInactiveTabPane
     >
       <TabPane tab={<span>收支明细</span>} key="details">
         <Details />
@@ -25,5 +26,3 @@ export default function Bill() {
     </Tabs>
   )
 }
-
-// TODO 切换 tab 后应该重新加载组件

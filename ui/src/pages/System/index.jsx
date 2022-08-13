@@ -9,6 +9,7 @@ export default function System() {
   return (
     <Tabs
       defaultActiveKey="contact"
+      destroyInactiveTabPane
     >
       <TabPane tab={<span>联系我们</span>} key="contact">
         <Typography>
@@ -20,10 +21,10 @@ export default function System() {
           <Paragraph>
             发现 BUG 了 (⊙o⊙) ？劳烦在<Link href="https://github.com/YahuiAn/beyond/issues">此处</Link>反馈~
           </Paragraph>
-          <Title level={4}>小红书</Title>
+          <Title level={4}>资讯</Title>
           <Paragraph>
-            欢迎围观作者的日常开发分享~<br />
-            <Image width={200} src={redbook} />
+            关注作者，获取更多产品使用小技巧~<br />
+            <Image width={300} src={redbook} style={{ padding: '8px 0px 8px 0px' }} />
           </Paragraph>
         </Typography>
       </TabPane>
