@@ -70,9 +70,7 @@ const LineChart = (param) => {
     data,
     xField: 'key',
     yField: 'value',
-    xAxis: {
-      tickCount: 12,
-    },
+    label: {},
     annotations: [
       {
         type: 'text',
