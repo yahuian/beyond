@@ -32,6 +32,7 @@ func Create(c *ctx.Context) {
 	data := &db.BillTemplate{
 		Name:      param.Name,
 		Kind:      param.Kind,
+		Note:      param.Note,
 		CreatedAt: time.Now(),
 	}
 
