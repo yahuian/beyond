@@ -623,6 +623,9 @@ const docTemplate = `{
                 "money"
             ],
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "kind": {
                     "type": "string",
                     "enum": [
@@ -658,6 +661,9 @@ const docTemplate = `{
                 "money"
             ],
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -696,6 +702,9 @@ const docTemplate = `{
                 "name"
             ],
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "kind": {
                     "description": "type(分类) ledger(账本)",
                     "type": "string",
@@ -722,6 +731,9 @@ const docTemplate = `{
                 "name"
             ],
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },

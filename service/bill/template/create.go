@@ -10,9 +10,10 @@ import (
 )
 
 type createParam struct {
-	Name string `json:"name" validate:"required,max=20"`
-	Kind string `json:"kind" validate:"required,oneof=type ledger"` // type(分类) ledger(账本)
-	Note string `json:"note" validate:"max=200"`
+	Name      string    `json:"name" validate:"required,max=20"`
+	Kind      string    `json:"kind" validate:"required,oneof=type ledger"` // type(分类) ledger(账本)
+	Note      string    `json:"note" validate:"max=200"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 // @Summary 添加模板
@@ -33,7 +34,7 @@ func Create(c *ctx.Context) {
 		Name:      param.Name,
 		Kind:      param.Kind,
 		Note:      param.Note,
-		CreatedAt: time.Now(),
+		CreatedAt: param.CreatedAt,
 	}
 
 	count, err := db.Count[db.BillTemplate]("name = ?", data.Name)

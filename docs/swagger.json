@@ -613,6 +613,9 @@
                 "money"
             ],
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "kind": {
                     "type": "string",
                     "enum": [
@@ -648,6 +651,9 @@
                 "money"
             ],
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -686,6 +692,9 @@
                 "name"
             ],
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "kind": {
                     "description": "type(分类) ledger(账本)",
                     "type": "string",
@@ -712,6 +721,9 @@
                 "name"
             ],
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },

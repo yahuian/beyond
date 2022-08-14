@@ -9,12 +9,13 @@ import (
 )
 
 type createParam struct {
-	Name   string  `json:"name" validate:"max=20"`
-	Money  float64 `json:"money" validate:"required"`
-	Kind   string  `json:"kind" validate:"oneof=income pay"`
-	Type   string  `json:"type" validate:"max=20"`
-	Ledger string  `json:"ledger" validate:"max=20"`
-	Note   string  `json:"note" validate:"max=200"`
+	Name      string    `json:"name" validate:"max=20"`
+	Money     float64   `json:"money" validate:"required"`
+	Kind      string    `json:"kind" validate:"oneof=income pay"`
+	Type      string    `json:"type" validate:"max=20"`
+	Ledger    string    `json:"ledger" validate:"max=20"`
+	Note      string    `json:"note" validate:"max=200"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 // @Summary 增加明细
@@ -38,7 +39,7 @@ func Create(c *ctx.Context) {
 		Type:      param.Type,
 		Ledger:    param.Ledger,
 		Note:      param.Note,
-		CreatedAt: time.Now(),
+		CreatedAt: param.CreatedAt,
 	}
 
 	if err := db.Create(data); err != nil {

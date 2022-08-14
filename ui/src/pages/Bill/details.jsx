@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from 'react';
 import {
   Table, Typography, Button, Select,
-  Form, Input, Modal, Radio, InputNumber,
+  Form, Input, Modal, Radio, InputNumber, DatePicker
 } from 'antd';
 import { DeleteOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -71,6 +71,8 @@ export default function Details() {
       render: (_, record) => {
         return (
           <Typography.Link onClick={() => {
+            // fix: Uncaught TypeError: date.clone is not a function
+            record['created_at'] = moment(record['created_at'])
             setVisible(true);
             form.setFieldsValue(record);
           }}>
@@ -269,6 +271,7 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
         name="form_in_modal"
         initialValues={{
           kind: 'pay',
+          created_at: moment(),
         }}
       >
         <Form.Item hidden name="id" label="id">
@@ -312,6 +315,9 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
         </Form.Item>
         <Form.Item name="note" label="备注">
           <Input type="textarea" />
+        </Form.Item>
+        <Form.Item name="created_at" label="时间">
+          <DatePicker placeholder='选择时间' />
         </Form.Item>
       </Form>
     </Modal >

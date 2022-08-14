@@ -1,8 +1,6 @@
 package details
 
 import (
-	"time"
-
 	"github.com/yahuian/beyond/ctx"
 	"github.com/yahuian/beyond/db"
 	"github.com/yahuian/gox/errorx"
@@ -36,7 +34,7 @@ func Update(c *ctx.Context) {
 		Type:      param.Type,
 		Ledger:    param.Ledger,
 		Note:      param.Note,
-		CreatedAt: time.Now(),
+		CreatedAt: param.CreatedAt,
 	}
 
 	count, err := db.Count[db.BillDetails]("id = ?", data.ID)

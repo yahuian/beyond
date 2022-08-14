@@ -1,8 +1,6 @@
 package template
 
 import (
-	"time"
-
 	"github.com/yahuian/beyond/ctx"
 	"github.com/yahuian/beyond/db"
 	"github.com/yahuian/gox/errorx"
@@ -33,7 +31,7 @@ func Update(c *ctx.Context) {
 		Name:      param.Name,
 		Kind:      param.Kind,
 		Note:      param.Note,
-		CreatedAt: time.Now(),
+		CreatedAt: param.CreatedAt,
 	}
 
 	count, err := db.Count[db.BillTemplate]("id = ?", data.ID)
