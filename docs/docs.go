@@ -96,6 +96,49 @@ const docTemplate = `{
                     }
                 }
             },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bill"
+                ],
+                "summary": "更新明细",
+                "parameters": [
+                    {
+                        "description": "request payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/details.updateParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/db.BillDetails"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
             "post": {
                 "consumes": [
                     "application/json"
@@ -366,6 +409,49 @@ const docTemplate = `{
                     }
                 }
             },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bill"
+                ],
+                "summary": "更新模板",
+                "parameters": [
+                    {
+                        "description": "request payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/template.updateParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/db.BillTemplate"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
             "post": {
                 "consumes": [
                     "application/json"
@@ -565,6 +651,44 @@ const docTemplate = `{
                 }
             }
         },
+        "details.updateParam": {
+            "type": "object",
+            "required": [
+                "id",
+                "money"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "kind": {
+                    "type": "string",
+                    "enum": [
+                        "income",
+                        "pay"
+                    ]
+                },
+                "ledger": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "money": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "note": {
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "type": {
+                    "type": "string",
+                    "maxLength": 20
+                }
+            }
+        },
         "template.createParam": {
             "type": "object",
             "required": [
@@ -572,6 +696,35 @@ const docTemplate = `{
                 "name"
             ],
             "properties": {
+                "kind": {
+                    "description": "type(分类) ledger(账本)",
+                    "type": "string",
+                    "enum": [
+                        "type",
+                        "ledger"
+                    ]
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "note": {
+                    "type": "string",
+                    "maxLength": 200
+                }
+            }
+        },
+        "template.updateParam": {
+            "type": "object",
+            "required": [
+                "id",
+                "kind",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
                 "kind": {
                     "description": "type(分类) ledger(账本)",
                     "type": "string",

@@ -14,65 +14,82 @@ const { Option } = Select;
 
 const weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
-const columns = [
-  {
-    title: '类型',
-    dataIndex: 'kind',
-    render: (_, { kind }) => (
-      kind === 'income' ? '收入' : '支出'
-    ),
-    filters: [
-      {
-        text: '支出',
-        value: 'pay',
-      },
-      {
-        text: '收入',
-        value: 'income',
-      }
-    ]
-  },
-  {
-    title: '金额',
-    dataIndex: 'money',
-    render: (_, { kind, money }) => (
-      kind === 'income' ? <Text type='success' strong>+{money}</Text> :
-        <Text strong>-{money}</Text>
-    )
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'created_at',
-    render: (v) => {
-      return moment(v).format(DateShowFormat) + " " + weeks[moment().day()]
-    },
-    filterDropdown: props => <DatetimeDropDown {...props} />,
-  },
-  {
-    title: '名称',
-    dataIndex: 'name',
-  },
-  {
-    title: '分类',
-    dataIndex: 'type',
-  },
-  {
-    title: '账本',
-    dataIndex: 'ledger',
-  },
-  {
-    title: '备注',
-    dataIndex: 'note',
-  }
-];
-
 export default function Details() {
+  const columns = [
+    {
+      title: '类型',
+      dataIndex: 'kind',
+      render: (_, { kind }) => (
+        kind === 'income' ? '收入' : '支出'
+      ),
+      filters: [
+        {
+          text: '支出',
+          value: 'pay',
+        },
+        {
+          text: '收入',
+          value: 'income',
+        }
+      ]
+    },
+    {
+      title: '金额',
+      dataIndex: 'money',
+      render: (_, { kind, money }) => (
+        kind === 'income' ? <Text type='success' strong>+{money}</Text> :
+          <Text strong>-{money}</Text>
+      )
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'created_at',
+      render: (v) => {
+        return moment(v).format(DateShowFormat) + " " + weeks[moment().day()]
+      },
+      filterDropdown: props => <DatetimeDropDown {...props} />,
+    },
+    {
+      title: '名称',
+      dataIndex: 'name',
+    },
+    {
+      title: '分类',
+      dataIndex: 'type',
+    },
+    {
+      title: '账本',
+      dataIndex: 'ledger',
+    },
+    {
+      title: '备注',
+      dataIndex: 'note',
+    },
+    {
+      title: '操作',
+      dataIndex: 'edit',
+      render: (_, record) => {
+        return (
+          <Typography.Link onClick={() => {
+            setVisible(true);
+            form.setFieldsValue(record);
+          }}>
+            编辑
+          </Typography.Link>
+        )
+      },
+    },
+  ];
+
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const [refresh, setRefresh] = useState(false);
-  const [visible, setVisible] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  // 创建和编辑表单
+  const [visible, setVisible] = useState(false);
+  const [form] = Form.useForm();
 
   const fetchData = (params) => {
     setLoading(true);
@@ -135,6 +152,18 @@ export default function Details() {
     setVisible(false);
   };
 
+  const onEdit = (values) => {
+    const payload = JSON.stringify(values)
+    request.put(`/bill/details`, payload, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (response) {
+      setRefresh(!refresh)
+    })
+    setVisible(false);
+  };
+
   useEffect(
     // eslint-disable-next-line
     () => { fetchData({ pagination }) }, [refresh]
@@ -169,9 +198,11 @@ export default function Details() {
         >
           <PlusSquareOutlined />记账
         </Button>
-        <CreateForm
+        <FormCom
+          form={form}
           visible={visible}
           onCreate={onCreate}
+          onEdit={onEdit}
           onCancel={() => setVisible(false)}
         />
       </div>
@@ -188,10 +219,9 @@ export default function Details() {
   )
 }
 
-const CreateForm = ({ visible, onCreate, onCancel }) => {
+const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
   const [typeData, setTypeData] = useState([]);
   const [ledgerData, setLedgerData] = useState([]);
-  const [form] = Form.useForm();
 
   useEffect(
     // TODO 超过 100 时支持远程搜索
@@ -218,16 +248,15 @@ const CreateForm = ({ visible, onCreate, onCancel }) => {
   return (
     <Modal
       visible={visible}
-      title="记账"
-      okText="Create"
-      cancelText="Cancel"
+      okText="确定"
+      cancelText="取消"
       onCancel={onCancel}
       onOk={() => {
         form
           .validateFields()
           .then((values) => {
             form.resetFields();
-            onCreate(values);
+            values['id'] === undefined ? onCreate(values) : onEdit(values)
           })
           .catch((info) => {
             console.log('Validate Failed:', info);
@@ -242,6 +271,9 @@ const CreateForm = ({ visible, onCreate, onCancel }) => {
           kind: 'pay',
         }}
       >
+        <Form.Item hidden name="id" label="id">
+          <Input type="textarea" />
+        </Form.Item>
         <Form.Item name="kind" label="类型">
           <Radio.Group>
             <Radio value="pay">支出</Radio>

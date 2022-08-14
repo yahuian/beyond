@@ -82,6 +82,33 @@ definitions:
     required:
     - money
     type: object
+  details.updateParam:
+    properties:
+      id:
+        type: integer
+      kind:
+        enum:
+        - income
+        - pay
+        type: string
+      ledger:
+        maxLength: 20
+        type: string
+      money:
+        type: number
+      name:
+        maxLength: 20
+        type: string
+      note:
+        maxLength: 200
+        type: string
+      type:
+        maxLength: 20
+        type: string
+    required:
+    - id
+    - money
+    type: object
   template.createParam:
     properties:
       kind:
@@ -97,6 +124,27 @@ definitions:
         maxLength: 200
         type: string
     required:
+    - kind
+    - name
+    type: object
+  template.updateParam:
+    properties:
+      id:
+        type: integer
+      kind:
+        description: type(分类) ledger(账本)
+        enum:
+        - type
+        - ledger
+        type: string
+      name:
+        maxLength: 20
+        type: string
+      note:
+        maxLength: 200
+        type: string
+    required:
+    - id
     - kind
     - name
     type: object
@@ -197,6 +245,31 @@ paths:
                   $ref: '#/definitions/db.BillDetails'
               type: object
       summary: 增加明细
+      tags:
+      - bill
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/details.updateParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/db.BillDetails'
+              type: object
+      summary: 更新明细
       tags:
       - bill
   /bill/details/chart/line:
@@ -363,6 +436,31 @@ paths:
                   $ref: '#/definitions/db.BillTemplate'
               type: object
       summary: 添加模板
+      tags:
+      - bill
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/template.updateParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/db.BillTemplate'
+              type: object
+      summary: 更新模板
       tags:
       - bill
 swagger: "2.0"
