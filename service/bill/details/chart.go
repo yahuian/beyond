@@ -8,6 +8,7 @@ import (
 
 	"github.com/yahuian/beyond/ctx"
 	"github.com/yahuian/beyond/db"
+	"github.com/yahuian/beyond/utils"
 	"github.com/yahuian/gox/errorx"
 	"github.com/yahuian/gox/logx"
 	"github.com/yahuian/gox/slicex"
@@ -124,15 +125,18 @@ func Line(c *ctx.Context) {
 		return
 	}
 
-	if c.Query("date") == "week" {
-		slicex.Map(res, func(i int, v base) base {
+	slicex.Map(res, func(i int, v base) base {
+		res[i].Value = utils.Cent(v.Value)
+
+		// 显示每周的最后一天(周一为每周的开始)
+		if c.Query("date") == "week" {
 			list := strings.Split(v.Key, "-")
 			year, _ := strconv.Atoi(list[0])
 			week, _ := strconv.Atoi(list[1])
 			res[i].Key = weekEnd(year, week)
-			return v
-		})
-	}
+		}
+		return v
+	})
 
 	c.SuccessWith(ctx.Response{
 		Msg:  "success",
