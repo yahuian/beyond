@@ -13,7 +13,7 @@ type BillDetails struct {
 	Type      string    `gorm:"comment:分类" json:"type,omitempty"`
 	Ledger    string    `gorm:"comment:账本" json:"ledger,omitempty"`
 	Note      string    `gorm:"comment:备注" json:"note,omitempty"`
-	CreatedAt time.Time `gorm:"comment:创建时间" json:"created_at"`
+	CreatedAt time.Time `gorm:"index,comment:创建时间" json:"created_at"`
 }
 
 // BillTemplate 模板
