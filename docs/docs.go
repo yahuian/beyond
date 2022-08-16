@@ -249,6 +249,12 @@ const docTemplate = `{
                         "description": "kind",
                         "name": "kind",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "type",
+                        "name": "type[]",
+                        "in": "query"
                     }
                 ],
                 "responses": {

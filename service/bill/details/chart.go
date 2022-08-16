@@ -15,8 +15,9 @@ import (
 )
 
 type pieParam struct {
-	Kind      []string `form:"kind" json:"kind" validate:"dive,oneof=income pay"`
+	Kind      string   `form:"kind" json:"kind" validate:"oneof=income pay"`
 	CreatedAt []string `form:"created_at[]" json:"created_at" validate:"omitempty,len=2,dive,datetime=2006-01-02 15:04:05"`
+	Type      []string `form:"type[]" json:"type"`
 	Ledger    []string `form:"ledger[]" json:"ledger"`
 }
 
@@ -33,7 +34,7 @@ type base struct {
 // @Param   kind         query    string false "kind"                     Enums(income, pay)
 // @Param   created_at[] query    string false "created_at"
 // @Param   ledger[]     query    string false "ledger"
-// @Success 200  {object} ctx.Response{data=[]base}
+// @Success 200    {object} ctx.Response{data=[]base}
 // @Router  /bill/details/chart/pie [get]
 func Pie(c *ctx.Context) {
 	var param pieParam
@@ -62,14 +63,16 @@ func Pie(c *ctx.Context) {
 		return
 	}
 
-	if field == "type" {
-		slicex.Map(res, func(i int, v base) base {
+	slicex.Map(res, func(i int, v base) base {
+		res[i].Value = utils.Cent(v.Value)
+
+		if field == "type" {
 			if v.Key == "" {
 				res[i].Key = "未分类"
 			}
-			return v
-		})
-	}
+		}
+		return v
+	})
 
 	c.SuccessWith(ctx.Response{
 		Msg:  "success",
@@ -78,15 +81,18 @@ func Pie(c *ctx.Context) {
 }
 
 type lineParam struct {
-	Kind []string `form:"kind" json:"kind" validate:"dive,oneof=income pay"`
+	Kind   string   `form:"kind" json:"kind" validate:"oneof=income pay"`
+	Type   []string `form:"type[]" json:"type"`
+	Ledger []string `form:"ledger[]" json:"ledger"`
 }
 
 // @Summary 折线图
 // @Tags    bill
 // @Accept  json
 // @Produce json
-// @Param   date query    string true  "date" Enums(day,week,month,year)
-// @Param   kind query    string false "kind" Enums(income, pay)
+// @Param   date   query    string true  "date" Enums(day,week,month,year)
+// @Param   kind   query    string false "kind" Enums(income, pay)
+// @Param   type[] query    string false "type"
 // @Success 200          {object} ctx.Response{data=[]base}
 // @Router  /bill/details/chart/line [get]
 func Line(c *ctx.Context) {

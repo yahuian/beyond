@@ -103,7 +103,12 @@ func (c *Context) BuildQuery(structP any) (string, []any, error) {
 			continue
 		}
 
-		query.WriteString(fmt.Sprintf("%s IN ? AND ", tag))
+		if val.Type().Kind() == reflect.Slice {
+			query.WriteString(fmt.Sprintf("%s IN ? AND ", tag))
+		} else {
+			query.WriteString(fmt.Sprintf("%s = ? AND ", tag))
+		}
+
 		args = append(args, val.Interface())
 	}
 
