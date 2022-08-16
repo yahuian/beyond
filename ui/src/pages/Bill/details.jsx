@@ -15,6 +15,10 @@ const { Option } = Select;
 const weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
 export default function Details() {
+  // 筛选分类和账本
+  const [typeData, setTypeData] = useState([]);
+  const [ledgerData, setLedgerData] = useState([]);
+
   const columns = [
     {
       title: '类型',
@@ -56,10 +60,16 @@ export default function Details() {
     {
       title: '分类',
       dataIndex: 'type',
+      filters: typeData.map((v) => {
+        return { text: v.name, value: v.name, }
+      })
     },
     {
       title: '账本',
       dataIndex: 'ledger',
+      filters: ledgerData.map((v) => {
+        return { text: v.name, value: v.name, }
+      })
     },
     {
       title: '备注',
@@ -100,6 +110,8 @@ export default function Details() {
         "page": params.pagination.current,
         "size": params.pagination.pageSize,
         "kind": params.kind,
+        "type": params.type,
+        "ledger": params.ledger,
         "created_at": FormatDateQuery(params.created_at)
       }
     }).then(function (response) {
@@ -111,6 +123,23 @@ export default function Details() {
       });
     }).catch(function (error) {
       setLoading(false);
+    })
+
+    request.get(`/bill/template`, {
+      params: {
+        "size": 100,
+        "kind": ["type"],
+      }
+    }).then(function (response) {
+      setTypeData(response.data.data);
+    });
+    request.get(`/bill/template`, {
+      params: {
+        "size": 100,
+        "kind": ["ledger"],
+      }
+    }).then(function (response) {
+      setLedgerData(response.data.data);
     })
   };
 
@@ -202,6 +231,8 @@ export default function Details() {
         </Button>
         <FormCom
           form={form}
+          typeData={typeData}
+          ledgerData={ledgerData}
           visible={visible}
           onCreate={onCreate}
           onEdit={onEdit}
@@ -221,32 +252,7 @@ export default function Details() {
   )
 }
 
-const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
-  const [typeData, setTypeData] = useState([]);
-  const [ledgerData, setLedgerData] = useState([]);
-
-  useEffect(
-    // TODO 超过 100 时支持远程搜索
-    () => {
-      request.get(`/bill/template`, {
-        params: {
-          "size": 100,
-          "kind": ["type"],
-        }
-      }).then(function (response) {
-        setTypeData(response.data.data);
-      });
-      request.get(`/bill/template`, {
-        params: {
-          "size": 100,
-          "kind": ["ledger"],
-        }
-      }).then(function (response) {
-        setLedgerData(response.data.data);
-      })
-    }, []
-  );
-
+const FormCom = ({ form, typeData, ledgerData, visible, onCreate, onEdit, onCancel }) => {
   return (
     <Modal
       visible={visible}
