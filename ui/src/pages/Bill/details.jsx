@@ -49,7 +49,7 @@ export default function Details() {
       title: '创建时间',
       dataIndex: 'created_at',
       render: (v) => {
-        return moment(v).format(DateShowFormat) + " " + weeks[moment().day()]
+        return moment(v).format(DateShowFormat) + " " + weeks[moment(v).day()]
       },
       filterDropdown: props => <DatetimeDropDown {...props} />,
     },
