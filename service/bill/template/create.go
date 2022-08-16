@@ -30,22 +30,15 @@ func Create(c *ctx.Context) {
 		return
 	}
 
+	if err := checkName(c, param.Name); err != nil {
+		return
+	}
+
 	data := &db.BillTemplate{
 		Name:      param.Name,
 		Kind:      param.Kind,
 		Note:      param.Note,
 		CreatedAt: param.CreatedAt,
-	}
-
-	count, err := db.Count[db.BillTemplate]("name = ?", data.Name)
-	if err != nil {
-		logx.Errorf("%+v", err)
-		c.InternalErr(err)
-		return
-	}
-	if count != 0 {
-		c.BadRequest(errorx.New("名称已存在，不可重复添加"))
-		return
 	}
 
 	if err := db.Create(data); err != nil {
@@ -55,4 +48,21 @@ func Create(c *ctx.Context) {
 	}
 
 	c.SuccessWith(ctx.Response{Msg: "success", Data: data})
+}
+
+func checkName(c *ctx.Context, name string) error {
+	count, err := db.Count[db.BillTemplate]("name = ?", name)
+	if err != nil {
+		logx.Errorf("%+v", err)
+		c.InternalErr(err)
+		return err
+	}
+
+	if count != 0 {
+		err := errorx.New("名称已存在，不可重复添加")
+		c.BadRequest(err)
+		return err
+	}
+
+	return nil
 }

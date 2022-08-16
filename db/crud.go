@@ -26,10 +26,18 @@ func GetOne[T any](query any, args ...any) (T, error) {
 	return data, nil
 }
 
-func GetMany[T any](page, size int, query any, args ...any) ([]T, error) {
+type Option struct {
+	Page  int
+	Size  int
+	Query any
+	Args  []any
+	Order string
+}
+
+func GetMany[T any](opt Option) ([]T, error) {
 	var list []T
-	offset := (page - 1) * size
-	res := Client().Where(query, args...).Offset(offset).Limit(size).Order("id desc").Find(&list)
+	offset := (opt.Page - 1) * opt.Size
+	res := Client().Where(opt.Query, opt.Args...).Offset(offset).Limit(opt.Size).Order(opt.Order).Find(&list)
 	if res.Error != nil {
 		return nil, errorx.Wrap(res.Error)
 	}

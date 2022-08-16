@@ -26,6 +26,21 @@ func Update(c *ctx.Context) {
 		return
 	}
 
+	if err := checkTpl(c, param.Type, param.Ledger); err != nil {
+		return
+	}
+
+	count, err := db.Count[db.BillDetails]("id = ?", param.ID)
+	if err != nil {
+		logx.Errorf("%+v", err)
+		c.InternalErr(err)
+		return
+	}
+	if count == 0 {
+		c.BadRequest(errorx.New("id not found"))
+		return
+	}
+
 	data := &db.BillDetails{
 		ID:        param.ID,
 		Name:      param.Name,
@@ -37,18 +52,13 @@ func Update(c *ctx.Context) {
 		CreatedAt: param.CreatedAt,
 	}
 
-	count, err := db.Count[db.BillDetails]("id = ?", data.ID)
-	if err != nil {
+	if err := db.UpdateByID(data.ID, data); err != nil {
 		logx.Errorf("%+v", err)
 		c.InternalErr(err)
 		return
 	}
-	if count == 0 {
-		c.BadRequest(errorx.New("id not found"))
-		return
-	}
 
-	if err := db.UpdateByID(data.ID, data); err != nil {
+	if err := incTplTimes(data.Type, data.Ledger); err != nil {
 		logx.Errorf("%+v", err)
 		c.InternalErr(err)
 		return

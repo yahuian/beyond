@@ -609,6 +609,9 @@ const docTemplate = `{
                 },
                 "note": {
                     "type": "string"
+                },
+                "times": {
+                    "type": "integer"
                 }
             }
         },

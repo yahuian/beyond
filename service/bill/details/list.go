@@ -39,7 +39,15 @@ func List(c *ctx.Context) {
 		return
 	}
 
-	list, err := db.GetMany[db.BillDetails](paging.Page, paging.Size, query, args...)
+	opt := db.Option{
+		Page:  paging.Page,
+		Size:  paging.Size,
+		Query: query,
+		Args:  args,
+		Order: "id desc",
+	}
+
+	list, err := db.GetMany[db.BillDetails](opt)
 	if err != nil {
 		logx.Errorf("%+v", err)
 		c.InternalErr(err)

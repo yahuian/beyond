@@ -1,10 +1,12 @@
 package template
 
 import (
+	"errors"
+
 	"github.com/yahuian/beyond/ctx"
 	"github.com/yahuian/beyond/db"
-	"github.com/yahuian/gox/errorx"
 	"github.com/yahuian/gox/logx"
+	"gorm.io/gorm"
 )
 
 type updateParam struct {
@@ -26,23 +28,28 @@ func Update(c *ctx.Context) {
 		return
 	}
 
+	old, err := db.GetOneByID[db.BillTemplate](param.ID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.BadRequest(err)
+			return
+		}
+		logx.Errorf("%+v", err)
+		c.InternalErr(err)
+		return
+	}
+	if old.Name != param.Name {
+		if err := checkName(c, param.Name); err != nil {
+			return
+		}
+	}
+
 	data := &db.BillTemplate{
 		ID:        param.ID,
 		Name:      param.Name,
 		Kind:      param.Kind,
 		Note:      param.Note,
 		CreatedAt: param.CreatedAt,
-	}
-
-	count, err := db.Count[db.BillTemplate]("id = ?", data.ID)
-	if err != nil {
-		logx.Errorf("%+v", err)
-		c.InternalErr(err)
-		return
-	}
-	if count == 0 {
-		c.BadRequest(errorx.New("id not found"))
-		return
 	}
 
 	if err := db.UpdateByID(data.ID, data); err != nil {

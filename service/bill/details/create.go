@@ -1,10 +1,12 @@
 package details
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/yahuian/beyond/ctx"
 	"github.com/yahuian/beyond/db"
+	"github.com/yahuian/gox/errorx"
 	"github.com/yahuian/gox/logx"
 )
 
@@ -32,6 +34,10 @@ func Create(c *ctx.Context) {
 		return
 	}
 
+	if err := checkTpl(c, param.Type, param.Ledger); err != nil {
+		return
+	}
+
 	data := &db.BillDetails{
 		Name:      param.Name,
 		Money:     param.Money,
@@ -48,5 +54,52 @@ func Create(c *ctx.Context) {
 		return
 	}
 
+	if err := incTplTimes(data.Type, data.Ledger); err != nil {
+		logx.Errorf("%+v", err)
+		c.InternalErr(err)
+		return
+	}
+
 	c.SuccessWith(ctx.Response{Msg: "success", Data: data})
+}
+
+func checkTpl(c *ctx.Context, Type, ledger string) error {
+	for _, v := range []string{Type, ledger} {
+		if v == "" {
+			continue
+		}
+
+		count, err := db.Count[db.BillTemplate]("name = ?", v)
+		if err != nil {
+			logx.Errorf("%+v", err)
+			c.InternalErr(err)
+			return err
+		}
+
+		if count == 0 {
+			err := fmt.Errorf("%s not found", v)
+			c.BadRequest(err)
+			return err
+		}
+	}
+	return nil
+}
+
+func incTplTimes(Type, ledger string) error {
+	for _, v := range []string{Type, ledger} {
+		if v == "" {
+			continue
+		}
+
+		data, err := db.GetOne[db.BillTemplate]("name = ?", v)
+		if err != nil {
+			return errorx.Wrap(err)
+		}
+		data.Times++
+
+		if err := db.UpdateByID(data.ID, &data); err != nil {
+			return errorx.Wrap(err)
+		}
+	}
+	return nil
 }

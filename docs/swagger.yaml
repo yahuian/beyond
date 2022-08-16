@@ -50,6 +50,8 @@ definitions:
         type: string
       note:
         type: string
+      times:
+        type: integer
     type: object
   details.base:
     properties:
