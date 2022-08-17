@@ -49,10 +49,11 @@ func Update(c *ctx.Context) {
 		Name:      param.Name,
 		Kind:      param.Kind,
 		Note:      param.Note,
+		Times:     old.Times,
 		CreatedAt: param.CreatedAt,
 	}
 
-	if err := db.UpdateByID(data.ID, data); err != nil {
+	if err := db.UpdateAllByID(data.ID, data); err != nil {
 		logx.Errorf("%+v", err)
 		c.InternalErr(err)
 		return

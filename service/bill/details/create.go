@@ -95,9 +95,8 @@ func incTplTimes(Type, ledger string) error {
 		if err != nil {
 			return errorx.Wrap(err)
 		}
-		data.Times++
 
-		if err := db.UpdateByID(data.ID, &data); err != nil {
+		if err := db.UpdateByID(data.ID, &db.BillTemplate{Times: data.Times + 1}); err != nil {
 			return errorx.Wrap(err)
 		}
 	}

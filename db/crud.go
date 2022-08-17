@@ -65,16 +65,26 @@ func Count[T any](query any, args ...any) (int64, error) {
 	return count, nil
 }
 
-func UpdateByID[T any](id uint64, data *T) error {
-	res := Client().Where("id = ?", id).Save(data)
+func UpdateAllByID[T any](id uint64, data *T) error {
+	return UpdateAll(data, "id = ?", id)
+}
+
+// UpdateAll 更新所有字段，即使字段为零值
+func UpdateAll[T any](data *T, query any, args ...any) error {
+	res := Client().Where(query, args...).Save(data)
 	if res.Error != nil {
 		return errorx.Wrap(res.Error)
 	}
 	return nil
 }
 
+func UpdateByID[T any](id uint64, data *T) error {
+	return Update(data, "id = ?", id)
+}
+
+// Update 仅更新非零值的字段
 func Update[T any](data *T, query any, args ...any) error {
-	res := Client().Where(query, args...).Save(data)
+	res := Client().Where(query, args...).Updates(data)
 	if res.Error != nil {
 		return errorx.Wrap(res.Error)
 	}

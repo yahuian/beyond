@@ -44,7 +44,7 @@ func Update(c *ctx.Context) {
 		return
 	}
 
-	if err := db.UpdateByID(data.ID, data); err != nil {
+	if err := db.UpdateAllByID(data.ID, data); err != nil {
 		logx.Errorf("%+v", err)
 		c.InternalErr(err)
 		return
