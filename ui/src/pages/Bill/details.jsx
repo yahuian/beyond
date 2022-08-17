@@ -54,10 +54,6 @@ export default function Details() {
       filterDropdown: props => <DatetimeDropDown {...props} />,
     },
     {
-      title: '名称',
-      dataIndex: 'name',
-    },
-    {
       title: '分类',
       dataIndex: 'type',
       filters: typeData.map((v) => {
@@ -296,10 +292,6 @@ const FormCom = ({ form, typeData, ledgerData, visible, onCreate, onEdit, onCanc
           }
         ]}>
           <InputNumber />
-        </Form.Item>
-        <Form.Item name="name" label="名称"
-        >
-          <Input type="textarea" />
         </Form.Item>
         <Form.Item name="type" label="分类">
           <Select showSearch allowClear >

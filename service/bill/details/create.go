@@ -11,7 +11,6 @@ import (
 )
 
 type createParam struct {
-	Name      string    `json:"name" validate:"max=20"`
 	Money     float64   `json:"money" validate:"required"`
 	Kind      string    `json:"kind" validate:"oneof=income pay"`
 	Type      string    `json:"type" validate:"max=20"`
@@ -39,7 +38,6 @@ func Create(c *ctx.Context) {
 	}
 
 	data := &db.BillDetails{
-		Name:      param.Name,
 		Money:     param.Money,
 		Kind:      param.Kind,
 		Type:      param.Type,

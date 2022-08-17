@@ -43,7 +43,6 @@ func Update(c *ctx.Context) {
 
 	data := &db.BillDetails{
 		ID:        param.ID,
-		Name:      param.Name,
 		Money:     param.Money,
 		Kind:      param.Kind,
 		Type:      param.Type,

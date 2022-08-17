@@ -297,7 +297,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "enum": [
-                            "name",
+                            "ledger",
                             "type"
                         ],
                         "type": "string",
@@ -580,9 +580,6 @@ const docTemplate = `{
                 "money": {
                     "type": "number"
                 },
-                "name": {
-                    "type": "string"
-                },
                 "note": {
                     "type": "string"
                 },
@@ -649,10 +646,6 @@ const docTemplate = `{
                 "money": {
                     "type": "number"
                 },
-                "name": {
-                    "type": "string",
-                    "maxLength": 20
-                },
                 "note": {
                     "type": "string",
                     "maxLength": 200
@@ -689,10 +682,6 @@ const docTemplate = `{
                 },
                 "money": {
                     "type": "number"
-                },
-                "name": {
-                    "type": "string",
-                    "maxLength": 20
                 },
                 "note": {
                     "type": "string",

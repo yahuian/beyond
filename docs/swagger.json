@@ -287,7 +287,7 @@
                 "parameters": [
                     {
                         "enum": [
-                            "name",
+                            "ledger",
                             "type"
                         ],
                         "type": "string",
@@ -570,9 +570,6 @@
                 "money": {
                     "type": "number"
                 },
-                "name": {
-                    "type": "string"
-                },
                 "note": {
                     "type": "string"
                 },
@@ -639,10 +636,6 @@
                 "money": {
                     "type": "number"
                 },
-                "name": {
-                    "type": "string",
-                    "maxLength": 20
-                },
                 "note": {
                     "type": "string",
                     "maxLength": 200
@@ -679,10 +672,6 @@
                 },
                 "money": {
                     "type": "number"
-                },
-                "name": {
-                    "type": "string",
-                    "maxLength": 20
                 },
                 "note": {
                     "type": "string",

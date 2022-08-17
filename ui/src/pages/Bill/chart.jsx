@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from 'react';
 import { Col, Row, Select, DatePicker } from 'antd';
-import { Pie, WordCloud, Line } from '@ant-design/plots';
+import { Pie, Line } from '@ant-design/plots';
 import moment from 'moment';
 import { DateQueryFormat, FormatDateQuery } from '../../utils/date';
 import { request } from '../../utils/request';
@@ -122,10 +122,10 @@ export function Chart() {
       </Row>
       <Row>
         <Col span={12}>
-          <div style={{ height: 300 }}><PieChart createdAt={createdAt} query={query} /></div>
+          <div style={{ height: 300 }}><PieChart field='type' createdAt={createdAt} query={query} /></div>
         </Col>
         <Col span={12}>
-          <div style={{ height: 300 }}><NameChart createdAt={createdAt} query={query} /></div>
+          <div style={{ height: 300 }}><PieChart field='ledger' createdAt={createdAt} query={query} /></div>
         </Col>
       </Row>
     </div>
@@ -176,8 +176,9 @@ const PieChart = (param) => {
   }, [param]);
 
   const getData = () => {
-    request.get(`/bill/details/chart/pie?field=type`, {
+    request.get(`/bill/details/chart/pie`, {
       params: {
+        "field": param.field,
         "created_at": param.createdAt,
         ...param.query,
       },
@@ -208,43 +209,6 @@ const PieChart = (param) => {
   };
 
   return <Pie {...config} />;
-};
-
-const NameChart = (param) => {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    getData();
-    // eslint-disable-next-line
-  }, [param]);
-
-  const getData = () => {
-    request.get(`/bill/details/chart/pie?field=name`, {
-      params: {
-        "created_at": param.createdAt,
-        ...param.query,
-      },
-    }).then(function (response) {
-      setData(response.data.data);
-    });
-  };
-
-  const config = {
-    data,
-    wordField: 'key',
-    weightField: 'value',
-    colorField: 'key',
-    wordStyle: {
-      fontFamily: 'Verdana',
-      fontSize: [10, 32],
-      rotation: 0,
-    },
-    // 返回值设置成一个 [0, 1) 区间内的值，
-    // 可以让每次渲染的位置相同（前提是每次的宽高一致）。
-    random: () => 0.5,
-  };
-
-  return <WordCloud {...config} />;
 };
 
 // BUG 页面缩放后词云图会变白

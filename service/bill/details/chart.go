@@ -30,7 +30,7 @@ type base struct {
 // @Tags    bill
 // @Accept  json
 // @Produce json
-// @Param   field        query    string false "which field to aggregate" Enums(name, type)
+// @Param   field        query    string false "which field to aggregate" Enums(ledger, type)
 // @Param   kind         query    string false "kind"                     Enums(income, pay)
 // @Param   created_at[] query    string false "created_at"
 // @Param   ledger[]     query    string false "ledger"
@@ -45,12 +45,12 @@ func Pie(c *ctx.Context) {
 	}
 	var selectVal string
 	field := c.Query("field")
-	if field == "name" {
-		selectVal = "COUNT(name) as value, name as key"
+	if field == "ledger" {
+		selectVal = "SUM(money) as value, ledger as key"
 	} else if field == "type" {
 		selectVal = "SUM(money) as value, type as key"
 	} else {
-		c.BadRequest(errorx.New("field param must be name/type"))
+		c.BadRequest(errorx.New("field param must be ledger/type"))
 		return
 	}
 
@@ -65,11 +65,8 @@ func Pie(c *ctx.Context) {
 
 	slicex.Map(res, func(i int, v base) base {
 		res[i].Value = utils.Cent(v.Value)
-
-		if field == "type" {
-			if v.Key == "" {
-				res[i].Key = "未分类"
-			}
+		if v.Key == "" {
+			res[i].Key = "未知"
 		}
 		return v
 	})

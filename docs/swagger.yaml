@@ -30,8 +30,6 @@ definitions:
         type: string
       money:
         type: number
-      name:
-        type: string
       note:
         type: string
       type:
@@ -74,9 +72,6 @@ definitions:
         type: string
       money:
         type: number
-      name:
-        maxLength: 20
-        type: string
       note:
         maxLength: 200
         type: string
@@ -102,9 +97,6 @@ definitions:
         type: string
       money:
         type: number
-      name:
-        maxLength: 20
-        type: string
       note:
         maxLength: 200
         type: string
@@ -332,7 +324,7 @@ paths:
       parameters:
       - description: which field to aggregate
         enum:
-        - name
+        - ledger
         - type
         in: query
         name: field

@@ -7,7 +7,6 @@ import "time"
 // BillDetails 明细
 type BillDetails struct {
 	ID        uint64    `gorm:"primaryKey" json:"id"`
-	Name      string    `gorm:"comment:名称" json:"name"`
 	Money     float64   `gorm:"comment:金额" json:"money"`
 	Kind      string    `gorm:"comment:类型" json:"kind"` // income(收入) pay(支出)
 	Type      string    `gorm:"comment:分类" json:"type,omitempty"`

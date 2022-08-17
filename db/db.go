@@ -86,16 +86,16 @@ func initData() error {
 		}
 		if count == 0 {
 			data := []BillDetails{
-				{Name: "", Money: 19.9, Kind: "pay", Type: "", Ledger: "", Note: "", CreatedAt: year(-1)},
-				{Name: "", Money: 35.9, Kind: "pay", Type: "", Ledger: "", Note: "", CreatedAt: month(-2)},
-				{Name: "", Money: 50, Kind: "pay", Type: "", Ledger: "", Note: "", CreatedAt: month(-1)},
-				{Name: "", Money: 19.9, Kind: "pay", Type: "", Ledger: "", Note: "", CreatedAt: week(-2)},
-				{Name: "汉堡", Money: 35, Kind: "pay", Type: "餐饮", Ledger: "", Note: "", CreatedAt: week(-1)},
-				{Name: "西瓜", Money: 22.5, Kind: "pay", Type: "餐饮", Ledger: "", Note: "夏天的命是西瓜给的！"},
-				{Name: "西瓜", Money: 25.8, Kind: "pay", Type: "餐饮", Ledger: "", Note: ""},
-				{Name: "电影", Money: 35, Kind: "pay", Type: "娱乐", Ledger: "", Note: ""},
-				{Name: "板面", Money: 260, Kind: "pay", Type: "", Ledger: "滑板", Note: ""},
-				{Name: "送外卖", Money: 200, Kind: "income", Type: "", Ledger: "", Note: "兼职骑手"},
+				{Money: 19.9, Kind: "pay", Type: "", Ledger: "", Note: "", CreatedAt: year(-1)},
+				{Money: 35.9, Kind: "pay", Type: "", Ledger: "", Note: "", CreatedAt: month(-2)},
+				{Money: 50, Kind: "pay", Type: "", Ledger: "", Note: "", CreatedAt: month(-1)},
+				{Money: 19.9, Kind: "pay", Type: "", Ledger: "", Note: "", CreatedAt: week(-2)},
+				{Money: 35, Kind: "pay", Type: "餐饮", Ledger: "", Note: "", CreatedAt: week(-1)},
+				{Money: 22.5, Kind: "pay", Type: "餐饮", Ledger: "", Note: "夏天的命是西瓜给的！"},
+				{Money: 25.8, Kind: "pay", Type: "餐饮", Ledger: "", Note: ""},
+				{Money: 35, Kind: "pay", Type: "娱乐", Ledger: "", Note: ""},
+				{Money: 260, Kind: "pay", Type: "", Ledger: "滑板", Note: ""},
+				{Money: 200, Kind: "income", Type: "", Ledger: "", Note: "兼职骑手"},
 			}
 			if err := Client().Create(data).Error; err != nil {
 				return errorx.Wrap(err)
