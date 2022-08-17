@@ -1,8 +1,10 @@
 server:
   address: localhost:2022
-  mode: debug
+  mode: release
   db: beyond.db
 log:
   filename: log/beyond.log
   max_size: 50
   max_age: 3
+setting:
+  auto_open_browser: true

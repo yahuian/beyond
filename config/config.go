@@ -23,6 +23,9 @@ var Val struct {
 		MaxSize  int    `mapstructure:"max_size" validate:"gt=0"`
 		MaxAge   int    `mapstructure:"max_age" validate:"gt=0"`
 	} `mapstructure:"log" validate:"required"`
+	Setting struct {
+		AutoOpenBrowser bool `mapstructure:"auto_open_browser"` // 启动项目时是否自动打开浏览器访问 http://${Val.Server.Address}
+	} `mapstructure:"setting" validate:"required"`
 }
 
 func Init(name string) error {

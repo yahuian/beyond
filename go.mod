@@ -7,6 +7,7 @@ require (
 	github.com/gin-contrib/static v0.0.1
 	github.com/gin-gonic/gin v1.8.1
 	github.com/glebarez/sqlite v1.4.6
+	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/spf13/viper v1.12.0
 	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a
 	github.com/swaggo/gin-swagger v1.5.1
