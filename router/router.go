@@ -7,11 +7,9 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
-	"github.com/pkg/browser"
 	"github.com/yahuian/beyond/config"
 	"github.com/yahuian/beyond/service/bill"
 	"github.com/yahuian/gox/errorx"
-	"github.com/yahuian/gox/logx"
 
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -51,15 +49,7 @@ func Init() error {
 		f(api)
 	}
 
-	addr := config.Val.Server.Address
-
-	if config.Val.Setting.AutoOpenBrowser {
-		if err := browser.OpenURL("http://" + addr); err != nil {
-			logx.Warn(err)
-		}
-	}
-
-	if err := r.Run(addr); err != nil {
+	if err := r.Run(config.Val.Server.Address); err != nil {
 		return errorx.Wrap(err)
 	}
 

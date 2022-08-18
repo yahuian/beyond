@@ -1,6 +1,7 @@
 #!/bin/bash
 
-swag fmt && swag init
+swag fmt --exclude external,ui
+swag init --exclude external,ui
 
 go test ./... -race -cover -failfast
 

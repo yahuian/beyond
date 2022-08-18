@@ -9,7 +9,7 @@ release_test:
 	cd ui && yarn build
 
 	# windows 64
-	GOOS=${win} GOARCH=${win64} go build -o beyond.exe main.go
+	GOOS=${win} GOARCH=${win64} go build -ldflags "-H=windowsgui" -o beyond.exe main.go
 	cp config/config.yaml config.yaml
 	zip -r beyond-${version}-${win}-${win64}.zip beyond.exe dist config.yaml
 	rm config.yaml

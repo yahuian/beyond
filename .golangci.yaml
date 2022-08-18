@@ -1,28 +1,31 @@
 run:
   timeout: 5m
 
+  skip-dirs:
+    - external
+
 linters:
   enable:
-   - deadcode
-   - errcheck
-   - gosimple
-   - govet
-   - ineffassign
-   - staticcheck
-   - asciicheck
-   - bidichk
-   - bodyclose
-   - cyclop
-   - errorlint
-   - funlen
-   - goconst
-   - goimports
-   - gosec
-   - noctx
-   - prealloc
-   - predeclared
-   - revive
-   - unconvert
+    - deadcode
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - cyclop
+    - errorlint
+    - funlen
+    - goconst
+    - goimports
+    - gosec
+    - noctx
+    - prealloc
+    - predeclared
+    - revive
+    - unconvert
 
 linters-settings:
   cyclop:

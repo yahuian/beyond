@@ -3,10 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+	"os/signal"
 
 	"github.com/yahuian/beyond/config"
 	"github.com/yahuian/beyond/db"
 	"github.com/yahuian/beyond/router"
+	"github.com/zserge/lorca"
 
 	"github.com/yahuian/gox/logx"
 	"github.com/yahuian/gox/validatex"
@@ -42,12 +45,38 @@ func main() {
 
 	// init db
 	if err := db.Connect(); err != nil {
-		panic(fmt.Sprintf("%+v", err))
+		logx.Panicf("%+v", err)
 	}
 
-	// init router and start server
-	if err := router.Init(); err != nil {
-		panic(fmt.Sprintf("%+v", err))
+	// 不自动打开浏览器
+	if !config.Val.Setting.AutoOpenBrowser {
+		if err := router.Init(); err != nil {
+			logx.Panicf("%+v", err)
+		}
+	}
+
+	// 自动打开浏览器
+	go func() {
+		if err := router.Init(); err != nil {
+			logx.Panicf("%+v", err)
+		}
+	}()
+
+	ui, err := lorca.New("http://"+config.Val.Server.Address, "", 1224, 756)
+	if err != nil {
+		logx.Panic(err)
+	}
+	defer ui.Close()
+
+	if err := ui.SetBounds(lorca.Bounds{WindowState: lorca.WindowStateMaximized}); err != nil {
+		logx.Panic(err)
+	}
+
+	sign := make(chan os.Signal, 1)
+	signal.Notify(sign, os.Interrupt)
+	select {
+	case <-sign:
+	case <-ui.Done():
 	}
 }
 

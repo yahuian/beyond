@@ -2,17 +2,19 @@ module github.com/yahuian/beyond
 
 go 1.18
 
+replace github.com/zserge/lorca => ./external/lorca
+
 require (
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-contrib/static v0.0.1
 	github.com/gin-gonic/gin v1.8.1
 	github.com/glebarez/sqlite v1.4.6
-	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/spf13/viper v1.12.0
 	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a
 	github.com/swaggo/gin-swagger v1.5.1
 	github.com/swaggo/swag v1.8.4
 	github.com/yahuian/gox v0.0.0-20220802090858-42a4cd866f08
+	github.com/zserge/lorca v0.1.10
 	gorm.io/gorm v1.23.8
 )
 

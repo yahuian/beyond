@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         goos: [linux, windows, darwin]
-        goarch: ["386", amd64, arm64]
+        goarch: [amd64]
         exclude:
           - goarch: "386"
             goos: darwin
@@ -20,6 +20,10 @@ jobs:
           node-version: 18.5.0
       - run: cd ui && yarn install --registry https://registry.npm.taobao.org/ && yarn build
 
+      - name: windows gui
+        if: matrix.goos == 'windows'
+        run: echo "LDFLAGS=-H=windowsgui" >> $GITHUB_ENV
+
       - uses: wangyoucao577/go-release-action@v1.30
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -29,5 +33,6 @@ jobs:
           binary_name: "beyond"
           extra_files: config/config.yaml dist
           md5sum: false
+          pre_command: "export CGO_ENABLED=0"
           build_flags: -trimpath -a
-          ldflags: '-extldflags "-static"'
+          ldflags: ${{ env.LDFLAGS }}

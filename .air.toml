@@ -16,6 +16,7 @@ exclude_dir = [
   "docs",
   "log",
   "ui",
+  "external",
 ]
 exclude_file = []
 exclude_regex = ["_test.go"]
