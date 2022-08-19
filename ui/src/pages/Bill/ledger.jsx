@@ -1,8 +1,8 @@
 import { React, useState, useEffect } from 'react';
 import {
-  Table, Button, Form, Input, Modal, Typography
+  Table, Button, Form, Input, Modal, Typography, Popover, Radio, Tag
 } from 'antd';
-import { DeleteOutlined, PlusSquareOutlined } from '@ant-design/icons';
+import { DeleteOutlined, PlusSquareOutlined, QuestionCircleTwoTone } from '@ant-design/icons';
 import moment from 'moment';
 import { DatetimeDropDown } from '../../components';
 import { DateShowFormat, FormatDateQuery } from '../../utils/date';
@@ -27,6 +27,13 @@ export default function Ledger() {
       dataIndex: 'note',
     },
     {
+      title: '默认账本',
+      dataIndex: 'is_default',
+      render: (v) => {
+        return v === true ? <Tag color="green">是</Tag> : '否'
+      },
+    },
+    {
       title: '操作',
       dataIndex: 'edit',
       render: (_, record) => {
@@ -40,7 +47,7 @@ export default function Ledger() {
           </Typography.Link>
         )
       },
-    },
+    }
   ];
 
   const [data, setData] = useState();
@@ -207,6 +214,7 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
         initialValues={{
           kind: 'type',
           created_at: moment(),
+          is_default: false,
         }}
       >
         <Form.Item hidden name="id" label="id">
@@ -222,6 +230,27 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
         </Form.Item>
         <Form.Item name="note" label="备注">
           <Input type="textarea" />
+        </Form.Item>
+        <Form.Item label="默认账本">
+          <Popover
+            content={
+              <div>
+                <p>默认账本在记账和统计时会自动填充</p>
+                <p>若有多个，记账时选第一个，统计时全部选择</p>
+              </div>
+            }
+          >
+            <QuestionCircleTwoTone style={{ paddingRight: 10 }} />
+          </Popover>
+          <Form.Item
+            name="is_default"
+            noStyle
+          >
+            <Radio.Group>
+              <Radio value={false}>否</Radio>
+              <Radio value={true}>是</Radio>
+            </Radio.Group>
+          </Form.Item>
         </Form.Item>
       </Form>
     </Modal >

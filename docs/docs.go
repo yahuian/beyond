@@ -813,6 +813,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "is_default": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -931,6 +934,9 @@ const docTemplate = `{
                 "name"
             ],
             "properties": {
+                "is_default": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string",
                     "maxLength": 20
@@ -950,6 +956,9 @@ const docTemplate = `{
             "properties": {
                 "id": {
                     "type": "integer"
+                },
+                "is_default": {
+                    "type": "boolean"
                 },
                 "name": {
                     "type": "string",

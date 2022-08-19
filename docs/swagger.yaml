@@ -66,6 +66,8 @@ definitions:
         type: string
       id:
         type: integer
+      is_default:
+        type: boolean
       name:
         type: string
       note:
@@ -144,6 +146,8 @@ definitions:
     type: object
   ledger.createParam:
     properties:
+      is_default:
+        type: boolean
       name:
         maxLength: 20
         type: string
@@ -157,6 +161,8 @@ definitions:
     properties:
       id:
         type: integer
+      is_default:
+        type: boolean
       name:
         maxLength: 20
         type: string

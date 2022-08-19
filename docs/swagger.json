@@ -803,6 +803,9 @@
                 "id": {
                     "type": "integer"
                 },
+                "is_default": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -921,6 +924,9 @@
                 "name"
             ],
             "properties": {
+                "is_default": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string",
                     "maxLength": 20
@@ -940,6 +946,9 @@
             "properties": {
                 "id": {
                     "type": "integer"
+                },
+                "is_default": {
+                    "type": "boolean"
                 },
                 "name": {
                     "type": "string",

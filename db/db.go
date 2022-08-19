@@ -88,7 +88,7 @@ func billLedger() error {
 	}
 	if count == 0 {
 		data := []BillLedger{
-			{Name: "📚默认", Note: "我的默认账本"},
+			{Name: "📚默认", Note: "我的默认账本", IsDefault: true},
 		}
 		if err := Client().Create(data).Error; err != nil {
 			return errorx.WrapMsg("bill ledger", err)

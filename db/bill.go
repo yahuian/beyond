@@ -15,7 +15,7 @@ type BillDetails struct {
 	CreatedAt time.Time `gorm:"index,comment:创建时间" json:"created_at"`
 }
 
-// BillType 分类管理
+// BillType 分类
 type BillType struct {
 	ID        uint64    `gorm:"primaryKey" json:"id"`
 	Name      string    `gorm:"comment:名称" json:"name"`
@@ -24,11 +24,12 @@ type BillType struct {
 	CreatedAt time.Time `gorm:"comment:创建时间" json:"created_at"`
 }
 
-// BillType 账本管理
+// BillType 账本
 type BillLedger struct {
 	ID        uint64    `gorm:"primaryKey" json:"id"`
 	Name      string    `gorm:"comment:名称" json:"name"`
 	Note      string    `gorm:"comment:备注" json:"note,omitempty"`
 	Times     int       `gorm:"index,comment:使用次数" json:"times,omitempty"`
 	CreatedAt time.Time `gorm:"comment:创建时间" json:"created_at"`
+	IsDefault bool      `gorm:"comment:默认账本" json:"is_default"`
 }

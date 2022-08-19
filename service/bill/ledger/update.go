@@ -45,10 +45,11 @@ func Update(c *ctx.Context) {
 	}
 
 	data := &db.BillLedger{
-		ID:    param.ID,
-		Name:  param.Name,
-		Note:  param.Note,
-		Times: old.Times,
+		ID:        param.ID,
+		Name:      param.Name,
+		Note:      param.Note,
+		Times:     old.Times,
+		IsDefault: param.IsDefault,
 	}
 
 	if err := db.UpdateAllByID(data.ID, data); err != nil {

@@ -246,6 +246,14 @@ export default function Details() {
   )
 }
 
+function getDefaultLedger(params) {
+  const list = params.filter((v) => v.is_default === true)
+  if (list.length === 0) {
+    return ''
+  }
+  return list[0].name
+}
+
 const FormCom = ({ form, typeData, ledgerData, visible, onCreate, onEdit, onCancel }) => {
   return (
     <Modal
@@ -272,6 +280,7 @@ const FormCom = ({ form, typeData, ledgerData, visible, onCreate, onEdit, onCanc
         initialValues={{
           kind: 'pay',
           created_at: moment(),
+          ledger: getDefaultLedger(ledgerData),
         }}
       >
         <Form.Item hidden name="id" label="id">
@@ -295,7 +304,7 @@ const FormCom = ({ form, typeData, ledgerData, visible, onCreate, onEdit, onCanc
           <Select showSearch allowClear >
             {
               typeData.map((v) => {
-                return <Option value={v.name}>{v.name}</Option>
+                return <Option key={v.name} value={v.name}>{v.name}</Option>
               })
             }
           </Select>
@@ -304,7 +313,7 @@ const FormCom = ({ form, typeData, ledgerData, visible, onCreate, onEdit, onCanc
           <Select showSearch allowClear>
             {
               ledgerData.map((v) => {
-                return <Option value={v.name}>{v.name}</Option>
+                return <Option key={v.name} value={v.name}>{v.name}</Option>
               })
             }
           </Select>

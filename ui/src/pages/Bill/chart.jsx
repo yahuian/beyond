@@ -49,6 +49,9 @@ export function Chart() {
     }, []
   );
 
+  const defaultLedger = ledgerData.filter((v) => v.is_default === true)
+    .map((v) => v.name)
+
   return (
     <div>
       <Row style={{ paddingBottom: 16 }}>
@@ -80,6 +83,8 @@ export function Chart() {
           showSearch
           allowClear
           mode="multiple"
+          defaultValue={defaultLedger}
+          key={defaultLedger}
           style={{ width: 300, paddingLeft: 8 }}
           placeholder="账本"
           onChange={(value) => setLedger(value)}
