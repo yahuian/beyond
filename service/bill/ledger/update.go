@@ -49,6 +49,7 @@ func Update(c *ctx.Context) {
 		Name:      param.Name,
 		Note:      param.Note,
 		Times:     old.Times,
+		CreatedAt: old.CreatedAt,
 		IsDefault: param.IsDefault,
 	}
 
