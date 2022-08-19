@@ -1,7 +1,6 @@
 import { React, useState, useEffect } from 'react';
 import {
-  Table, Typography, Button, Select,
-  Form, Input, Modal, Radio, InputNumber, DatePicker
+  Table, Button, Form, Input, Modal, Typography
 } from 'antd';
 import { DeleteOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -9,63 +8,19 @@ import { DatetimeDropDown } from '../../components';
 import { DateShowFormat, FormatDateQuery } from '../../utils/date';
 import { request } from '../../utils/request';
 
-const { Text } = Typography;
-const { Option } = Select;
-
-const weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
-
-export default function Details() {
-  // 筛选分类和账本
-  const [typeData, setTypeData] = useState([]);
-  const [ledgerData, setLedgerData] = useState([]);
-
+export default function Type() {
   const columns = [
     {
-      title: '类型',
-      dataIndex: 'kind',
-      render: (_, { kind }) => (
-        kind === 'income' ? '收入' : '支出'
-      ),
-      filters: [
-        {
-          text: '支出',
-          value: 'pay',
-        },
-        {
-          text: '收入',
-          value: 'income',
-        }
-      ]
-    },
-    {
-      title: '金额',
-      dataIndex: 'money',
-      render: (_, { kind, money }) => (
-        kind === 'income' ? <Text type='success' strong>+{money}</Text> :
-          <Text strong>-{money}</Text>
-      )
+      title: '名称',
+      dataIndex: 'name',
     },
     {
       title: '创建时间',
       dataIndex: 'created_at',
       render: (v) => {
-        return moment(v).format(DateShowFormat) + " " + weeks[moment(v).day()]
+        return moment(v).format(DateShowFormat)
       },
       filterDropdown: props => <DatetimeDropDown {...props} />,
-    },
-    {
-      title: '分类',
-      dataIndex: 'type',
-      filters: typeData.map((v) => {
-        return { text: v.name, value: v.name, }
-      })
-    },
-    {
-      title: '账本',
-      dataIndex: 'ledger',
-      filters: ledgerData.map((v) => {
-        return { text: v.name, value: v.name, }
-      })
     },
     {
       title: '备注',
@@ -77,7 +32,6 @@ export default function Details() {
       render: (_, record) => {
         return (
           <Typography.Link onClick={() => {
-            // fix: Uncaught TypeError: date.clone is not a function
             record['created_at'] = moment(record['created_at'])
             setVisible(true);
             form.setFieldsValue(record);
@@ -101,13 +55,10 @@ export default function Details() {
 
   const fetchData = (params) => {
     setLoading(true);
-    request.get(`/bill/details`, {
+    request.get(`/bill/type`, {
       params: {
         "page": params.pagination.current,
         "size": params.pagination.pageSize,
-        "kind": params.kind,
-        "type": params.type,
-        "ledger": params.ledger,
         "created_at": FormatDateQuery(params.created_at)
       }
     }).then(function (response) {
@@ -120,28 +71,13 @@ export default function Details() {
     }).catch(function (error) {
       setLoading(false);
     })
-
-    request.get(`/bill/type`, {
-      params: {
-        "size": 100,
-      }
-    }).then(function (response) {
-      setTypeData(response.data.data);
-    });
-    request.get(`/bill/ledger`, {
-      params: {
-        "size": 100,
-      }
-    }).then(function (response) {
-      setLedgerData(response.data.data);
-    })
   };
 
   // TODO 增加二次确认机制
   const deleteData = () => {
     setLoading(true);
     const payload = JSON.stringify({ ids: selectedRowKeys })
-    request.delete('/bill/details', {
+    request.delete('/bill/type', {
       headers: {
         'Content-Type': 'application/json'
       },
@@ -167,7 +103,7 @@ export default function Details() {
 
   const onCreate = (values) => {
     const payload = JSON.stringify(values)
-    request.post(`/bill/details`, payload, {
+    request.post(`/bill/type`, payload, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -179,7 +115,7 @@ export default function Details() {
 
   const onEdit = (values) => {
     const payload = JSON.stringify(values)
-    request.put(`/bill/details`, payload, {
+    request.put(`/bill/type`, payload, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -190,7 +126,7 @@ export default function Details() {
   };
 
   useEffect(
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     () => { fetchData({ pagination }) }, [refresh]
   );
 
@@ -221,12 +157,10 @@ export default function Details() {
           onClick={() => setVisible(true)}
           disabled={hasSelected}
         >
-          <PlusSquareOutlined />记账
+          <PlusSquareOutlined />添加
         </Button>
         <FormCom
           form={form}
-          typeData={typeData}
-          ledgerData={ledgerData}
           visible={visible}
           onCreate={onCreate}
           onEdit={onEdit}
@@ -246,10 +180,11 @@ export default function Details() {
   )
 }
 
-const FormCom = ({ form, typeData, ledgerData, visible, onCreate, onEdit, onCancel }) => {
+const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
   return (
     <Modal
       visible={visible}
+      title="分类"
       okText="确定"
       cancelText="取消"
       onCancel={onCancel}
@@ -270,50 +205,23 @@ const FormCom = ({ form, typeData, ledgerData, visible, onCreate, onEdit, onCanc
         layout="horizontal"
         name="form_in_modal"
         initialValues={{
-          kind: 'pay',
+          kind: 'type',
           created_at: moment(),
         }}
       >
         <Form.Item hidden name="id" label="id">
           <Input type="textarea" />
         </Form.Item>
-        <Form.Item name="kind" label="类型">
-          <Radio.Group>
-            <Radio value="pay">支出</Radio>
-            <Radio value="income">收入</Radio>
-          </Radio.Group>
-        </Form.Item>
-        <Form.Item name="money" label="金额" rules={[
+        <Form.Item name="name" label="名称" rules={[
           {
             required: true,
-            message: '请输入金额',
+            message: '请输入名称',
           }
         ]}>
-          <InputNumber />
-        </Form.Item>
-        <Form.Item name="type" label="分类">
-          <Select showSearch allowClear >
-            {
-              typeData.map((v) => {
-                return <Option value={v.name}>{v.name}</Option>
-              })
-            }
-          </Select>
-        </Form.Item>
-        <Form.Item name="ledger" label="账本">
-          <Select showSearch allowClear>
-            {
-              ledgerData.map((v) => {
-                return <Option value={v.name}>{v.name}</Option>
-              })
-            }
-          </Select>
+          <Input type="textarea" />
         </Form.Item>
         <Form.Item name="note" label="备注">
           <Input type="textarea" />
-        </Form.Item>
-        <Form.Item name="created_at" label="时间">
-          <DatePicker placeholder='选择时间' />
         </Form.Item>
       </Form>
     </Modal >

@@ -1,4 +1,4 @@
-package template
+package ledger
 
 import (
 	"github.com/yahuian/beyond/ctx"
@@ -8,11 +8,10 @@ import (
 
 type listParam struct {
 	ID        []uint   `form:"id[]" json:"id"`
-	Kind      []string `form:"kind[]" json:"kind" validate:"dive,oneof=type ledger"`
 	CreatedAt []string `form:"created_at[]" json:"created_at" validate:"omitempty,len=2,dive,datetime=2006-01-02 15:04:05"`
 }
 
-// @Summary 模板列表
+// @Summary 账本列表
 // @Tags    bill
 // @Accept  json
 // @Produce json
@@ -20,8 +19,8 @@ type listParam struct {
 // @Param   size         query    int    false "size"
 // @Param   id[]         query    uint   false "id"
 // @Param   created_at[] query    string false "created_at"
-// @Success 200          {object} ctx.Response{data=[]db.BillTemplate}
-// @Router  /bill/template [get]
+// @Success 200          {object} ctx.Response{data=[]db.BillLedger}
+// @Router  /bill/ledger [get]
 func List(c *ctx.Context) {
 	paging, err := c.Paging()
 	if err != nil {
@@ -42,14 +41,14 @@ func List(c *ctx.Context) {
 		Order: "times desc",
 	}
 
-	list, err := db.GetMany[db.BillTemplate](opt)
+	list, err := db.GetMany[db.BillLedger](opt)
 	if err != nil {
 		logx.Errorf("%+v", err)
 		c.InternalErr(err)
 		return
 	}
 
-	count, err := db.Count[db.BillTemplate](query, args...)
+	count, err := db.Count[db.BillLedger](query, args...)
 	if err != nil {
 		logx.Errorf("%+v", err)
 		c.InternalErr(err)

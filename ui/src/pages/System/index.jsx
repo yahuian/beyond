@@ -1,5 +1,8 @@
 import React from 'react'
 import { Tabs, Typography, Image } from 'antd';
+import {
+  PhoneTwoTone,
+} from '@ant-design/icons';
 import redbook from '../../assets/redbook.png'
 
 const { TabPane } = Tabs;
@@ -10,8 +13,9 @@ export default function System() {
     <Tabs
       defaultActiveKey="contact"
       destroyInactiveTabPane
+      size='large'
     >
-      <TabPane tab={<span>联系我们</span>} key="contact">
+      <TabPane tab={<span><PhoneTwoTone />联系我们</span>} key="contact">
         <Typography>
           <Title level={4}>产品</Title>
           <Paragraph>

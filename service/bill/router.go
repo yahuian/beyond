@@ -4,7 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/yahuian/beyond/ctx"
 	"github.com/yahuian/beyond/service/bill/details"
-	"github.com/yahuian/beyond/service/bill/template"
+	"github.com/yahuian/beyond/service/bill/ledger"
+	Type "github.com/yahuian/beyond/service/bill/type"
 )
 
 func Router(e *gin.RouterGroup) {
@@ -23,11 +24,19 @@ func Router(e *gin.RouterGroup) {
 		}
 	}
 
-	Template := r.Group("/template")
+	TypeR := r.Group("/type")
 	{
-		Template.POST("", ctx.Handle(template.Create))
-		Template.GET("", ctx.Handle(template.List))
-		Template.DELETE("", ctx.Handle(template.Delete))
-		Template.PUT("", ctx.Handle(template.Update))
+		TypeR.POST("", ctx.Handle(Type.Create))
+		TypeR.GET("", ctx.Handle(Type.List))
+		TypeR.DELETE("", ctx.Handle(Type.Delete))
+		TypeR.PUT("", ctx.Handle(Type.Update))
+	}
+
+	Ledger := r.Group("/ledger")
+	{
+		Ledger.POST("", ctx.Handle(ledger.Create))
+		Ledger.GET("", ctx.Handle(ledger.List))
+		Ledger.DELETE("", ctx.Handle(ledger.Delete))
+		Ledger.PUT("", ctx.Handle(ledger.Update))
 	}
 }

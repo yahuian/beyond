@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from 'react';
 import {
-  Table, Button, Form, Input, Modal, Radio, Typography, DatePicker
+  Table, Button, Form, Input, Modal, Typography
 } from 'antd';
 import { DeleteOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -8,25 +8,8 @@ import { DatetimeDropDown } from '../../components';
 import { DateShowFormat, FormatDateQuery } from '../../utils/date';
 import { request } from '../../utils/request';
 
-export default function Template() {
+export default function Ledger() {
   const columns = [
-    {
-      title: '类型',
-      dataIndex: 'kind',
-      render: (_, { kind }) => (
-        kind === 'type' ? '分类' : '账本'
-      ),
-      filters: [
-        {
-          text: '分类',
-          value: 'type',
-        },
-        {
-          text: '账本',
-          value: 'ledger',
-        }
-      ]
-    },
     {
       title: '名称',
       dataIndex: 'name',
@@ -72,11 +55,10 @@ export default function Template() {
 
   const fetchData = (params) => {
     setLoading(true);
-    request.get(`/bill/template`, {
+    request.get(`/bill/ledger`, {
       params: {
         "page": params.pagination.current,
         "size": params.pagination.pageSize,
-        "kind": params.kind,
         "created_at": FormatDateQuery(params.created_at)
       }
     }).then(function (response) {
@@ -95,7 +77,7 @@ export default function Template() {
   const deleteData = () => {
     setLoading(true);
     const payload = JSON.stringify({ ids: selectedRowKeys })
-    request.delete('/bill/template', {
+    request.delete('/bill/ledger', {
       headers: {
         'Content-Type': 'application/json'
       },
@@ -121,7 +103,7 @@ export default function Template() {
 
   const onCreate = (values) => {
     const payload = JSON.stringify(values)
-    request.post(`/bill/template`, payload, {
+    request.post(`/bill/ledger`, payload, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -133,7 +115,7 @@ export default function Template() {
 
   const onEdit = (values) => {
     const payload = JSON.stringify(values)
-    request.put(`/bill/template`, payload, {
+    request.put(`/bill/ledger`, payload, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -202,6 +184,7 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
   return (
     <Modal
       visible={visible}
+      title="账本"
       okText="确定"
       cancelText="取消"
       onCancel={onCancel}
@@ -229,12 +212,6 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
         <Form.Item hidden name="id" label="id">
           <Input type="textarea" />
         </Form.Item>
-        <Form.Item name="kind" label="类型">
-          <Radio.Group>
-            <Radio value="type">分类</Radio>
-            <Radio value="ledger">账本</Radio>
-          </Radio.Group>
-        </Form.Item>
         <Form.Item name="name" label="名称" rules={[
           {
             required: true,
@@ -245,9 +222,6 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
         </Form.Item>
         <Form.Item name="note" label="备注">
           <Input type="textarea" />
-        </Form.Item>
-        <Form.Item name="created_at" label="时间">
-          <DatePicker placeholder='选择时间' />
         </Form.Item>
       </Form>
     </Modal >

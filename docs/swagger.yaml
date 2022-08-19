@@ -1,5 +1,30 @@
 basePath: /api
 definitions:
+  Type.createParam:
+    properties:
+      name:
+        maxLength: 20
+        type: string
+      note:
+        maxLength: 200
+        type: string
+    required:
+    - name
+    type: object
+  Type.updateParam:
+    properties:
+      id:
+        type: integer
+      name:
+        maxLength: 20
+        type: string
+      note:
+        maxLength: 200
+        type: string
+    required:
+    - id
+    - name
+    type: object
   ctx.IDList:
     properties:
       ids:
@@ -35,15 +60,25 @@ definitions:
       type:
         type: string
     type: object
-  db.BillTemplate:
+  db.BillLedger:
     properties:
       created_at:
         type: string
       id:
         type: integer
-      kind:
-        description: type(分类) ledger(账本)
+      name:
         type: string
+      note:
+        type: string
+      times:
+        type: integer
+    type: object
+  db.BillType:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
       name:
         type: string
       note:
@@ -107,16 +142,8 @@ definitions:
     - id
     - money
     type: object
-  template.createParam:
+  ledger.createParam:
     properties:
-      created_at:
-        type: string
-      kind:
-        description: type(分类) ledger(账本)
-        enum:
-        - type
-        - ledger
-        type: string
       name:
         maxLength: 20
         type: string
@@ -124,21 +151,12 @@ definitions:
         maxLength: 200
         type: string
     required:
-    - kind
     - name
     type: object
-  template.updateParam:
+  ledger.updateParam:
     properties:
-      created_at:
-        type: string
       id:
         type: integer
-      kind:
-        description: type(分类) ledger(账本)
-        enum:
-        - type
-        - ledger
-        type: string
       name:
         maxLength: 20
         type: string
@@ -147,7 +165,6 @@ definitions:
         type: string
     required:
     - id
-    - kind
     - name
     type: object
 info:
@@ -361,7 +378,7 @@ paths:
       summary: 饼图
       tags:
       - bill
-  /bill/template:
+  /bill/ledger:
     delete:
       consumes:
       - application/json
@@ -379,7 +396,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/ctx.Response'
-      summary: 删除模板
+      summary: 删除账本
       tags:
       - bill
     get:
@@ -413,10 +430,10 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/db.BillTemplate'
+                    $ref: '#/definitions/db.BillLedger'
                   type: array
               type: object
-      summary: 模板列表
+      summary: 账本列表
       tags:
       - bill
     post:
@@ -428,7 +445,7 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/template.createParam'
+          $ref: '#/definitions/ledger.createParam'
       produces:
       - application/json
       responses:
@@ -439,9 +456,9 @@ paths:
             - $ref: '#/definitions/ctx.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/db.BillTemplate'
+                  $ref: '#/definitions/db.BillLedger'
               type: object
-      summary: 添加模板
+      summary: 添加账本
       tags:
       - bill
     put:
@@ -453,7 +470,7 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/template.updateParam'
+          $ref: '#/definitions/ledger.updateParam'
       produces:
       - application/json
       responses:
@@ -464,9 +481,117 @@ paths:
             - $ref: '#/definitions/ctx.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/db.BillTemplate'
+                  $ref: '#/definitions/db.BillLedger'
               type: object
-      summary: 更新模板
+      summary: 更新账本
+      tags:
+      - bill
+  /bill/type:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/ctx.IDList'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ctx.Response'
+      summary: 删除分类
+      tags:
+      - bill
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: size
+        in: query
+        name: size
+        type: integer
+      - description: id
+        in: query
+        name: id[]
+        type: integer
+      - description: created_at
+        in: query
+        name: created_at[]
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/db.BillType'
+                  type: array
+              type: object
+      summary: 分类列表
+      tags:
+      - bill
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/Type.createParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/db.BillType'
+              type: object
+      summary: 添加分类
+      tags:
+      - bill
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/Type.updateParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/db.BillType'
+              type: object
+      summary: 更新分类
       tags:
       - bill
 swagger: "2.0"

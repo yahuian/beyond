@@ -32,18 +32,16 @@ export function Chart() {
 
   useEffect(
     () => {
-      request.get(`/bill/template`, {
+      request.get(`/bill/type`, {
         params: {
           "size": 100,
-          "kind": ["type"],
         }
       }).then(function (response) {
         setTypeData(response.data.data);
       });
-      request.get(`/bill/template`, {
+      request.get(`/bill/ledger`, {
         params: {
           "size": 100,
-          "kind": ["ledger"],
         }
       }).then(function (response) {
         setLedgerData(response.data.data);

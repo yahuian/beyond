@@ -36,7 +36,7 @@ const routers = [
 ]
 
 export default function App() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   return (
     <BrowserRouter>
       <Layout style={{ minHeight: '100vh', }}>

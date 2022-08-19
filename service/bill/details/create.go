@@ -61,42 +61,70 @@ func Create(c *ctx.Context) {
 	c.SuccessWith(ctx.Response{Msg: "success", Data: data})
 }
 
-func checkTpl(c *ctx.Context, Type, ledger string) error {
-	for _, v := range []string{Type, ledger} {
-		if v == "" {
-			continue
-		}
+func checkTpl(c *ctx.Context, typeName, ledger string) error {
+	if typeName != "" {
+		{
+			count, err := db.Count[db.BillType]("name = ?", typeName)
+			if err != nil {
+				logx.Errorf("%+v", err)
+				c.InternalErr(err)
+				return err
+			}
 
-		count, err := db.Count[db.BillTemplate]("name = ?", v)
-		if err != nil {
-			logx.Errorf("%+v", err)
-			c.InternalErr(err)
-			return err
-		}
-
-		if count == 0 {
-			err := fmt.Errorf("%s not found", v)
-			c.BadRequest(err)
-			return err
+			if count == 0 {
+				err := fmt.Errorf("%s not found", typeName)
+				c.BadRequest(err)
+				return err
+			}
 		}
 	}
+
+	if ledger != "" {
+		{
+			count, err := db.Count[db.BillLedger]("name = ?", ledger)
+			if err != nil {
+				logx.Errorf("%+v", err)
+				c.InternalErr(err)
+				return err
+			}
+
+			if count == 0 {
+				err := fmt.Errorf("%s not found", ledger)
+				c.BadRequest(err)
+				return err
+			}
+		}
+	}
+
 	return nil
 }
 
-func incTplTimes(Type, ledger string) error {
-	for _, v := range []string{Type, ledger} {
-		if v == "" {
-			continue
-		}
+func incTplTimes(typeName, ledger string) error {
+	if typeName != "" {
+		{
+			data, err := db.GetOne[db.BillType]("name = ?", typeName)
+			if err != nil {
+				return errorx.Wrap(err)
+			}
 
-		data, err := db.GetOne[db.BillTemplate]("name = ?", v)
-		if err != nil {
-			return errorx.Wrap(err)
-		}
-
-		if err := db.UpdateByID(data.ID, &db.BillTemplate{Times: data.Times + 1}); err != nil {
-			return errorx.Wrap(err)
+			if err := db.UpdateByID(data.ID, &db.BillType{Times: data.Times + 1}); err != nil {
+				return errorx.Wrap(err)
+			}
 		}
 	}
+
+	if ledger != "" {
+		{
+			data, err := db.GetOne[db.BillLedger]("name = ?", ledger)
+			if err != nil {
+				return errorx.Wrap(err)
+			}
+
+			if err := db.UpdateByID(data.ID, &db.BillLedger{Times: data.Times + 1}); err != nil {
+				return errorx.Wrap(err)
+			}
+		}
+	}
+
 	return nil
 }

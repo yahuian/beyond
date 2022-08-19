@@ -1,4 +1,4 @@
-package template
+package Type
 
 import (
 	"errors"
@@ -14,13 +14,13 @@ type updateParam struct {
 	createParam
 }
 
-// @Summary 更新模板
+// @Summary 更新分类
 // @Tags    bill
 // @Accept  json
 // @Produce json
 // @param   payload body     updateParam true "request payload"
-// @Success 200     {object} ctx.Response{data=db.BillTemplate}
-// @Router  /bill/template [put]
+// @Success 200     {object} ctx.Response{data=db.BillType}
+// @Router  /bill/type [put]
 func Update(c *ctx.Context) {
 	var param updateParam
 	if err := c.BindJSON(&param); err != nil {
@@ -28,7 +28,7 @@ func Update(c *ctx.Context) {
 		return
 	}
 
-	old, err := db.GetOneByID[db.BillTemplate](param.ID)
+	old, err := db.GetOneByID[db.BillType](param.ID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.BadRequest(err)
@@ -44,13 +44,11 @@ func Update(c *ctx.Context) {
 		}
 	}
 
-	data := &db.BillTemplate{
-		ID:        param.ID,
-		Name:      param.Name,
-		Kind:      param.Kind,
-		Note:      param.Note,
-		Times:     old.Times,
-		CreatedAt: param.CreatedAt,
+	data := &db.BillType{
+		ID:    param.ID,
+		Name:  param.Name,
+		Note:  param.Note,
+		Times: old.Times,
 	}
 
 	if err := db.UpdateAllByID(data.ID, data); err != nil {

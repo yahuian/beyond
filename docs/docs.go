@@ -353,7 +353,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/bill/template": {
+        "/bill/ledger": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -364,7 +364,7 @@ const docTemplate = `{
                 "tags": [
                     "bill"
                 ],
-                "summary": "模板列表",
+                "summary": "账本列表",
                 "parameters": [
                     {
                         "type": "integer",
@@ -405,7 +405,7 @@ const docTemplate = `{
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/db.BillTemplate"
+                                                "$ref": "#/definitions/db.BillLedger"
                                             }
                                         }
                                     }
@@ -425,7 +425,7 @@ const docTemplate = `{
                 "tags": [
                     "bill"
                 ],
-                "summary": "更新模板",
+                "summary": "更新账本",
                 "parameters": [
                     {
                         "description": "request payload",
@@ -433,7 +433,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/template.updateParam"
+                            "$ref": "#/definitions/ledger.updateParam"
                         }
                     }
                 ],
@@ -449,7 +449,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/db.BillTemplate"
+                                            "$ref": "#/definitions/db.BillLedger"
                                         }
                                     }
                                 }
@@ -468,7 +468,7 @@ const docTemplate = `{
                 "tags": [
                     "bill"
                 ],
-                "summary": "添加模板",
+                "summary": "添加账本",
                 "parameters": [
                     {
                         "description": "request payload",
@@ -476,7 +476,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/template.createParam"
+                            "$ref": "#/definitions/ledger.createParam"
                         }
                     }
                 ],
@@ -492,7 +492,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/db.BillTemplate"
+                                            "$ref": "#/definitions/db.BillLedger"
                                         }
                                     }
                                 }
@@ -511,7 +511,187 @@ const docTemplate = `{
                 "tags": [
                     "bill"
                 ],
-                "summary": "删除模板",
+                "summary": "删除账本",
+                "parameters": [
+                    {
+                        "description": "request payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ctx.IDList"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ctx.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/bill/type": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bill"
+                ],
+                "summary": "分类列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "size",
+                        "name": "size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id[]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "created_at",
+                        "name": "created_at[]",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/db.BillType"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bill"
+                ],
+                "summary": "更新分类",
+                "parameters": [
+                    {
+                        "description": "request payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Type.updateParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/db.BillType"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bill"
+                ],
+                "summary": "添加分类",
+                "parameters": [
+                    {
+                        "description": "request payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Type.createParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/db.BillType"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bill"
+                ],
+                "summary": "删除分类",
                 "parameters": [
                     {
                         "description": "request payload",
@@ -535,6 +715,42 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "Type.createParam": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "note": {
+                    "type": "string",
+                    "maxLength": 200
+                }
+            }
+        },
+        "Type.updateParam": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "note": {
+                    "type": "string",
+                    "maxLength": 200
+                }
+            }
+        },
         "ctx.IDList": {
             "type": "object",
             "required": [
@@ -588,7 +804,7 @@ const docTemplate = `{
                 }
             }
         },
-        "db.BillTemplate": {
+        "db.BillLedger": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -597,9 +813,25 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "kind": {
-                    "description": "type(分类) ledger(账本)",
+                "name": {
                     "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "times": {
+                    "type": "integer"
+                }
+            }
+        },
+        "db.BillType": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
@@ -693,24 +925,12 @@ const docTemplate = `{
                 }
             }
         },
-        "template.createParam": {
+        "ledger.createParam": {
             "type": "object",
             "required": [
-                "kind",
                 "name"
             ],
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "kind": {
-                    "description": "type(分类) ledger(账本)",
-                    "type": "string",
-                    "enum": [
-                        "type",
-                        "ledger"
-                    ]
-                },
                 "name": {
                     "type": "string",
                     "maxLength": 20
@@ -721,27 +941,15 @@ const docTemplate = `{
                 }
             }
         },
-        "template.updateParam": {
+        "ledger.updateParam": {
             "type": "object",
             "required": [
                 "id",
-                "kind",
                 "name"
             ],
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
-                },
-                "kind": {
-                    "description": "type(分类) ledger(账本)",
-                    "type": "string",
-                    "enum": [
-                        "type",
-                        "ledger"
-                    ]
                 },
                 "name": {
                     "type": "string",

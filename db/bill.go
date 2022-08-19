@@ -15,11 +15,19 @@ type BillDetails struct {
 	CreatedAt time.Time `gorm:"index,comment:创建时间" json:"created_at"`
 }
 
-// BillTemplate 模板
-type BillTemplate struct {
+// BillType 分类管理
+type BillType struct {
 	ID        uint64    `gorm:"primaryKey" json:"id"`
 	Name      string    `gorm:"comment:名称" json:"name"`
-	Kind      string    `gorm:"comment:类型" json:"kind"` // type(分类) ledger(账本)
+	Note      string    `gorm:"comment:备注" json:"note,omitempty"`
+	Times     int       `gorm:"index,comment:使用次数" json:"times,omitempty"`
+	CreatedAt time.Time `gorm:"comment:创建时间" json:"created_at"`
+}
+
+// BillType 账本管理
+type BillLedger struct {
+	ID        uint64    `gorm:"primaryKey" json:"id"`
+	Name      string    `gorm:"comment:名称" json:"name"`
 	Note      string    `gorm:"comment:备注" json:"note,omitempty"`
 	Times     int       `gorm:"index,comment:使用次数" json:"times,omitempty"`
 	CreatedAt time.Time `gorm:"comment:创建时间" json:"created_at"`
