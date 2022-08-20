@@ -255,6 +255,12 @@ const docTemplate = `{
                         "description": "type",
                         "name": "type[]",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "ledger",
+                        "name": "ledger[]",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -269,10 +275,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/details.base"
-                                            }
+                                            "$ref": "#/definitions/details.lineResp"
                                         }
                                     }
                                 }
@@ -807,6 +810,9 @@ const docTemplate = `{
         "db.BillLedger": {
             "type": "object",
             "properties": {
+                "budget": {
+                    "type": "number"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -891,6 +897,20 @@ const docTemplate = `{
                 }
             }
         },
+        "details.lineResp": {
+            "type": "object",
+            "properties": {
+                "bases": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/details.base"
+                    }
+                },
+                "budget": {
+                    "type": "number"
+                }
+            }
+        },
         "details.updateParam": {
             "type": "object",
             "required": [
@@ -934,6 +954,9 @@ const docTemplate = `{
                 "name"
             ],
             "properties": {
+                "budget": {
+                    "type": "number"
+                },
                 "is_default": {
                     "type": "boolean"
                 },
@@ -954,6 +977,9 @@ const docTemplate = `{
                 "name"
             ],
             "properties": {
+                "budget": {
+                    "type": "number"
+                },
                 "id": {
                     "type": "integer"
                 },

@@ -8,9 +8,10 @@ import (
 )
 
 type createParam struct {
-	Name      string `json:"name" validate:"required,max=20"`
-	Note      string `json:"note" validate:"max=200"`
-	IsDefault bool   `json:"is_default"`
+	Name      string  `json:"name" validate:"required,max=20"`
+	Note      string  `json:"note" validate:"max=200"`
+	IsDefault bool    `json:"is_default"`
+	Budget    float64 `json:"budget"`
 }
 
 // @Summary 添加账本
@@ -35,6 +36,7 @@ func Create(c *ctx.Context) {
 		Name:      param.Name,
 		Note:      param.Note,
 		IsDefault: param.IsDefault,
+		Budget:    param.Budget,
 	}
 
 	if err := db.Create(data); err != nil {

@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from 'react';
 import {
-  Table, Button, Form, Input, Modal, Typography, Popover, Radio, Tag
+  Table, Button, Form, Input, Modal, Typography, Popover, Radio, Tag,
+  InputNumber
 } from 'antd';
 import { DeleteOutlined, PlusSquareOutlined, QuestionCircleTwoTone } from '@ant-design/icons';
 import moment from 'moment';
@@ -32,6 +33,10 @@ export default function Ledger() {
       render: (v) => {
         return v === true ? <Tag color="green">是</Tag> : '否'
       },
+    },
+    {
+      title: '每月预算',
+      dataIndex: 'budget',
     },
     {
       title: '操作',
@@ -251,6 +256,9 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
               <Radio value={true}>是</Radio>
             </Radio.Group>
           </Form.Item>
+        </Form.Item>
+        <Form.Item name="budget" label="每月预算">
+          <InputNumber />
         </Form.Item>
       </Form>
     </Modal >

@@ -245,6 +245,12 @@
                         "description": "type",
                         "name": "type[]",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "ledger",
+                        "name": "ledger[]",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -259,10 +265,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/details.base"
-                                            }
+                                            "$ref": "#/definitions/details.lineResp"
                                         }
                                     }
                                 }
@@ -797,6 +800,9 @@
         "db.BillLedger": {
             "type": "object",
             "properties": {
+                "budget": {
+                    "type": "number"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -881,6 +887,20 @@
                 }
             }
         },
+        "details.lineResp": {
+            "type": "object",
+            "properties": {
+                "bases": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/details.base"
+                    }
+                },
+                "budget": {
+                    "type": "number"
+                }
+            }
+        },
         "details.updateParam": {
             "type": "object",
             "required": [
@@ -924,6 +944,9 @@
                 "name"
             ],
             "properties": {
+                "budget": {
+                    "type": "number"
+                },
                 "is_default": {
                     "type": "boolean"
                 },
@@ -944,6 +967,9 @@
                 "name"
             ],
             "properties": {
+                "budget": {
+                    "type": "number"
+                },
                 "id": {
                     "type": "integer"
                 },

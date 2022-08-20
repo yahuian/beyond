@@ -32,4 +32,5 @@ type BillLedger struct {
 	Times     int       `gorm:"index,comment:使用次数" json:"times,omitempty"`
 	CreatedAt time.Time `gorm:"comment:创建时间" json:"created_at"`
 	IsDefault bool      `gorm:"comment:默认账本" json:"is_default"`
+	Budget    float64   `gorm:"comment:每月预算" json:"budget"`
 }

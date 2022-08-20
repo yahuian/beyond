@@ -11,6 +11,7 @@ const { RangePicker } = DatePicker;
 export function Chart() {
   const defaultKind = 'pay'
 
+  // 接口查询参数
   const [kind, setKind] = useState(defaultKind);
   const [type, setType] = useState();
   const [ledger, setLedger] = useState();
@@ -25,6 +26,7 @@ export function Chart() {
     defaultDate[1].format(DateQueryFormat),
   ]);
 
+  // 下拉框数据
   const [typeData, setTypeData] = useState([]);
   const [ledgerData, setLedgerData] = useState([]);
 
@@ -45,12 +47,10 @@ export function Chart() {
         }
       }).then(function (response) {
         setLedgerData(response.data.data);
+        setLedger(response.data.data.filter((v) => v.is_default === true).map((v) => v.name))
       })
     }, []
   );
-
-  const defaultLedger = ledgerData.filter((v) => v.is_default === true)
-    .map((v) => v.name)
 
   return (
     <div>
@@ -83,8 +83,8 @@ export function Chart() {
           showSearch
           allowClear
           mode="multiple"
-          defaultValue={defaultLedger}
-          key={defaultLedger}
+          defaultValue={ledger}
+          key={ledger}
           style={{ width: 300, paddingLeft: 8 }}
           placeholder="账本"
           onChange={(value) => setLedger(value)}
@@ -137,6 +137,7 @@ export function Chart() {
 
 const LineChart = (param) => {
   const [data, setData] = useState([]);
+  const [budget, setBudget] = useState(0);
 
   useEffect(() => {
     getData();
@@ -150,21 +151,54 @@ const LineChart = (param) => {
         ...param.query,
       },
     }).then(function (response) {
-      setData(response.data.data);
+      setData(response.data.data.bases);
+      setBudget(response.data.data.budget);
     });
   };
+
+  let annotations = [
+    {
+      type: 'text',
+      content: param.date,
+    },
+  ]
+
+  if (param.date === "month" && budget !== 0) {
+    annotations.push(
+      // 高于预算颜色变化
+      {
+        type: 'regionFilter',
+        start: ['min', budget],
+        end: ['max', 'max'],
+        color: '#F4664A',
+      },
+      {
+        type: 'text',
+        position: ['min', budget],
+        content: '每月预算',
+        offsetY: -4,
+        style: {
+          textBaseline: 'bottom',
+        },
+      },
+      {
+        type: 'line',
+        start: ['min', budget],
+        end: ['max', budget],
+        style: {
+          stroke: '#F4664A',
+          lineDash: [2, 2],
+        },
+      },
+    )
+  }
 
   const config = {
     data,
     xField: 'key',
     yField: 'value',
     label: {},
-    annotations: [
-      {
-        type: 'text',
-        content: param.date,
-      }
-    ]
+    annotations: annotations
   };
 
   return <Line {...config} />;

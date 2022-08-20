@@ -32,3 +32,8 @@ linters-settings:
     # The maximal code complexity to report.
     # Default: 10
     max-complexity: 15
+  funlen:
+    # Checks the number of lines in a function.
+    # If lower than 0, disable the check.
+    # Default: 60
+    lines: 100

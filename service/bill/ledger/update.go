@@ -51,6 +51,7 @@ func Update(c *ctx.Context) {
 		Times:     old.Times,
 		CreatedAt: old.CreatedAt,
 		IsDefault: param.IsDefault,
+		Budget:    param.Budget,
 	}
 
 	if err := db.UpdateAllByID(data.ID, data); err != nil {

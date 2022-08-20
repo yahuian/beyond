@@ -34,7 +34,7 @@ type base struct {
 // @Param   kind         query    string false "kind"                     Enums(income, pay)
 // @Param   created_at[] query    string false "created_at"
 // @Param   ledger[]     query    string false "ledger"
-// @Success 200    {object} ctx.Response{data=[]base}
+// @Success 200          {object} ctx.Response{data=[]base}
 // @Router  /bill/details/chart/pie [get]
 func Pie(c *ctx.Context) {
 	var param pieParam
@@ -83,17 +83,24 @@ type lineParam struct {
 	Ledger []string `form:"ledger[]" json:"ledger"`
 }
 
+type lineResp struct {
+	Bases  []base  `json:"bases"`
+	Budget float64 `json:"budget"`
+}
+
 // @Summary 折线图
 // @Tags    bill
 // @Accept  json
 // @Produce json
-// @Param   date   query    string true  "date" Enums(day,week,month,year)
-// @Param   kind   query    string false "kind" Enums(income, pay)
-// @Param   type[] query    string false "type"
-// @Success 200          {object} ctx.Response{data=[]base}
+// @Param   date     query    string true  "date" Enums(day,week,month,year)
+// @Param   kind     query    string false "kind" Enums(income, pay)
+// @Param   type[]   query    string false "type"
+// @Param   ledger[] query    string false "ledger"
+// @Success 200      {object} ctx.Response{data=lineResp}
 // @Router  /bill/details/chart/line [get]
 func Line(c *ctx.Context) {
-	query, args, err := c.BuildQuery(&lineParam{})
+	var param lineParam
+	query, args, err := c.BuildQuery(&param)
 	if err != nil {
 		c.BadRequest(err)
 		return
@@ -141,9 +148,26 @@ func Line(c *ctx.Context) {
 		return v
 	})
 
+	result := lineResp{
+		Bases: res,
+	}
+
+	// 获取每月预算
+	if c.Query("date") == "month" {
+		ledgers, err := db.GetAll[db.BillLedger]("name IN ?", param.Ledger)
+		if err != nil {
+			logx.Errorf("%+v", err)
+			c.InternalErr(err)
+			return
+		}
+		for _, v := range ledgers {
+			result.Budget += v.Budget
+		}
+	}
+
 	c.SuccessWith(ctx.Response{
 		Msg:  "success",
-		Data: res,
+		Data: result,
 	})
 }
 

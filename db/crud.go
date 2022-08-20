@@ -46,7 +46,7 @@ func GetMany[T any](opt Option) ([]T, error) {
 
 func GetAll[T any](query any, args ...any) ([]T, error) {
 	var list []T
-	res := Client().Where(query, args...).Find(&list)
+	res := Client().Debug().Where(query, args...).Find(&list)
 	if res.Error != nil {
 		return nil, errorx.Wrap(res.Error)
 	}
