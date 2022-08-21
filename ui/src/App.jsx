@@ -5,6 +5,8 @@ import { MoneyCollectTwoTone, SettingTwoTone } from '@ant-design/icons';
 import './App.css';
 import Bill from './pages/Bill';
 import System from './pages/System';
+import logo from './assets/logo.png'
+import word from './assets/logo_word.png'
 
 const { Content, Sider } = Layout;
 
@@ -41,16 +43,26 @@ export default function App() {
     <BrowserRouter>
       <Layout style={{ minHeight: '100vh', }}>
         <Sider
-          collapsedWidth='60' width='140'
-          collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}
-          style={{ background: 'white' }}
+          collapsedWidth='76' width='128'
+          collapsible collapsed={collapsed}
+          trigger={null}
+          style={{
+            background: 'white',
+            borderBottomRightRadius: '20px',
+            borderTopRightRadius: '20px'
+          }}
         >
-          <div className="logo" />
+          <div style={{ padding: '16px 8px 8px 8px' }} onClick={() => setCollapsed(!collapsed)}>
+            {
+              collapsed ? <img src={logo} alt='logo.png' height='60px'></img> :
+                <div style={{ padding: 8 }}><img src={word} alt='logo.png' height='60px'></img></div>
+            }
+          </div>
           <Menu theme="light" defaultSelectedKeys={[routers[0].key]} mode="inline" items={routers}></Menu>
         </Sider>
         <Layout className="site-layout">
-          <Content style={{ margin: '16px 16px', }}>
-            <div className="site-layout-background" style={{ padding: 24, minHeight: 360, }}>
+          <Content style={{ margin: '16px 16px' }}>
+            <div className="site-layout-background" style={{ padding: 24, minHeight: 360, borderRadius: '25px' }}>
               <Routes>
                 {routers.map((p) => { return (<Route key={p.key} path={p.key} element={p.component}></Route>) })}
                 <Route path='*' element={<Navigate to={routers[0].key} />} />
@@ -59,7 +71,7 @@ export default function App() {
           </Content>
         </Layout>
       </Layout>
-    </BrowserRouter>
+    </BrowserRouter >
   );
 };
 

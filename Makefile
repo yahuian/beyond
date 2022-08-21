@@ -1,3 +1,5 @@
+export CGO_ENABLED=0
+
 win="windows"
 win64="amd64"
 
