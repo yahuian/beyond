@@ -258,6 +258,7 @@ const FormCom = ({ form, typeData, ledgerData, visible, onCreate, onEdit, onCanc
   return (
     <Modal
       visible={visible}
+      title="记账"
       okText="确定"
       cancelText="取消"
       onCancel={onCancel}
@@ -272,8 +273,10 @@ const FormCom = ({ form, typeData, ledgerData, visible, onCreate, onEdit, onCanc
             console.log('Validate Failed:', info);
           });
       }}
+      width='500px'
     >
       <Form
+        labelCol={{ span: 3 }}
         form={form}
         layout="horizontal"
         name="form_in_modal"
@@ -298,7 +301,10 @@ const FormCom = ({ form, typeData, ledgerData, visible, onCreate, onEdit, onCanc
             message: '请输入金额',
           }
         ]}>
-          <InputNumber />
+          <InputNumber style={{ width: '120px' }} />
+        </Form.Item>
+        <Form.Item name="created_at" label="时间">
+          <DatePicker placeholder='选择时间' style={{ width: '120px' }} />
         </Form.Item>
         <Form.Item name="type" label="分类">
           <Select showSearch allowClear >
@@ -320,9 +326,6 @@ const FormCom = ({ form, typeData, ledgerData, visible, onCreate, onEdit, onCanc
         </Form.Item>
         <Form.Item name="note" label="备注">
           <Input type="textarea" />
-        </Form.Item>
-        <Form.Item name="created_at" label="时间">
-          <DatePicker placeholder='选择时间' />
         </Form.Item>
       </Form>
     </Modal >

@@ -211,8 +211,10 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
             console.log('Validate Failed:', info);
           });
       }}
+      width='500px'
     >
       <Form
+        labelCol={{ span: 3 }}
         form={form}
         layout="horizontal"
         name="form_in_modal"
@@ -258,7 +260,7 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
           </Form.Item>
         </Form.Item>
         <Form.Item name="budget" label="每月预算">
-          <InputNumber />
+          <InputNumber style={{ width: '120px' }} />
         </Form.Item>
       </Form>
     </Modal >

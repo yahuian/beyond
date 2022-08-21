@@ -199,8 +199,10 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
             console.log('Validate Failed:', info);
           });
       }}
+      width='500px'
     >
       <Form
+        labelCol={{ span: 3 }}
         form={form}
         layout="horizontal"
         name="form_in_modal"
