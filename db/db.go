@@ -7,6 +7,7 @@ import (
 	"github.com/yahuian/beyond/config"
 	"github.com/yahuian/gox/errorx"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var (
@@ -34,6 +35,10 @@ func Connect() error {
 		if err := conn.AutoMigrate(v); err != nil {
 			return errorx.WrapMsg(reflect.TypeOf(v).String(), err)
 		}
+	}
+
+	if config.Val.Server.Mode == config.DebugMode {
+		conn.Logger = logger.Default.LogMode(logger.Info)
 	}
 
 	client = conn

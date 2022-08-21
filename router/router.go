@@ -49,6 +49,10 @@ func Init() error {
 		f(api)
 	}
 
+	if config.Val.Server.Mode == config.ReleaseMode {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	if err := r.Run(config.Val.Server.Address); err != nil {
 		return errorx.Wrap(err)
 	}

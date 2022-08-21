@@ -41,7 +41,9 @@ func main() {
 	}
 	logx.Init(file)
 	defer logx.Sync() //nolint:errcheck
-	logx.SetLevel(logx.DebugLevel)
+	if config.Val.Server.Mode == config.DebugMode {
+		logx.SetLevel(logx.DebugLevel)
+	}
 
 	// init db
 	if err := db.Connect(); err != nil {
@@ -83,3 +85,5 @@ func main() {
 // TODO dynamic logx,gin,gorm level(debug,release)
 
 // TODO https://github.com/gin-gonic/gin#graceful-shutdown-or-restart
+
+// TODO gin 和 gorm 的日志都写入 log 文件

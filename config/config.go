@@ -9,6 +9,11 @@ import (
 	"github.com/yahuian/gox/validatex"
 )
 
+var (
+	ReleaseMode = "release"
+	DebugMode   = "debug"
+)
+
 //go:embed config.yaml
 var sysConfig []byte
 
