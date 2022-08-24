@@ -90,6 +90,21 @@ definitions:
       times:
         type: integer
     type: object
+  db.Travel:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      level:
+        description: Area.Level
+        type: string
+      name:
+        description: Area.Name
+        type: string
+      note:
+        type: string
+    type: object
   details.base:
     properties:
       key:
@@ -183,6 +198,46 @@ definitions:
         type: string
       note:
         maxLength: 200
+        type: string
+    required:
+    - id
+    - name
+    type: object
+  travel.allListResp:
+    properties:
+      name:
+        type: string
+    type: object
+  travel.createParam:
+    properties:
+      created_at:
+        type: string
+      level:
+        enum:
+        - city
+        - province
+        type: string
+      name:
+        type: string
+      note:
+        type: string
+    required:
+    - name
+    type: object
+  travel.updateParam:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      level:
+        enum:
+        - city
+        - province
+        type: string
+      name:
+        type: string
+      note:
         type: string
     required:
     - id
@@ -617,4 +672,133 @@ paths:
       summary: 更新分类
       tags:
       - bill
+  /travel:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/ctx.IDList'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ctx.Response'
+      summary: 删除标记
+      tags:
+      - travel
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: size
+        in: query
+        name: size
+        type: integer
+      - description: id
+        in: query
+        name: id[]
+        type: integer
+      - description: created_at
+        in: query
+        name: created_at[]
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/db.Travel'
+                  type: array
+              type: object
+      summary: 足迹
+      tags:
+      - travel
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/travel.createParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/db.Travel'
+              type: object
+      summary: 标记地点
+      tags:
+      - travel
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/travel.updateParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/db.Travel'
+              type: object
+      summary: 更新标记
+      tags:
+      - travel
+  /travel/all:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/travel.allListResp'
+                  type: array
+              type: object
+      summary: 所有标记过的城市
+      tags:
+      - travel
 swagger: "2.0"

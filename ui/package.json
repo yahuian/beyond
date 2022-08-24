@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/maps": "^1.0.4",
     "@ant-design/plots": "^1.2.1",
     "antd": "^4.21.7",
     "axios": "^0.27.2",

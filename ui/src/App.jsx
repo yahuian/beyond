@@ -1,12 +1,17 @@
 import { React, useState } from 'react';
 import { BrowserRouter, NavLink, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
-import { MoneyCollectTwoTone, SettingTwoTone } from '@ant-design/icons';
+import {
+  MoneyCollectTwoTone,
+  SettingTwoTone,
+  CameraTwoTone,
+} from '@ant-design/icons';
 import './App.css';
 import Bill from './pages/Bill';
 import System from './pages/System';
 import logo from './assets/logo.png'
 import word from './assets/logo_word.png'
+import Travel from './pages/Travel';
 
 const { Content, Sider } = Layout;
 
@@ -26,6 +31,14 @@ const routers = [
       <NavLink to="/bill">每日记账</NavLink>
     ),
     component: <Bill />
+  },
+  {
+    key: '/travel',
+    icon: <CameraTwoTone />,
+    label: (
+      <NavLink to="/travel">旅行足迹</NavLink>
+    ),
+    component: <Travel />
   },
   {
     key: '/system',
