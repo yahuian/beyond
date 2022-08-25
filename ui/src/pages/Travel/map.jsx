@@ -32,9 +32,8 @@ export default function Map() {
       }
     }).then(function (response) {
       setVisible(false);
-      form.resetFields()
+      setRefresh(!refresh);
     })
-    setRefresh(!refresh)
   }
 
   return (
@@ -42,21 +41,19 @@ export default function Map() {
       <MapCom
         cities={cities}
         onclick={(name, level) => {
+          form.resetFields();
           form.setFieldsValue({
             name: name,
             level: level,
-          })
-          setVisible(true)
+          });
+          setVisible(true);
         }}
       />
 
       <FormCom
         form={form}
         visible={visible}
-        onCancel={() => {
-          setVisible(false)
-          form.resetFields()
-        }}
+        onCancel={() => { setVisible(false) }}
         onCreate={onCreate}
       />
     </div>
