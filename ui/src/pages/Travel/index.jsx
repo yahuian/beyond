@@ -1,17 +1,48 @@
 import { React, useState, useEffect } from 'react';
 import {
-  Tabs
+  Tabs,
+  Form,
+  Modal,
+  Input
 } from 'antd';
 import {
   FlagTwoTone,
   EnvironmentTwoTone,
 } from '@ant-design/icons';
 import { ChoroplethMap } from '@ant-design/maps';
+import moment from 'moment';
 import { request } from '../../utils/request';
 
 const { TabPane } = Tabs;
 
 export default function Travel() {
+  // 表单
+  const [form] = Form.useForm();
+  const [visible, setVisible] = useState(false);
+
+  const [refresh, setRefresh] = useState(false);
+
+  // 去过的城市
+  const [cities, setCities] = useState([]);
+  useEffect(() => {
+    request.get('/travel/all').then(function (response) {
+      setCities(response.data.data)
+    })
+  }, [refresh]);
+
+  const onCreate = (values) => {
+    const payload = JSON.stringify(values)
+    request.post(`/travel`, payload, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (response) {
+      setVisible(false);
+      form.resetFields()
+    })
+    setRefresh(!refresh)
+  }
+
   return (
     <div>
       <Tabs
@@ -20,24 +51,36 @@ export default function Travel() {
         size='large'
       >
         <TabPane tab={<span>< EnvironmentTwoTone />地图</span>} key="details">
-          <Map></Map>
+          <Map
+            cities={cities}
+            onclick={(name, level) => {
+              form.setFieldsValue({
+                name: name,
+                level: level,
+              })
+              setVisible(true)
+            }}
+          />
         </TabPane>
+
         <TabPane tab={<span><FlagTwoTone />足迹</span>}>
         </TabPane>
       </Tabs>
+
+      <FormCom
+        form={form}
+        visible={visible}
+        onCancel={() => {
+          setVisible(false)
+          form.resetFields()
+        }}
+        onCreate={onCreate}
+      />
     </div>
   )
 }
 
-const Map = () => {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    request.get('/travel/all').then(function (response) {
-      setData(response.data.data)
-    })
-  }, []);
-
+const Map = ({ cities, onclick }) => {
   const config = {
     map: {
       type: 'mapbox',
@@ -59,7 +102,7 @@ const Map = () => {
     color: {
       field: 'name',
       value: ({ name }) => {
-        return data.map((v) => { return v.name }).includes(name) ? 'CornflowerBlue' : ''
+        return cities.map((v) => { return v.name }).includes(name) ? 'CornflowerBlue' : ''
       },
     },
     style: {
@@ -119,6 +162,13 @@ const Map = () => {
         width: 0.7,
         opacity: 0.8,
       },
+    },
+    onReady: (c) => {
+      c.on('fillAreaLayer:click', (event) => {
+        const name = event.feature.properties.name;
+        const level = event.feature.properties.level;
+        onclick(name, level);
+      });
     }
   };
 
@@ -131,3 +181,44 @@ const Map = () => {
     </div>
   )
 }
+
+const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
+  return (
+    <Modal
+      visible={visible}
+      title="标记"
+      okText="确定"
+      cancelText="取消"
+      onCancel={onCancel}
+      onOk={() => {
+        form
+          .validateFields()
+          .then((values) => {
+            values['id'] === undefined ? onCreate(values) : onEdit(values)
+          })
+          .catch((info) => {
+            console.log('Validate Failed:', info);
+          });
+      }}
+      width='500px'
+    >
+      <Form
+        labelCol={{ span: 3 }}
+        form={form}
+        layout="horizontal"
+        name="form_in_modal"
+        initialValues={{
+          kind: 'type',
+          created_at: moment(),
+        }}
+      >
+        <Form.Item hidden name="id" label="id">
+          <Input type="textarea" />
+        </Form.Item>
+        <Form.Item name="name" label="名称">
+          <Input type="textarea" />
+        </Form.Item>
+      </Form>
+    </Modal >
+  );
+};

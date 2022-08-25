@@ -1242,13 +1242,6 @@
                 "created_at": {
                     "type": "string"
                 },
-                "level": {
-                    "type": "string",
-                    "enum": [
-                        "city",
-                        "province"
-                    ]
-                },
                 "name": {
                     "type": "string"
                 },
@@ -1269,13 +1262,6 @@
                 },
                 "id": {
                     "type": "integer"
-                },
-                "level": {
-                    "type": "string",
-                    "enum": [
-                        "city",
-                        "province"
-                    ]
                 },
                 "name": {
                     "type": "string"

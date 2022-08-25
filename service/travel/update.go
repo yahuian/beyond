@@ -37,7 +37,7 @@ func Update(c *ctx.Context) {
 		return
 	}
 
-	area, err := getArea(c, param.Name, param.Level)
+	area, err := getArea(c, param.Name, "city")
 	if err != nil {
 		return
 	}

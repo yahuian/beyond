@@ -1252,13 +1252,6 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
-                "level": {
-                    "type": "string",
-                    "enum": [
-                        "city",
-                        "province"
-                    ]
-                },
                 "name": {
                     "type": "string"
                 },
@@ -1279,13 +1272,6 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
-                },
-                "level": {
-                    "type": "string",
-                    "enum": [
-                        "city",
-                        "province"
-                    ]
                 },
                 "name": {
                     "type": "string"

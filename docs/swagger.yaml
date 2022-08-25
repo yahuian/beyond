@@ -212,11 +212,6 @@ definitions:
     properties:
       created_at:
         type: string
-      level:
-        enum:
-        - city
-        - province
-        type: string
       name:
         type: string
       note:
@@ -230,11 +225,6 @@ definitions:
         type: string
       id:
         type: integer
-      level:
-        enum:
-        - city
-        - province
-        type: string
       name:
         type: string
       note:

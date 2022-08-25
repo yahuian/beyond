@@ -13,7 +13,6 @@ import (
 type createParam struct {
 	Name      string    `json:"name" validate:"required"`
 	Note      string    `json:"note"`
-	Level     string    `json:"level" validate:"oneof=city province"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
@@ -31,7 +30,7 @@ func Create(c *ctx.Context) {
 		return
 	}
 
-	area, err := getArea(c, param.Name, param.Level)
+	area, err := getArea(c, param.Name, "city")
 	if err != nil {
 		return
 	}
