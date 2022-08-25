@@ -11,6 +11,8 @@ import moment from 'moment';
 import { request } from '../../utils/request';
 import { DateShowFormat } from '../../utils/date';
 
+const { TextArea } = Input;
+
 export default function TravelList() {
   const [refresh, setRefresh] = useState(false);
 
@@ -47,6 +49,18 @@ export default function TravelList() {
     });
   }
 
+  const onDelete = (values) => {
+    const payload = JSON.stringify(values);
+    request.delete(`/travel`, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: payload
+    }).then(function (response) {
+      setRefresh(!refresh);
+    });
+  }
+
   return (
     <div>
       <List
@@ -63,6 +77,9 @@ export default function TravelList() {
           <List.Item
             key={item.name}
             actions={[
+              <Typography.Link type='danger' onClick={() => { onDelete({ 'ids': [item.id] }) }}>
+                删除
+              </Typography.Link>,
               <Typography.Link onClick={() => {
                 form.resetFields();
                 item['created_at'] = moment(item['created_at']);
@@ -70,13 +87,13 @@ export default function TravelList() {
                 setVisible(true)
               }}>
                 编辑
-              </Typography.Link>
+              </Typography.Link>,
             ]}
           >
             <List.Item.Meta
               title={item.name}
             />
-            <div>
+            <div style={{ whiteSpace: 'pre-line', paddingBottom: '8px' }}>
               {item.note}
             </div>
             <div>
@@ -113,7 +130,7 @@ const FormCom = ({ form, visible, onEdit, onCancel }) => {
             console.log('Validate Failed:', info);
           });
       }}
-      width='500px'
+      width='50%'
     >
       <Form
         form={form}
@@ -131,7 +148,7 @@ const FormCom = ({ form, visible, onEdit, onCancel }) => {
           <Input readOnly type="textarea" />
         </Form.Item>
         <Form.Item name="note" label="备注">
-          <Input type="textarea" />
+          <TextArea rows={8} placeholder='为这次旅行写点啥纪念一下吧~' />
         </Form.Item>
         <Form.Item name="created_at" label="时间">
           <DatePicker placeholder='选择时间' style={{ width: '120px' }} />

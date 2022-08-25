@@ -13,6 +13,7 @@
     "mapstructure",
     "nolint",
     "oneof",
+    "Popconfirm",
     "redbook",
     "Sider",
     "slicex",
