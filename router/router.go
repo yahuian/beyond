@@ -32,7 +32,7 @@ func Init() error {
 	// 注册前端页面
 	r.Use(static.Serve("/", static.LocalFile("./dist", false)))
 	r.LoadHTMLFiles("./dist/index.html")
-	pages := []string{"bill", "news", "system"}
+	pages := []string{"bill", "travel", "news", "system"}
 	for _, v := range pages {
 		r.GET(v, func(c *gin.Context) {
 			c.HTML(http.StatusOK, "index.html", nil)

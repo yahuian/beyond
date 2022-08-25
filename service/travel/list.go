@@ -40,7 +40,7 @@ func List(c *ctx.Context) {
 		Size:  paging.Size,
 		Query: query,
 		Args:  args,
-		Order: "id desc",
+		Order: "created_at desc",
 	}
 
 	list, err := db.GetMany[db.Travel](opt)
