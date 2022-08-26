@@ -32,6 +32,7 @@ func Connect() error {
 		BillLedger{},
 		Area{},
 		Travel{},
+		File{},
 	}
 	for _, v := range schemas {
 		if err := conn.AutoMigrate(v); err != nil {
@@ -57,6 +58,7 @@ func initData() error {
 		billType,
 		billLedger,
 		initArea,
+		initFile,
 	}
 
 	for _, f := range inits {

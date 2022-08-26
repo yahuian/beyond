@@ -8,3 +8,4 @@ log:
   max_age: 3
 setting:
   auto_open_browser: true
+  file_store_path: ./data

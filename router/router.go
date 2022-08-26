@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/yahuian/beyond/config"
 	"github.com/yahuian/beyond/service/bill"
+	"github.com/yahuian/beyond/service/file"
 	"github.com/yahuian/beyond/service/travel"
 	"github.com/yahuian/gox/errorx"
 
@@ -46,6 +47,7 @@ func Init() error {
 	routers := []func(*gin.RouterGroup){
 		bill.Router,
 		travel.Router,
+		file.Router,
 	}
 	for _, f := range routers {
 		f(api)

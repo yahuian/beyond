@@ -90,6 +90,17 @@ definitions:
       times:
         type: integer
     type: object
+  db.File:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      size:
+        type: integer
+    type: object
   db.Travel:
     properties:
       created_at:
@@ -662,6 +673,65 @@ paths:
       summary: 更新分类
       tags:
       - bill
+  /file/delete:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/ctx.IDList'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ctx.Response'
+      summary: 删除
+      tags:
+      - 文件
+  /file/read:
+    get:
+      parameters:
+      - description: file id
+        in: query
+        name: id
+        type: string
+      responses: {}
+      summary: 预览
+      tags:
+      - 文件
+  /file/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: file
+        in: formData
+        name: file[]
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/db.File'
+                  type: array
+              type: object
+      summary: 上传
+      tags:
+      - 文件
   /travel:
     delete:
       consumes:

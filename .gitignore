@@ -19,6 +19,7 @@ log
 beyond.db
 config/dev.yaml
 *.zip
+data
 
 # air
 tmp

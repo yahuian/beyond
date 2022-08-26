@@ -29,7 +29,8 @@ var Val struct {
 		MaxAge   int    `mapstructure:"max_age" validate:"gt=0"`
 	} `mapstructure:"log" validate:"required"`
 	Setting struct {
-		AutoOpenBrowser bool `mapstructure:"auto_open_browser"` // 启动项目时是否自动打开浏览器访问 http://${Val.Server.Address}
+		AutoOpenBrowser bool   `mapstructure:"auto_open_browser"` // 启动项目时是否自动打开浏览器访问 http://${Val.Server.Address}
+		FileStorePath   string `mapstructure:"file_store_path"`
 	} `mapstructure:"setting" validate:"required"`
 }
 
