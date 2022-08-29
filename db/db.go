@@ -20,7 +20,9 @@ func Client() *gorm.DB {
 
 func Connect() error {
 	// TODO replace logger with logx
-	conn, err := gorm.Open(sqlite.Open(config.Val.Server.DB), &gorm.Config{})
+	conn, err := gorm.Open(sqlite.Open(config.Val.Server.DB), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
 	if err != nil {
 		return errorx.Wrap(err)
 	}

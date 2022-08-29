@@ -35,7 +35,7 @@ func Upload(c *ctx.Context) {
 			return
 		}
 
-		res, err := db.StoreFile(data, path.Ext(file.Filename))
+		res, err := db.NewFileDao().Create(data, path.Ext(file.Filename))
 		if err != nil {
 			logx.Errorf("%+v", err)
 			c.InternalErr(err)

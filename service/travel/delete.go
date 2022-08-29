@@ -20,11 +20,13 @@ func Delete(c *ctx.Context) {
 		return
 	}
 
-	if err := db.DeleteByID[db.Travel](param.IDS...); err != nil {
+	if err := db.NewTravelDao().Delete("id IN ?", param.IDS); err != nil {
 		logx.Errorf("%+v", err)
 		c.InternalErr(err)
 		return
 	}
+
+	//
 
 	c.Success()
 }

@@ -6,10 +6,16 @@ import {
   DatePicker,
   Input,
   Modal,
+  Image,
+  Upload,
 } from 'antd';
+import {
+  InboxOutlined,
+} from '@ant-design/icons';
 import moment from 'moment';
 import { request } from '../../utils/request';
 import { DateShowFormat } from '../../utils/date';
+import configData from '../../config.json'
 
 const { TextArea } = Input;
 
@@ -18,7 +24,7 @@ export default function TravelList() {
 
   const [data, setData] = useState([]);
 
-  const pageSize = 6;
+  const pageSize = 3;
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -61,6 +67,9 @@ export default function TravelList() {
     });
   }
 
+  // 图片预览
+  const [fileList, setFileList] = useState([]);
+
   return (
     <div>
       <List
@@ -84,7 +93,16 @@ export default function TravelList() {
                 form.resetFields();
                 item['created_at'] = moment(item['created_at']);
                 form.setFieldsValue(item);
-                setVisible(true)
+                setFileList(
+                  item.files.map((v) => {
+                    return {
+                      uid: v.id,
+                      url: `${configData.server}file/read?id=${v.id}`,
+                      status: 'done',
+                    }
+                  })
+                )
+                setVisible(true);
               }}>
                 编辑
               </Typography.Link>,
@@ -96,6 +114,14 @@ export default function TravelList() {
             <div style={{ whiteSpace: 'pre-line', paddingBottom: '8px' }}>
               {item.note}
             </div>
+            {
+              item.files.map((v) => {
+                return <Image
+                  width={150} height={150}
+                  src={`${configData.server}file/read?id=${v.id}`}
+                  style={{ padding: 3 }} />
+              })
+            }
             <div>
               {moment(item.created_at).format(DateShowFormat)}
             </div>
@@ -105,6 +131,8 @@ export default function TravelList() {
       <FormCom
         form={form}
         visible={visible}
+        fileList={fileList}
+        setFileList={setFileList}
         onCancel={() => { setVisible(false) }}
         onEdit={onEdit}
       />
@@ -112,7 +140,35 @@ export default function TravelList() {
   )
 }
 
-const FormCom = ({ form, visible, onEdit, onCancel }) => {
+const FormCom = ({ form, visible, fileList, setFileList, onEdit, onCancel }) => {
+  form.setFieldsValue({
+    files: fileList.map((v) => {
+      // 已有的图片
+      if (typeof v.uid === 'number') {
+        return v.uid
+      }
+      // 新上传成功的照片
+      if (v.status === 'done' && v.response !== undefined) {
+        return v.response.data[0].id
+      }
+      return 0
+    })
+  })
+
+  const onChange = (info) => {
+    setFileList(info.fileList)
+  };
+
+  const onRemove = (info) => {
+    const payload = JSON.stringify({ 'ids': [info.uid] });
+    request.delete(`/file/delete`, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: payload
+    })
+  }
+
   return (
     <Modal
       visible={visible}
@@ -150,6 +206,22 @@ const FormCom = ({ form, visible, onEdit, onCancel }) => {
         <Form.Item name="note" label="备注">
           <TextArea rows={8} placeholder='为这次旅行写点啥纪念一下吧~' />
         </Form.Item>
+        <Form.Item name="files" label="图片">
+          <Upload
+            name='file[]'
+            multiple={true}
+            action={`${configData.server}file/upload`}
+            onChange={onChange}
+            onRemove={onRemove}
+            listType="picture-card"
+            fileList={fileList}
+          >
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">上传</p>
+          </Upload>
+        </Form.Item>
         <Form.Item name="created_at" label="时间">
           <DatePicker placeholder='选择时间' style={{ width: '120px' }} />
         </Form.Item>
@@ -157,3 +229,6 @@ const FormCom = ({ form, visible, onEdit, onCancel }) => {
     </Modal >
   );
 };
+
+// TODO 支持视频
+// TODO 图片支持调整顺序

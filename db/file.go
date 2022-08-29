@@ -1,7 +1,6 @@
 package db
 
 import (
-	"io"
 	"os"
 	"path"
 	"strconv"
@@ -13,22 +12,30 @@ import (
 )
 
 type File struct {
-	ID        uint64    `gorm:"primaryKey" json:"id"`
-	Name      string    `gorm:"comment:文件名" json:"name"`
-	Size      int       `gorm:"comment:文件大小" json:"size"`
-	CreatedAt time.Time `gorm:"index,comment:创建时间" json:"created_at"`
+	ID        uint64    `json:"id" gorm:"primaryKey"`
+	UsedID    uint64    `json:"used_id" gorm:"index"` // 使用者 ID
+	Name      string    `json:"name"`                 // 文件名
+	Size      int       `json:"size"`                 // 大小
+	CreatedAt time.Time `json:"created_at"`
 }
 
-func StoreFile(data []byte, ext string) (File, error) {
+type FileDao struct {
+}
+
+func NewFileDao() *FileDao {
+	return &FileDao{}
+}
+
+func (f *FileDao) Create(data []byte, ext string) (File, error) {
 	now := time.Now()
 
-	f := File{
+	file := File{
 		Name:      strconv.Itoa(int(now.UnixNano())) + ext,
 		Size:      len(data),
 		CreatedAt: now,
 	}
 
-	dir := f.dir()
+	dir := file.dir()
 
 	exist, err := filex.Exist(dir)
 	if err != nil {
@@ -40,33 +47,39 @@ func StoreFile(data []byte, ext string) (File, error) {
 		}
 	}
 
-	if err := os.WriteFile(path.Join(dir, f.Name), data, 0600); err != nil {
+	if err := os.WriteFile(path.Join(dir, file.Name), data, 0600); err != nil {
 		return File{}, errorx.Wrap(err)
 	}
 
-	if err := Create(&f); err != nil {
+	if err := Create(&file); err != nil {
 		return File{}, errorx.Wrap(err)
 	}
 
-	return f, nil
+	return file, nil
+}
+
+func (f *FileDao) Delete(query any, args ...any) error {
+	files, err := GetAll[File](query, args...)
+	if err != nil {
+		return errorx.Wrap(err)
+	}
+	if err := Delete[File](query, args...); err != nil {
+		return errorx.Wrap(err)
+	}
+	for _, v := range files {
+		if err := os.Remove(v.Filepath()); err != nil {
+			return errorx.Wrap(err)
+		}
+	}
+	return nil
 }
 
 func (f *File) dir() string {
-	return path.Join(config.Val.Setting.FileStorePath, f.CreatedAt.Format("2006-01-02"))
+	return path.Join(config.Val.Setting.FileStorePath, f.CreatedAt.Format("2006-01"))
 }
 
-func (f *File) FilePath() string {
+func (f *File) Filepath() string {
 	return path.Join(f.dir(), f.Name)
-}
-
-func (f *File) ReadFile() ([]byte, error) {
-	file, err := os.Open(f.FilePath())
-	if err != nil {
-		return nil, errorx.Wrap(err)
-	}
-	defer file.Close()
-
-	return io.ReadAll(file)
 }
 
 func initFile() error {

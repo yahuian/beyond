@@ -35,6 +35,18 @@ func List(c *ctx.Context) {
 		return
 	}
 
+	count, err := db.Count[db.Travel](query, args...)
+	if err != nil {
+		logx.Errorf("%+v", err)
+		c.InternalErr(err)
+		return
+	}
+
+	if count == 0 {
+		c.SuccessWith(ctx.Response{Msg: "success", Count: 0})
+		return
+	}
+
 	opt := db.Option{
 		Page:  paging.Page,
 		Size:  paging.Size,
@@ -43,21 +55,14 @@ func List(c *ctx.Context) {
 		Order: "created_at desc",
 	}
 
-	list, err := db.GetMany[db.Travel](opt)
+	list, err := db.NewTravelDao().GetMany(opt)
 	if err != nil {
 		logx.Errorf("%+v", err)
 		c.InternalErr(err)
 		return
 	}
 
-	count, err := db.Count[db.Travel](query, args...)
-	if err != nil {
-		logx.Errorf("%+v", err)
-		c.InternalErr(err)
-		return
-	}
-
-	c.SuccessWith(ctx.Response{Msg: "success", Data: list, Count: count})
+	c.SuccessWith(ctx.Response{Msg: "success", Data: list, Count: 0})
 }
 
 type allListResp struct {

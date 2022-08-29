@@ -1,13 +1,9 @@
 package file
 
 import (
-	"errors"
-	"os"
-
 	"github.com/yahuian/beyond/ctx"
 	"github.com/yahuian/beyond/db"
 	"github.com/yahuian/gox/logx"
-	"gorm.io/gorm"
 )
 
 // @Tags    文件
@@ -24,29 +20,10 @@ func Delete(c *ctx.Context) {
 		return
 	}
 
-	for _, v := range param.IDS {
-		res, err := db.GetOneByID[db.File](v)
-		if err != nil {
-			if errors.Is(err, gorm.ErrRecordNotFound) {
-				c.BadRequest(err)
-				return
-			}
-			logx.Errorf("%+v", err)
-			c.InternalErr(err)
-			return
-		}
-
-		if err := db.DeleteByID[db.File](v); err != nil {
-			logx.Errorf("%+v", err)
-			c.InternalErr(err)
-			return
-		}
-
-		if err := os.Remove(res.FilePath()); err != nil {
-			logx.Errorf("%+v", err)
-			c.InternalErr(err)
-			return
-		}
+	if err := db.NewFileDao().Delete("id IN ?", param.IDS); err != nil {
+		logx.Errorf("%+v", err)
+		c.InternalErr(err)
+		return
 	}
 
 	c.Success()

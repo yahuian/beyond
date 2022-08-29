@@ -1176,9 +1176,15 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "name": {
+                    "description": "文件名",
                     "type": "string"
                 },
                 "size": {
+                    "description": "大小",
+                    "type": "integer"
+                },
+                "used_id": {
+                    "description": "使用者 ID",
                     "type": "integer"
                 }
             }
@@ -1189,18 +1195,26 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
+                "files": {
+                    "description": "文件列表",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.File"
+                    }
+                },
                 "id": {
                     "type": "integer"
                 },
                 "level": {
-                    "description": "Area.Level",
+                    "description": "级别 Area.Level",
                     "type": "string"
                 },
                 "name": {
-                    "description": "Area.Name",
+                    "description": "名称 Area.Name",
                     "type": "string"
                 },
                 "note": {
+                    "description": "备注",
                     "type": "string"
                 }
             }
@@ -1382,6 +1396,13 @@ const docTemplate = `{
             "properties": {
                 "created_at": {
                     "type": "string"
+                },
+                "files": {
+                    "description": "files ids",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "id": {
                     "type": "integer"

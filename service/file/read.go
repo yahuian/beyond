@@ -32,5 +32,5 @@ func Read(c *ctx.Context) {
 		return
 	}
 
-	c.File(res.FilePath())
+	c.File(res.Filepath())
 }

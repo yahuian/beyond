@@ -10,6 +10,7 @@ import (
 type updateParam struct {
 	ID uint64 `json:"id" validate:"required"`
 	createParam
+	Files []uint64 `json:"files"` // files ids
 }
 
 // @Summary 更新标记
@@ -37,6 +38,14 @@ func Update(c *ctx.Context) {
 		return
 	}
 
+	// get files
+	files, err := db.GetAll[db.File]("id IN ?", param.Files)
+	if err != nil {
+		logx.Errorf("%+v", err)
+		c.InternalErr(err)
+		return
+	}
+
 	area, err := getArea(c, param.Name, "city")
 	if err != nil {
 		return
@@ -48,6 +57,7 @@ func Update(c *ctx.Context) {
 		Level:     area.Level,
 		Note:      param.Note,
 		CreatedAt: param.CreatedAt,
+		Files:     files,
 	}
 
 	if err := db.UpdateAllByID(data.ID, data); err != nil {
