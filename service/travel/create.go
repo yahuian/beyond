@@ -35,6 +35,17 @@ func Create(c *ctx.Context) {
 		return
 	}
 
+	count, err := db.Count[db.Travel]("name IS ?", param.Name)
+	if err != nil {
+		logx.Errorf("%+v", err)
+		c.InternalErr(err)
+		return
+	}
+	if count != 0 {
+		c.BadRequest(errors.New("该城市已标记啦，不要重复点击了"))
+		return
+	}
+
 	data := &db.Travel{
 		Name:      param.Name,
 		Level:     area.Level,
@@ -42,16 +53,13 @@ func Create(c *ctx.Context) {
 		CreatedAt: param.CreatedAt,
 	}
 
-	// TODO 自动标记上层地区，如：省
-	// TODO 不可重复添加
-
 	if err := db.Create(data); err != nil {
 		logx.Errorf("%+v", err)
 		c.InternalErr(err)
 		return
 	}
 
-	c.SuccessWith(ctx.Response{Msg: "success", Data: data})
+	c.SuccessWith(ctx.Response{Msg: "标记成功，地图正在努力上色，请稍等~", Data: data})
 }
 
 func getArea(c *ctx.Context, name, level string) (db.Area, error) {

@@ -84,7 +84,7 @@ export default function TravelList() {
         dataSource={data}
         renderItem={(item) => (
           <List.Item
-            key={item.name}
+            key={item.id}
             actions={[
               <Typography.Link type='danger' onClick={() => { onDelete({ 'ids': [item.id] }) }}>
                 删除
@@ -215,6 +215,7 @@ const FormCom = ({ form, visible, fileList, setFileList, onEdit, onCancel }) => 
             onRemove={onRemove}
             listType="picture-card"
             fileList={fileList}
+            accept="image/*"
           >
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
