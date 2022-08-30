@@ -160,7 +160,13 @@ const FormCom = ({ form, visible, fileList, setFileList, onEdit, onCancel }) => 
   };
 
   const onRemove = (info) => {
-    const payload = JSON.stringify({ 'ids': [info.uid] });
+    var ids = []
+    if (typeof info.uid === 'number') {
+      ids = [info.uid]
+    } else {
+      ids = [info.response.data[0].id]
+    }
+    const payload = JSON.stringify({ 'ids': ids });
     request.delete(`/file/delete`, {
       headers: {
         'Content-Type': 'application/json'
