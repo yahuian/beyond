@@ -2,6 +2,9 @@ on:
   release:
     types: [created]
 
+env:
+  CI: false
+
 jobs:
   releases-matrix:
     runs-on: ubuntu-22.04
