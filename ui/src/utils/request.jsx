@@ -1,8 +1,9 @@
 import axios from 'axios'
 import { message } from 'antd'
+import configData from '../config.json'
 
 export const request = axios.create({
-  baseURL: 'http://localhost:2022/api'
+  baseURL: configData.server,
 })
 
 // Add a response interceptor
