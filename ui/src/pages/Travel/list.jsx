@@ -156,7 +156,7 @@ const FormCom = ({ form, visible, fileList, setFileList, onEdit, onCancel }) => 
   })
 
   const onChange = (info) => {
-    setFileList(info.fileList)
+    setFileList([...info.fileList]);
   };
 
   const onRemove = (info) => {
@@ -209,7 +209,7 @@ const FormCom = ({ form, visible, fileList, setFileList, onEdit, onCancel }) => 
         <Form.Item name="files" label="图片">
           <Upload
             name='file[]'
-            multiple={true}
+            // multiple={true} BUG 批量上传时会部分图片即使上传成功也是 uploading 状态
             action={`${configData.server}file/upload`}
             onChange={onChange}
             onRemove={onRemove}

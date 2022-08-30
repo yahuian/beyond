@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"reflect"
 
 	"github.com/glebarez/sqlite"
@@ -20,12 +21,19 @@ func Client() *gorm.DB {
 
 func Connect() error {
 	// TODO replace logger with logx
-	conn, err := gorm.Open(sqlite.Open(config.Val.Server.DB), &gorm.Config{
+	addr := fmt.Sprintf("file:%s?cache=shared", config.Val.Server.DB)
+	conn, err := gorm.Open(sqlite.Open(addr), &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: true,
 	})
 	if err != nil {
 		return errorx.Wrap(err)
 	}
+
+	sqlDB, err := conn.DB()
+	if err != nil {
+		return errorx.Wrap(err)
+	}
+	sqlDB.SetMaxOpenConns(1)
 
 	// auto migrate
 	schemas := []any{
