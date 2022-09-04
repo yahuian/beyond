@@ -5,6 +5,7 @@ import {
   MoneyCollectTwoTone,
   SettingTwoTone,
   CameraTwoTone,
+  CarryOutTwoTone,
 } from '@ant-design/icons';
 import './App.css';
 import Bill from './pages/Bill';
@@ -12,13 +13,22 @@ import System from './pages/System';
 import logo from './assets/logo.png'
 import word from './assets/logo_word.png'
 import Travel from './pages/Travel';
+import Task from './pages/Task';
 
 const { Content, Sider } = Layout;
 
 const routers = [
+  {
+    key: '/task',
+    icon: <CarryOutTwoTone />,
+    label: (
+      <NavLink to="/task">番茄任务</NavLink>
+    ),
+    component: <Task />
+  },
   // {
   //   key: '/news',
-  //   icon: <StarTwoTone />,
+  //   // icon: <StarTwoTone />,
   //   label: (
   //     <NavLink to="/news">订阅信息</NavLink>
   //   ),
