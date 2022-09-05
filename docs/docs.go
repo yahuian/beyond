@@ -812,6 +812,174 @@ const docTemplate = `{
                 }
             }
         },
+        "/tomato/task": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "番茄任务"
+                ],
+                "summary": "任务列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id[]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "created_at",
+                        "name": "created_at[]",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/db.TomatoTask"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "番茄任务"
+                ],
+                "summary": "更新任务",
+                "parameters": [
+                    {
+                        "description": "request payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/task.updateParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/db.TomatoTask"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "番茄任务"
+                ],
+                "summary": "添加任务",
+                "parameters": [
+                    {
+                        "description": "request payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/task.createParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/db.TomatoTask"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "番茄任务"
+                ],
+                "summary": "删除任务",
+                "parameters": [
+                    {
+                        "description": "request payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ctx.IDList"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ctx.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/travel": {
             "get": {
                 "consumes": [
@@ -1189,6 +1357,30 @@ const docTemplate = `{
                 }
             }
         },
+        "db.TomatoTask": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "status": {
+                    "description": "todo,doing,done",
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "db.Travel": {
             "type": "object",
             "properties": {
@@ -1359,6 +1551,66 @@ const docTemplate = `{
                 "note": {
                     "type": "string",
                     "maxLength": 200
+                }
+            }
+        },
+        "task.createParam": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 5000
+                },
+                "note": {
+                    "type": "string",
+                    "maxLength": 5000
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "todo",
+                        "doing",
+                        "done"
+                    ]
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 100
+                }
+            }
+        },
+        "task.updateParam": {
+            "type": "object",
+            "required": [
+                "id",
+                "title"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 5000
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "note": {
+                    "type": "string",
+                    "maxLength": 5000
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "todo",
+                        "doing",
+                        "done"
+                    ]
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 100
                 }
             }
         },

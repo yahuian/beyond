@@ -37,12 +37,11 @@ func Connect() error {
 
 	// auto migrate
 	schemas := []any{
-		BillDetails{},
-		BillType{},
-		BillLedger{},
+		BillDetails{}, BillType{}, BillLedger{},
 		Area{},
 		Travel{},
 		File{},
+		TomatoTask{},
 	}
 	for _, v := range schemas {
 		if err := conn.AutoMigrate(v); err != nil {

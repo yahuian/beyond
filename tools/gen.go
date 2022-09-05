@@ -20,6 +20,9 @@ var createTemplate string
 //go:embed delete.txt
 var deleteTemplate string
 
+//go:embed update.txt
+var updateTemplate string
+
 type Meta struct {
 	Model   string
 	Service string
@@ -48,6 +51,7 @@ func main() {
 		listTemplate:   path.Join(dst, "list.go"),
 		createTemplate: path.Join(dst, "create.go"),
 		deleteTemplate: path.Join(dst, "delete.go"),
+		updateTemplate: path.Join(dst, "update.go"),
 	}
 
 	for k, v := range params {

@@ -106,6 +106,22 @@ definitions:
         description: 使用者 ID
         type: integer
     type: object
+  db.TomatoTask:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      note:
+        type: string
+      status:
+        description: todo,doing,done
+        type: string
+      title:
+        type: string
+    type: object
   db.Travel:
     properties:
       created_at:
@@ -224,6 +240,49 @@ definitions:
     required:
     - id
     - name
+    type: object
+  task.createParam:
+    properties:
+      description:
+        maxLength: 5000
+        type: string
+      note:
+        maxLength: 5000
+        type: string
+      status:
+        enum:
+        - todo
+        - doing
+        - done
+        type: string
+      title:
+        maxLength: 100
+        type: string
+    required:
+    - title
+    type: object
+  task.updateParam:
+    properties:
+      description:
+        maxLength: 5000
+        type: string
+      id:
+        type: integer
+      note:
+        maxLength: 5000
+        type: string
+      status:
+        enum:
+        - todo
+        - doing
+        - done
+        type: string
+      title:
+        maxLength: 100
+        type: string
+    required:
+    - id
+    - title
     type: object
   travel.allListResp:
     properties:
@@ -748,6 +807,106 @@ paths:
       summary: 上传
       tags:
       - 文件
+  /tomato/task:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/ctx.IDList'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ctx.Response'
+      summary: 删除任务
+      tags:
+      - 番茄任务
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: query
+        name: id[]
+        type: integer
+      - description: created_at
+        in: query
+        name: created_at[]
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/db.TomatoTask'
+                  type: array
+              type: object
+      summary: 任务列表
+      tags:
+      - 番茄任务
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/task.createParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/db.TomatoTask'
+              type: object
+      summary: 添加任务
+      tags:
+      - 番茄任务
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/task.updateParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/db.TomatoTask'
+              type: object
+      summary: 更新任务
+      tags:
+      - 番茄任务
   /travel:
     delete:
       consumes:

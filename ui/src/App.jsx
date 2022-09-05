@@ -13,18 +13,18 @@ import System from './pages/System';
 import logo from './assets/logo.png'
 import word from './assets/logo_word.png'
 import Travel from './pages/Travel';
-import Task from './pages/Task';
+import Tomato from './pages/Tomato';
 
 const { Content, Sider } = Layout;
 
 const routers = [
   {
-    key: '/task',
+    key: '/tomato',
     icon: <CarryOutTwoTone />,
     label: (
-      <NavLink to="/task">番茄任务</NavLink>
+      <NavLink to="/tomato">番茄任务</NavLink>
     ),
-    component: <Task />
+    component: <Tomato />
   },
   // {
   //   key: '/news',

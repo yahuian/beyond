@@ -9,7 +9,7 @@ import Kanban from './kanban';
 
 const { TabPane } = Tabs;
 
-export default function Task() {
+export default function Tomato() {
   return (
     <Tabs
       defaultActiveKey="kanban"
