@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from 'react';
+import { React, useState, useEffect, useRef } from 'react';
 import {
   Col,
   Row,
@@ -11,6 +11,7 @@ import {
   Modal,
   Select,
   Popconfirm,
+  Progress,
 } from 'antd';
 import {
   DeleteOutlined,
@@ -30,6 +31,8 @@ export default function Kanban() {
 
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
+
+  const [clock, setClock] = useState(false);
 
   useEffect(
     () => {
@@ -82,6 +85,10 @@ export default function Kanban() {
     });
   };
 
+  const clockClick = () => {
+    setClock(true)
+  }
+
   return (
     <Row
       gutter={32}
@@ -99,6 +106,7 @@ export default function Kanban() {
                 data={v}
                 editClick={editClick}
                 onDelete={onDelete}
+                clockClick={clockClick}
               />
             })
         }
@@ -122,6 +130,7 @@ export default function Kanban() {
                 data={v}
                 editClick={editClick}
                 onDelete={onDelete}
+                clockClick={clockClick}
               />
             })
         }
@@ -138,6 +147,7 @@ export default function Kanban() {
                 data={v}
                 editClick={editClick}
                 onDelete={onDelete}
+                clockClick={clockClick}
               />
             })
         }
@@ -147,13 +157,20 @@ export default function Kanban() {
         visible={visible}
         onCreate={onCreate}
         onEdit={onEdit}
-        onCancel={() => setVisible(false)}
+        onCancel={() => {
+          setVisible(false);
+          form.resetFields();
+        }}
       />
-    </Row>
+      <ClockCom
+        clock={clock}
+        setClock={setClock}
+      />
+    </Row >
   );
 };
 
-const CardCom = ({ headColor, data, editClick, onDelete }) => {
+const CardCom = ({ headColor, data, editClick, onDelete, clockClick }) => {
   const [enter, setEnter] = useState(false);
 
   const MouseEnter = () => {
@@ -198,7 +215,7 @@ const CardCom = ({ headColor, data, editClick, onDelete }) => {
               <>
                 &nbsp;&nbsp;&nbsp;
                 <Tooltip title='番茄时钟'>
-                  <ClockCircleOutlined key="clock" />
+                  <ClockCircleOutlined key="clock" onClick={() => clockClick()} />
                 </Tooltip>
               </>
               : ''
@@ -284,3 +301,60 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
     </Modal >
   );
 };
+
+const ClockCom = ({ clock, setClock }) => {
+  const total = 1 * 60;
+  const [second, setSecond] = useState(total);
+  const timerId = useRef();
+
+  if (clock && !timerId.current) {
+    const id = setInterval(() => {
+      console.log('timer')
+      setSecond(pre => pre - 1)
+    }, 1000);
+    timerId.current = id;
+  };
+
+  if (second <= 0) {
+    clearInterval(timerId.current);
+  };
+
+  return (
+    <Modal
+      centered
+      mask
+      maskClosable={false}
+      title="番茄时钟"
+      visible={clock}
+      onCancel={() => {
+        setClock(false);
+        clearInterval(timerId.current);
+        timerId.current = null;
+        setSecond(total);
+      }}
+      cancelText="放弃"
+    >
+      <Progress
+        strokeColor={{
+          '0%': 'LemonChiffon',
+          '100%': 'DarkSeaGreen',
+        }}
+        type="circle"
+        percent={(1 - second / total) * 100}
+        width={460}
+        format={(percent) => {
+          console.log(percent)
+          var m = Math.floor(second / 60);
+          if (m.toString().split("").length < 2) {
+            m = `0${m}`
+          }
+          var s = second - m * 60
+          if (s.toString().split("").length < 2) {
+            s = `0${s}`
+          }
+          return `${m}:${s}`
+        }}
+      />
+    </Modal>
+  )
+}
