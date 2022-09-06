@@ -7,6 +7,7 @@ type TomatoTask struct {
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	Status      string    `json:"status"` // todo,doing,done
-	Note        string    `json:"note"`
 	CreatedAt   time.Time `json:"created_at" gorm:"index"`
+	Predict     int       `json:"predict"` // 预估需要的番茄数
+	Cost        int       `json:"cost"`    // 实际投入的番茄数
 }

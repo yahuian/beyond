@@ -12,12 +12,14 @@ import {
   Select,
   Popconfirm,
   Progress,
+  InputNumber,
 } from 'antd';
 import {
   DeleteOutlined,
   EditOutlined,
   ClockCircleOutlined,
   PlusSquareOutlined,
+  CloseOutlined,
 } from '@ant-design/icons';
 import { request } from '../../utils/request';
 import moment from 'moment';
@@ -33,6 +35,8 @@ export default function Kanban() {
   const [form] = Form.useForm();
 
   const [clock, setClock] = useState(false);
+
+  const unit = 5; // TODO 可修改
 
   useEffect(
     () => {
@@ -85,73 +89,76 @@ export default function Kanban() {
     });
   };
 
-  const clockClick = () => {
-    setClock(true)
+  var dataSaver = useRef();
+  // 开启番茄钟
+  const clockClick = (data) => {
+    dataSaver.current = data;
+    setClock(true);
+  };
+  // 一个番茄钟完成
+  const incClock = () => {
+    var data = dataSaver.current;
+    data.cost += 1;
+    onEdit(data);
   }
+
+  const cols = [
+    {
+      title: "TODO",
+      status: "todo",
+      headColor: "LightGray",
+    },
+    {
+      title: "DOING",
+      status: "doing",
+      headColor: "LemonChiffon",
+    },
+    {
+      title: "DONE",
+      status: "done",
+      headColor: "DarkSeaGreen",
+    },
+  ];
 
   return (
     <Row
       gutter={32}
       style={{ padding: '0px 16px 0px 16px' }}
     >
-      <Col
-        span={8}
-      >
-        <Divider orientation="left">TODO</Divider>
-        {
-          dataList.filter((v) => { return v.status === 'todo' })
-            .map((v) => {
-              return <CardCom
-                headColor='LightGray'
-                data={v}
-                editClick={editClick}
-                onDelete={onDelete}
-                clockClick={clockClick}
-              />
-            })
-        }
-        <Button
-          block
-          type="link"
-          onClick={() => setVisible(true)}
-        >
-          <PlusSquareOutlined />添加任务
-        </Button>
-      </Col>
-      <Col
-        span={8}
-      >
-        <Divider orientation="left">DOING</Divider>
-        {
-          dataList.filter((v) => { return v.status === 'doing' })
-            .map((v) => {
-              return <CardCom
-                headColor='LemonChiffon'
-                data={v}
-                editClick={editClick}
-                onDelete={onDelete}
-                clockClick={clockClick}
-              />
-            })
-        }
-      </Col>
-      <Col
-        span={8}
-      >
-        <Divider orientation="left">DONE</Divider>
-        {
-          dataList.filter((v) => { return v.status === 'done' })
-            .map((v) => {
-              return <CardCom
-                headColor='DarkSeaGreen'
-                data={v}
-                editClick={editClick}
-                onDelete={onDelete}
-                clockClick={clockClick}
-              />
-            })
-        }
-      </Col>
+      {
+        cols.map((c) => {
+          return (
+            <Col
+              span={8}
+            >
+              <Divider orientation="left">{c.title}</Divider>
+              {
+                dataList.filter((v) => { return v.status === c.status })
+                  .map((v) => {
+                    return <CardCom
+                      headColor={c.headColor}
+                      data={v}
+                      editClick={editClick}
+                      onDelete={onDelete}
+                      clockClick={clockClick}
+                    />
+                  })
+              }
+              {
+                c.status === 'todo' ?
+                  <Button
+                    block
+                    type="link"
+                    onClick={() => setVisible(true)}
+                  >
+                    <PlusSquareOutlined />添加任务
+                  </Button> :
+                  ''
+              }
+            </Col>
+          )
+        })
+      }
       <FormCom
         form={form}
         visible={visible}
@@ -165,6 +172,8 @@ export default function Kanban() {
       <ClockCom
         clock={clock}
         setClock={setClock}
+        unit={unit}
+        incClock={incClock}
       />
     </Row >
   );
@@ -215,7 +224,7 @@ const CardCom = ({ headColor, data, editClick, onDelete, clockClick }) => {
               <>
                 &nbsp;&nbsp;&nbsp;
                 <Tooltip title='番茄时钟'>
-                  <ClockCircleOutlined key="clock" onClick={() => clockClick()} />
+                  <ClockCircleOutlined key="clock" onClick={() => clockClick(data)} />
                 </Tooltip>
               </>
               : ''
@@ -227,16 +236,35 @@ const CardCom = ({ headColor, data, editClick, onDelete, clockClick }) => {
       onMouseLeave={MouseLeave.bind(this)}
     >
       <div
-        style={{ whiteSpace: 'pre-line' }}
+        style={{ whiteSpace: 'pre-line', padding: 8 }}
       >
         <p>
           {data.description}
         </p>
-        {
-          data.note === '' ? '' : <hr color='#ECF0F1' />
-        }
         <p>
-          {data.note}
+          <Tooltip
+            title={`实际投入的番茄数：${data.cost}`}
+          >
+            {
+              // 未超出预估
+              data.cost <= data.predict ?
+                <Progress
+                  showInfo={false}
+                  percent={Math.floor(data.cost / data.predict * 100)}
+                  steps={data.predict}
+                  strokeColor={'green'}
+                /> :
+                // 超出预估，超出部分标记为红色
+                <Progress
+                  showInfo={false}
+                  percent={100}
+                  steps={data.cost}
+                  strokeColor={
+                    new Array(data.cost).fill('green').fill('red', -(data.cost - data.predict))
+                  }
+                />
+            }
+          </Tooltip>
         </p>
       </div>
     </Card >
@@ -262,12 +290,11 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
             console.log('Validate Failed:', info);
           });
       }}
-      width='30%'
+      width='40%'
     >
       <Form
-        labelCol={{ span: 3 }}
         form={form}
-        layout="horizontal"
+        layout="vertical"
         name="form_in_modal"
         initialValues={{
           status: 'todo',
@@ -284,6 +311,9 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
         ]}>
           <Input type="textarea" />
         </Form.Item>
+        <Form.Item name="description" label="描述" >
+          <TextArea rows={8} placeholder="该任务的具体细节，调研越充分，预估时间越准确~" />
+        </Form.Item>
         <Form.Item name="status" label="状态">
           <Select>
             <Option key='todo' value='todo'>todo</Option>
@@ -291,25 +321,25 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
             <Option key='done' value='done'>done</Option>
           </Select>
         </Form.Item>
-        <Form.Item name="description" label="描述">
-          <TextArea rows={6} />
+        <Form.Item name="predict" label="预估需要的番茄数">
+          <InputNumber />
         </Form.Item>
-        <Form.Item name="note" label="笔记">
-          <TextArea rows={6} />
+        <Form.Item hidden name="cost" label="实际投入的番茄数">
+          <InputNumber />
         </Form.Item>
       </Form>
     </Modal >
   );
 };
 
-const ClockCom = ({ clock, setClock }) => {
-  const total = 1 * 60;
+const ClockCom = ({ clock, setClock, unit, incClock }) => {
+  const total = unit;
   const [second, setSecond] = useState(total);
   const timerId = useRef();
 
   if (clock && !timerId.current) {
     const id = setInterval(() => {
-      console.log('timer')
+      // console.log('timer')
       setSecond(pre => pre - 1)
     }, 1000);
     timerId.current = id;
@@ -319,6 +349,12 @@ const ClockCom = ({ clock, setClock }) => {
     clearInterval(timerId.current);
   };
 
+  const clear = () => {
+    setClock(false);
+    timerId.current = null;
+    setSecond(total);
+  }
+
   return (
     <Modal
       centered
@@ -326,13 +362,30 @@ const ClockCom = ({ clock, setClock }) => {
       maskClosable={false}
       title="番茄时钟"
       visible={clock}
-      onCancel={() => {
-        setClock(false);
-        clearInterval(timerId.current);
-        timerId.current = null;
-        setSecond(total);
-      }}
-      cancelText="放弃"
+      closeIcon={
+        <Popconfirm
+          title="放弃很容易，但坚持一定很酷！"
+          onCancel={() => {
+            clearInterval(timerId.current);
+            clear()
+          }}
+          okText="坚持"
+          cancelText="放弃"
+          placement='bottom'
+        >
+          <CloseOutlined />
+        </Popconfirm>
+      }
+      footer={
+        second <= 0 ?
+          <Button
+            onClick={() => {
+              incClock()
+              clear()
+            }}
+          >确认</Button>
+          : ''
+      }
     >
       <Progress
         strokeColor={{
@@ -343,7 +396,7 @@ const ClockCom = ({ clock, setClock }) => {
         percent={(1 - second / total) * 100}
         width={460}
         format={(percent) => {
-          console.log(percent)
+          // console.log(percent)
           var m = Math.floor(second / 60);
           if (m.toString().split("").length < 2) {
             m = `0${m}`
@@ -356,5 +409,5 @@ const ClockCom = ({ clock, setClock }) => {
         }}
       />
     </Modal>
-  )
-}
+  );
+};

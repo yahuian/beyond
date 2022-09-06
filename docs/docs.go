@@ -1360,6 +1360,10 @@ const docTemplate = `{
         "db.TomatoTask": {
             "type": "object",
             "properties": {
+                "cost": {
+                    "description": "实际投入的番茄数",
+                    "type": "integer"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -1369,8 +1373,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "note": {
-                    "type": "string"
+                "predict": {
+                    "description": "预估需要的番茄数",
+                    "type": "integer"
                 },
                 "status": {
                     "description": "todo,doing,done",
@@ -1560,13 +1565,15 @@ const docTemplate = `{
                 "title"
             ],
             "properties": {
+                "cost": {
+                    "type": "integer"
+                },
                 "description": {
                     "type": "string",
                     "maxLength": 5000
                 },
-                "note": {
-                    "type": "string",
-                    "maxLength": 5000
+                "predict": {
+                    "type": "integer"
                 },
                 "status": {
                     "type": "string",
@@ -1589,6 +1596,9 @@ const docTemplate = `{
                 "title"
             ],
             "properties": {
+                "cost": {
+                    "type": "integer"
+                },
                 "description": {
                     "type": "string",
                     "maxLength": 5000
@@ -1596,9 +1606,8 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "note": {
-                    "type": "string",
-                    "maxLength": 5000
+                "predict": {
+                    "type": "integer"
                 },
                 "status": {
                     "type": "string",

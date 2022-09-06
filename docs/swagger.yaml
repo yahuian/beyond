@@ -108,14 +108,18 @@ definitions:
     type: object
   db.TomatoTask:
     properties:
+      cost:
+        description: 实际投入的番茄数
+        type: integer
       created_at:
         type: string
       description:
         type: string
       id:
         type: integer
-      note:
-        type: string
+      predict:
+        description: 预估需要的番茄数
+        type: integer
       status:
         description: todo,doing,done
         type: string
@@ -243,12 +247,13 @@ definitions:
     type: object
   task.createParam:
     properties:
+      cost:
+        type: integer
       description:
         maxLength: 5000
         type: string
-      note:
-        maxLength: 5000
-        type: string
+      predict:
+        type: integer
       status:
         enum:
         - todo
@@ -263,14 +268,15 @@ definitions:
     type: object
   task.updateParam:
     properties:
+      cost:
+        type: integer
       description:
         maxLength: 5000
         type: string
       id:
         type: integer
-      note:
-        maxLength: 5000
-        type: string
+      predict:
+        type: integer
       status:
         enum:
         - todo

@@ -33,8 +33,9 @@ func Update(c *ctx.Context) {
 		Title:       param.Title,
 		Description: param.Description,
 		Status:      param.Status,
-		Note:        param.Note,
 		CreatedAt:   time.Now(),
+		Predict:     param.Predict,
+		Cost:        param.Cost,
 	}
 
 	count, err := db.Count[db.TomatoTask]("id = ?", data.ID)

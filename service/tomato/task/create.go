@@ -12,7 +12,8 @@ type createParam struct {
 	Title       string `json:"title" validate:"required,max=100"`
 	Description string `json:"description" validate:"max=5000"`
 	Status      string `json:"status" validate:"oneof=todo doing done"`
-	Note        string `json:"note" validate:"max=5000"`
+	Predict     int    `json:"predict"`
+	Cost        int    `json:"cost"`
 }
 
 // @Summary 添加任务
@@ -34,6 +35,8 @@ func Create(c *ctx.Context) {
 		Description: param.Description,
 		Status:      param.Status,
 		CreatedAt:   time.Now(),
+		Predict:     param.Predict,
+		Cost:        param.Cost,
 	}
 
 	if err := db.Create(data); err != nil {
