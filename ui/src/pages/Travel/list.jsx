@@ -24,20 +24,22 @@ export default function TravelList() {
 
   const [data, setData] = useState([]);
 
-  const pageSize = 3;
+  const [size, setSize] = useState(3);
   const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     request.get('/travel', {
-      param: {
-        size: pageSize,
+      params: {
+        size: size,
         page: page,
       }
     }).then(function (response) {
-      setData(response.data.data)
+      setData(response.data.data);
+      setTotal(response.data.count);
     })
     // eslint-disable-next-line
-  }, [refresh]);
+  }, [page, size, total, refresh]);
 
   // 表单
   const [form] = Form.useForm();
@@ -76,10 +78,13 @@ export default function TravelList() {
         itemLayout="vertical"
         size="large"
         pagination={{
-          onChange: (page) => {
+          onChange: (page, size) => {
+            console.log(page, size)
             setPage(page)
+            setSize(size)
           },
-          pageSize: pageSize,
+          pageSize: size,
+          total: total,
         }}
         dataSource={data}
         renderItem={(item) => (

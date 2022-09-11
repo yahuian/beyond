@@ -21,13 +21,14 @@ import {
   PlusSquareOutlined,
   CloseOutlined,
 } from '@ant-design/icons';
-import { request } from '../../utils/request';
 import moment from 'moment';
+import { DateShowFormat } from '../../utils/date';
+import { request } from '../../utils/request';
 
 const { TextArea } = Input;
 const { Option } = Select;
 
-export default function Kanban() {
+export default function Kanban({ param }) {
   const [refresh, setRefresh] = useState(false);
   const [dataList, setDataList] = useState([]);
 
@@ -36,18 +37,21 @@ export default function Kanban() {
 
   const [clock, setClock] = useState(false);
 
-  const unit = 5; // TODO 可修改
+  const unit = param.duration * 60;
 
-  useEffect(
-    () => {
-      request.get(`/tomato/task`)
-        .then(function (response) {
-          setDataList(response.data.data);
-        })
-    }, [refresh]
-  );
+  useEffect(() => {
+    request.get(`/tomato/task`, {
+      params: {
+        "plan_id": [param.planID]
+      },
+    }).then(function (response) {
+      setDataList(response.data.data);
+    })
+    // eslint-disable-next-line
+  }, [refresh]);
 
   const onCreate = (values) => {
+    values.plan_id = param.planID
     const payload = JSON.stringify(values);
     request.post(`/tomato/task`, payload, {
       headers: {
@@ -60,6 +64,7 @@ export default function Kanban() {
   };
 
   const onEdit = (values) => {
+    values.plan_id = param.planID
     const payload = JSON.stringify(values);
     request.put(`/tomato/task`, payload, {
       headers: {
@@ -72,7 +77,6 @@ export default function Kanban() {
   };
 
   const editClick = (data) => {
-    data['created_at'] = moment(data['created_at']);
     form.setFieldsValue(data);
     setVisible(true);
   };
@@ -149,7 +153,10 @@ export default function Kanban() {
                   <Button
                     block
                     type="link"
-                    onClick={() => setVisible(true)}
+                    onClick={() => {
+                      form.resetFields();
+                      setVisible(true);
+                    }}
                   >
                     <PlusSquareOutlined />添加任务
                   </Button> :
@@ -168,6 +175,10 @@ export default function Kanban() {
           setVisible(false);
           form.resetFields();
         }}
+        availableTomato={
+          dataList.length === 0 ? param.totalPredict :
+            param.totalPredict - dataList.map((v) => v.predict).reduce((pre, cur) => pre + cur)
+        }
       />
       <ClockCom
         clock={clock}
@@ -266,12 +277,15 @@ const CardCom = ({ headColor, data, editClick, onDelete, clockClick }) => {
             }
           </Tooltip>
         </p>
+        <p>
+          {moment(data.created_at).format(DateShowFormat)}
+        </p>
       </div>
     </Card >
   );
 };
 
-const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
+const FormCom = ({ form, visible, onCreate, onEdit, onCancel, availableTomato }) => {
   return (
     <Modal
       visible={visible}
@@ -283,7 +297,6 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
         form
           .validateFields()
           .then((values) => {
-            form.resetFields();
             values['id'] === undefined ? onCreate(values) : onEdit(values)
           })
           .catch((info) => {
@@ -293,6 +306,7 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
       width='40%'
     >
       <Form
+        style={{ padding: "0px 8px 0px 8px" }}
         form={form}
         layout="vertical"
         name="form_in_modal"
@@ -306,12 +320,23 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
         <Form.Item name="title" label="标题" rules={[
           {
             required: true,
-            message: '请输入标题',
+            message: '不可为空',
+          },
+          {
+            type: 'string',
+            max: 100,
+            message: '最多可输入100个字符'
           }
         ]}>
           <Input type="textarea" />
         </Form.Item>
-        <Form.Item name="description" label="描述" >
+        <Form.Item name="description" label="描述" rules={[
+          {
+            type: 'string',
+            max: 5000,
+            message: '最多可输入5000个字符'
+          }
+        ]}>
           <TextArea rows={8} placeholder="该任务的具体细节，调研越充分，预估时间越准确~" />
         </Form.Item>
         <Form.Item name="status" label="状态">
@@ -321,8 +346,17 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
             <Option key='done' value='done'>done</Option>
           </Select>
         </Form.Item>
-        <Form.Item name="predict" label="预估需要的番茄数">
-          <InputNumber />
+        <Form.Item name="predict" label="预估需要的番茄数" rules={[
+          {
+            required: true,
+            message: '不可为空',
+          }
+        ]}>
+          <InputNumber
+            min={1} max={availableTomato}
+            style={{ width: '225px' }}
+            placeholder={`本计划剩余可用的番茄数：${availableTomato}`}
+          />
         </Form.Item>
         <Form.Item hidden name="cost" label="实际投入的番茄数">
           <InputNumber />

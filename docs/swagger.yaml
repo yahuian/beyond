@@ -106,6 +106,33 @@ definitions:
         description: 使用者 ID
         type: integer
     type: object
+  db.TomatoPlan:
+    properties:
+      cost:
+        description: 实际投入的番茄数
+        type: integer
+      cost_time:
+        description: 投入时间 = TomatoDuration * Cost
+        type: integer
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      predict:
+        description: 预估可投入的番茄数
+        type: integer
+      tasks:
+        items:
+          $ref: '#/definitions/db.TomatoTask'
+        type: array
+      title:
+        type: string
+      tomato_duration:
+        description: 每个番茄的时长，单位为分钟
+        type: integer
+    type: object
   db.TomatoTask:
     properties:
       cost:
@@ -116,6 +143,8 @@ definitions:
       description:
         type: string
       id:
+        type: integer
+      plan_id:
         type: integer
       predict:
         description: 预估需要的番茄数
@@ -245,14 +274,54 @@ definitions:
     - id
     - name
     type: object
-  task.createParam:
+  plan.createParam:
     properties:
-      cost:
-        type: integer
       description:
         maxLength: 5000
         type: string
       predict:
+        minimum: 1
+        type: integer
+      title:
+        maxLength: 100
+        type: string
+      tomato_duration:
+        maximum: 60
+        minimum: 1
+        type: integer
+    required:
+    - title
+    type: object
+  plan.updateParam:
+    properties:
+      description:
+        maxLength: 5000
+        type: string
+      id:
+        type: integer
+      predict:
+        minimum: 1
+        type: integer
+      title:
+        maxLength: 100
+        type: string
+      tomato_duration:
+        maximum: 60
+        minimum: 1
+        type: integer
+    required:
+    - id
+    - title
+    type: object
+  task.createParam:
+    properties:
+      description:
+        maxLength: 5000
+        type: string
+      plan_id:
+        type: integer
+      predict:
+        minimum: 1
         type: integer
       status:
         enum:
@@ -264,6 +333,7 @@ definitions:
         maxLength: 100
         type: string
     required:
+    - plan_id
     - title
     type: object
   task.updateParam:
@@ -275,7 +345,10 @@ definitions:
         type: string
       id:
         type: integer
+      plan_id:
+        type: integer
       predict:
+        minimum: 1
         type: integer
       status:
         enum:
@@ -288,6 +361,7 @@ definitions:
         type: string
     required:
     - id
+    - plan_id
     - title
     type: object
   travel.allListResp:
@@ -813,6 +887,114 @@ paths:
       summary: 上传
       tags:
       - 文件
+  /tomato/plan:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/ctx.IDList'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ctx.Response'
+      summary: 删除计划
+      tags:
+      - 番茄任务
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: size
+        in: query
+        name: size
+        type: integer
+      - description: id
+        in: query
+        name: id[]
+        type: integer
+      - description: created_at
+        in: query
+        name: created_at[]
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/db.TomatoPlan'
+                  type: array
+              type: object
+      summary: 计划列表
+      tags:
+      - 番茄任务
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/plan.createParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/db.TomatoPlan'
+              type: object
+      summary: 创建计划
+      tags:
+      - 番茄任务
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/plan.updateParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/db.TomatoPlan'
+              type: object
+      summary: 更新计划
+      tags:
+      - 番茄任务
   /tomato/task:
     delete:
       consumes:
@@ -841,6 +1023,10 @@ paths:
       - description: id
         in: query
         name: id[]
+        type: integer
+      - description: plan id
+        in: query
+        name: plan_id[]
         type: integer
       - description: created_at
         in: query

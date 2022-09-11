@@ -812,6 +812,186 @@ const docTemplate = `{
                 }
             }
         },
+        "/tomato/plan": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "番茄任务"
+                ],
+                "summary": "计划列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "size",
+                        "name": "size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id[]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "created_at",
+                        "name": "created_at[]",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/db.TomatoPlan"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "番茄任务"
+                ],
+                "summary": "更新计划",
+                "parameters": [
+                    {
+                        "description": "request payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/plan.updateParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/db.TomatoPlan"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "番茄任务"
+                ],
+                "summary": "创建计划",
+                "parameters": [
+                    {
+                        "description": "request payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/plan.createParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/db.TomatoPlan"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "番茄任务"
+                ],
+                "summary": "删除计划",
+                "parameters": [
+                    {
+                        "description": "request payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ctx.IDList"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ctx.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/tomato/task": {
             "get": {
                 "consumes": [
@@ -829,6 +1009,12 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "id",
                         "name": "id[]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "plan id",
+                        "name": "plan_id[]",
                         "in": "query"
                     },
                     {
@@ -1357,6 +1543,45 @@ const docTemplate = `{
                 }
             }
         },
+        "db.TomatoPlan": {
+            "type": "object",
+            "properties": {
+                "cost": {
+                    "description": "实际投入的番茄数",
+                    "type": "integer"
+                },
+                "cost_time": {
+                    "description": "投入时间 = TomatoDuration * Cost",
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "predict": {
+                    "description": "预估可投入的番茄数",
+                    "type": "integer"
+                },
+                "tasks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.TomatoTask"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "tomato_duration": {
+                    "description": "每个番茄的时长，单位为分钟",
+                    "type": "integer"
+                }
+            }
+        },
         "db.TomatoTask": {
             "type": "object",
             "properties": {
@@ -1371,6 +1596,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
+                    "type": "integer"
+                },
+                "plan_id": {
                     "type": "integer"
                 },
                 "predict": {
@@ -1559,21 +1787,77 @@ const docTemplate = `{
                 }
             }
         },
-        "task.createParam": {
+        "plan.createParam": {
             "type": "object",
             "required": [
                 "title"
             ],
             "properties": {
-                "cost": {
-                    "type": "integer"
-                },
                 "description": {
                     "type": "string",
                     "maxLength": 5000
                 },
                 "predict": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "tomato_duration": {
+                    "type": "integer",
+                    "maximum": 60,
+                    "minimum": 1
+                }
+            }
+        },
+        "plan.updateParam": {
+            "type": "object",
+            "required": [
+                "id",
+                "title"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 5000
+                },
+                "id": {
                     "type": "integer"
+                },
+                "predict": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "tomato_duration": {
+                    "type": "integer",
+                    "maximum": 60,
+                    "minimum": 1
+                }
+            }
+        },
+        "task.createParam": {
+            "type": "object",
+            "required": [
+                "plan_id",
+                "title"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 5000
+                },
+                "plan_id": {
+                    "type": "integer"
+                },
+                "predict": {
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "status": {
                     "type": "string",
@@ -1593,6 +1877,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "id",
+                "plan_id",
                 "title"
             ],
             "properties": {
@@ -1606,8 +1891,12 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "predict": {
+                "plan_id": {
                     "type": "integer"
+                },
+                "predict": {
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "status": {
                     "type": "string",

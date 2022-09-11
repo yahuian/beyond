@@ -41,7 +41,7 @@ func List(c *ctx.Context) {
 	}
 
 	if count == 0 {
-		c.SuccessWith(ctx.Response{Msg: "success", Count: 0})
+		c.SuccessWith(ctx.Response{Msg: "success", Data: []db.{{.Model}}{}, Count: 0})
 		return
 	}
 

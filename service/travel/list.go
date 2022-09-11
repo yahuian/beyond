@@ -62,7 +62,7 @@ func List(c *ctx.Context) {
 		return
 	}
 
-	c.SuccessWith(ctx.Response{Msg: "success", Data: list, Count: 0})
+	c.SuccessWith(ctx.Response{Msg: "success", Data: list, Count: count})
 }
 
 type allListResp struct {
