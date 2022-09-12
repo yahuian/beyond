@@ -128,7 +128,7 @@ func Line(c *ctx.Context) {
 
 	res := make([]base, 0)
 	err = db.Client().Select(selectVal).Model(db.BillDetails{}).
-		Where(query, args...).Group(groupBy).Limit(limit).Scan(&res).Error
+		Where(query, args...).Group(groupBy).Order("key desc").Limit(limit).Scan(&res).Error
 	if err != nil {
 		logx.Errorf("%+v", err)
 		c.InternalErr(err)
@@ -164,6 +164,9 @@ func Line(c *ctx.Context) {
 			result.Budget += v.Budget
 		}
 	}
+
+	// 新数据放到最右侧
+	slicex.Reverse(result.Bases)
 
 	c.SuccessWith(ctx.Response{
 		Msg:  "success",

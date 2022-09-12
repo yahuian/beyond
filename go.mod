@@ -13,7 +13,7 @@ require (
 	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a
 	github.com/swaggo/gin-swagger v1.5.1
 	github.com/swaggo/swag v1.8.4
-	github.com/yahuian/gox v0.0.0-20220802090858-42a4cd866f08
+	github.com/yahuian/gox v0.0.0-20220912142136-856618961d03
 	github.com/zserge/lorca v0.1.10
 	gorm.io/gorm v1.23.8
 )
