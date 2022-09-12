@@ -124,6 +124,19 @@ export default function Kanban({ param }) {
     },
   ];
 
+  const availableTomato = () => {
+    if (dataList.length === 0) {
+      return param.totalPredict
+    }
+    // 编辑时应该加上本任务的“预估需要的番茄数量”
+    let count = 0
+    const predict = form.getFieldValue('predict')
+    if (predict !== undefined) {
+      count = predict
+    }
+    return param.totalPredict - dataList.map((v) => v.predict).reduce((pre, cur) => pre + cur) + count
+  }
+
   return (
     <Row
       gutter={32}
@@ -175,10 +188,7 @@ export default function Kanban({ param }) {
           setVisible(false);
           form.resetFields();
         }}
-        availableTomato={
-          dataList.length === 0 ? param.totalPredict :
-            param.totalPredict - dataList.map((v) => v.predict).reduce((pre, cur) => pre + cur)
-        }
+        availableTomato={availableTomato()}
       />
       <ClockCom
         clock={clock}
