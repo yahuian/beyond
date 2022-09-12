@@ -32,6 +32,8 @@ export function Chart() {
 
   const query = { kind, type, ledger }
 
+  const [lineCharts, setLineCharts] = useState(['day', 'week'])
+
   useEffect(
     () => {
       request.get(`/bill/type`, {
@@ -56,8 +58,19 @@ export function Chart() {
     <div>
       <Row style={{ paddingBottom: 16 }}>
         <Select
+          mode="multiple"
+          defaultValue={lineCharts}
+          style={{ width: 200, }}
+          onChange={(v) => { setLineCharts(v) }}
+        >
+          <Option value="day">日</Option>
+          <Option value="week">周</Option>
+          <Option value="month">月</Option>
+          <Option value="year">年</Option>
+        </Select>
+        <Select
           defaultValue={defaultKind}
-          style={{ width: 70 }}
+          style={{ width: 80, paddingLeft: 8 }}
           onChange={(value) => setKind(value)}
         >
           <Option value="pay">支出</Option>
@@ -96,19 +109,16 @@ export function Chart() {
           }
         </Select>
       </Row>
-      <Row>
-        <Col span={6}>
-          <div style={{ height: 300 }}><LineChart date='day' query={query} /></div>
-        </Col>
-        <Col span={6}>
-          <div style={{ height: 300 }}><LineChart date='week' query={query} /></div>
-        </Col>
-        <Col span={6}>
-          <div style={{ height: 300 }}><LineChart date='month' query={query} /></div>
-        </Col>
-        <Col span={6}>
-          <div style={{ height: 300 }}><LineChart date='year' query={query} /></div>
-        </Col>
+      <Row gutter={32}>
+        {
+          lineCharts.map((v) => {
+            return <Col
+              span={24 / lineCharts.length}
+            >
+              <div style={{ height: 300 }}><LineChart date={v} query={query} /></div>
+            </Col>
+          })
+        }
       </Row>
       <Row style={{ paddingTop: 16 }}>
         <Col>
