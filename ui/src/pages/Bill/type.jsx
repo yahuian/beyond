@@ -32,9 +32,9 @@ export default function Type() {
       render: (_, record) => {
         return (
           <Typography.Link onClick={() => {
-            record['created_at'] = moment(record['created_at'])
-            setVisible(true);
+            record['created_at'] = moment(record['created_at']);
             form.setFieldsValue(record);
+            setVisible(true);
           }}>
             编辑
           </Typography.Link>
@@ -154,7 +154,10 @@ export default function Type() {
         </Button>
         <Button
           type="dashed"
-          onClick={() => setVisible(true)}
+          onClick={() => {
+            form.resetFields();
+            setVisible(true);
+          }}
           disabled={hasSelected}
         >
           <PlusSquareOutlined />添加
@@ -183,6 +186,7 @@ export default function Type() {
 const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
   return (
     <Modal
+      maskClosable={false}
       visible={visible}
       title="分类"
       okText="确定"
@@ -192,7 +196,6 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
         form
           .validateFields()
           .then((values) => {
-            form.resetFields();
             values['id'] === undefined ? onCreate(values) : onEdit(values)
           })
           .catch((info) => {

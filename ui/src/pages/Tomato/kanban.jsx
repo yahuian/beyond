@@ -184,10 +184,7 @@ export default function Kanban({ param }) {
         visible={visible}
         onCreate={onCreate}
         onEdit={onEdit}
-        onCancel={() => {
-          setVisible(false);
-          form.resetFields();
-        }}
+        onCancel={() => setVisible(false)}
         availableTomato={availableTomato()}
       />
       <ClockCom
@@ -402,7 +399,6 @@ const ClockCom = ({ clock, setClock, unit, incClock }) => {
   return (
     <Modal
       centered
-      mask
       maskClosable={false}
       title="番茄时钟"
       visible={clock}

@@ -95,7 +95,6 @@ export default function TravelList() {
                 删除
               </Typography.Link>,
               <Typography.Link onClick={() => {
-                form.resetFields();
                 item['created_at'] = moment(item['created_at']);
                 form.setFieldsValue(item);
                 setFileList(
@@ -182,6 +181,7 @@ const FormCom = ({ form, visible, fileList, setFileList, onEdit, onCancel }) => 
 
   return (
     <Modal
+      maskClosable={false}
       visible={visible}
       title="标记"
       okText="确定"

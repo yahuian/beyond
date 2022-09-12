@@ -165,6 +165,7 @@ const MapCom = ({ cities, onclick }) => {
 const FormCom = ({ form, visible, onCreate, onCancel }) => {
   return (
     <Modal
+      maskClosable={false}
       visible={visible}
       title="标记"
       okText="确定"

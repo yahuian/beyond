@@ -107,10 +107,7 @@ export default function Plan({ setParam }) {
         form={form}
         visible={visible}
         onCreate={onCreate}
-        onCancel={() => {
-          setVisible(false);
-          form.resetFields();
-        }}
+        onCancel={() => setVisible(false)}
         onEdit={onEdit}
       />
       <List

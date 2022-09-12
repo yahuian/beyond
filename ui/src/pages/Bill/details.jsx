@@ -78,9 +78,9 @@ export default function Details() {
         return (
           <Typography.Link onClick={() => {
             // fix: Uncaught TypeError: date.clone is not a function
-            record['created_at'] = moment(record['created_at'])
-            setVisible(true);
+            record['created_at'] = moment(record['created_at']);
             form.setFieldsValue(record);
+            setVisible(true);
           }}>
             编辑
           </Typography.Link>
@@ -218,7 +218,10 @@ export default function Details() {
         </Button>
         <Button
           type="dashed"
-          onClick={() => setVisible(true)}
+          onClick={() => {
+            form.resetFields();
+            setVisible(true);
+          }}
           disabled={hasSelected}
         >
           <PlusSquareOutlined />记账
@@ -257,6 +260,7 @@ function getDefaultLedger(params) {
 const FormCom = ({ form, typeData, ledgerData, visible, onCreate, onEdit, onCancel }) => {
   return (
     <Modal
+      maskClosable={false}
       visible={visible}
       title="记账"
       okText="确定"
@@ -266,7 +270,6 @@ const FormCom = ({ form, typeData, ledgerData, visible, onCreate, onEdit, onCanc
         form
           .validateFields()
           .then((values) => {
-            form.resetFields();
             values['id'] === undefined ? onCreate(values) : onEdit(values)
           })
           .catch((info) => {
