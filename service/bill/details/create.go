@@ -20,7 +20,7 @@ type createParam struct {
 }
 
 // @Summary 增加明细
-// @Tags    bill
+// @Tags    每日记账
 // @Accept  json
 // @Produce json
 // @param   payload body     createParam true "request payload"

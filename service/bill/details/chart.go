@@ -27,7 +27,7 @@ type base struct {
 }
 
 // @Summary 饼图
-// @Tags    bill
+// @Tags    每日记账
 // @Accept  json
 // @Produce json
 // @Param   field        query    string false "which field to aggregate" Enums(ledger, type)
@@ -89,7 +89,7 @@ type lineResp struct {
 }
 
 // @Summary 折线图
-// @Tags    bill
+// @Tags    每日记账
 // @Accept  json
 // @Produce json
 // @Param   date     query    string true  "date" Enums(day,week,month,year)

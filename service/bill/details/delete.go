@@ -7,7 +7,7 @@ import (
 )
 
 // @Summary 删除明细
-// @Tags    bill
+// @Tags    每日记账
 // @Accept  json
 // @Produce json
 // @param   payload body     ctx.IDList true "request payload"

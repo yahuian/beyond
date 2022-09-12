@@ -15,7 +15,7 @@ type updateParam struct {
 }
 
 // @Summary 更新分类
-// @Tags    bill
+// @Tags    每日记账
 // @Accept  json
 // @Produce json
 // @param   payload body     updateParam true "request payload"

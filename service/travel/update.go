@@ -14,7 +14,7 @@ type updateParam struct {
 }
 
 // @Summary 更新标记
-// @Tags    travel
+// @Tags    旅行足迹
 // @Accept  json
 // @Produce json
 // @param   payload body     updateParam true "request payload"

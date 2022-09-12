@@ -25,7 +25,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bill"
+                    "每日记账"
                 ],
                 "summary": "查询明细",
                 "parameters": [
@@ -104,7 +104,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bill"
+                    "每日记账"
                 ],
                 "summary": "更新明细",
                 "parameters": [
@@ -147,7 +147,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bill"
+                    "每日记账"
                 ],
                 "summary": "增加明细",
                 "parameters": [
@@ -190,7 +190,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bill"
+                    "每日记账"
                 ],
                 "summary": "删除明细",
                 "parameters": [
@@ -223,7 +223,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bill"
+                    "每日记账"
                 ],
                 "summary": "折线图",
                 "parameters": [
@@ -294,7 +294,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bill"
+                    "每日记账"
                 ],
                 "summary": "饼图",
                 "parameters": [
@@ -365,7 +365,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bill"
+                    "每日记账"
                 ],
                 "summary": "账本列表",
                 "parameters": [
@@ -426,7 +426,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bill"
+                    "每日记账"
                 ],
                 "summary": "更新账本",
                 "parameters": [
@@ -469,7 +469,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bill"
+                    "每日记账"
                 ],
                 "summary": "添加账本",
                 "parameters": [
@@ -512,7 +512,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bill"
+                    "每日记账"
                 ],
                 "summary": "删除账本",
                 "parameters": [
@@ -545,7 +545,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bill"
+                    "每日记账"
                 ],
                 "summary": "分类列表",
                 "parameters": [
@@ -606,7 +606,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bill"
+                    "每日记账"
                 ],
                 "summary": "更新分类",
                 "parameters": [
@@ -649,7 +649,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bill"
+                    "每日记账"
                 ],
                 "summary": "添加分类",
                 "parameters": [
@@ -692,7 +692,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bill"
+                    "每日记账"
                 ],
                 "summary": "删除分类",
                 "parameters": [
@@ -1175,7 +1175,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "travel"
+                    "旅行足迹"
                 ],
                 "summary": "足迹",
                 "parameters": [
@@ -1236,7 +1236,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "travel"
+                    "旅行足迹"
                 ],
                 "summary": "更新标记",
                 "parameters": [
@@ -1279,7 +1279,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "travel"
+                    "旅行足迹"
                 ],
                 "summary": "标记地点",
                 "parameters": [
@@ -1322,7 +1322,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "travel"
+                    "旅行足迹"
                 ],
                 "summary": "删除标记",
                 "parameters": [
@@ -1355,7 +1355,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "travel"
+                    "旅行足迹"
                 ],
                 "summary": "所有标记过的城市",
                 "responses": {

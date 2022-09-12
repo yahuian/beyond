@@ -17,7 +17,7 @@ type createParam struct {
 }
 
 // @Summary 标记地点
-// @Tags    travel
+// @Tags    旅行足迹
 // @Accept  json
 // @Produce json
 // @param   payload body     createParam true "request payload"

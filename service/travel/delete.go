@@ -7,7 +7,7 @@ import (
 )
 
 // @Summary 删除标记
-// @Tags    travel
+// @Tags    旅行足迹
 // @Accept  json
 // @Produce json
 // @param   payload body     ctx.IDList true "request payload"

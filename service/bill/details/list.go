@@ -15,7 +15,7 @@ type listParam struct {
 }
 
 // @Summary 查询明细
-// @Tags    bill
+// @Tags    每日记账
 // @Accept  json
 // @Produce json
 // @Param   page         query    int    false "page"

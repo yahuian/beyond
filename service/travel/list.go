@@ -14,7 +14,7 @@ type listParam struct {
 }
 
 // @Summary 足迹
-// @Tags    travel
+// @Tags    旅行足迹
 // @Accept  json
 // @Produce json
 // @Param   page         query    int    false "page"
@@ -70,7 +70,7 @@ type allListResp struct {
 }
 
 // @Summary 所有标记过的城市
-// @Tags    travel
+// @Tags    旅行足迹
 // @Accept  json
 // @Produce json
 // @Success 200 {object} ctx.Response{data=[]allListResp}

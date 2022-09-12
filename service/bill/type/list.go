@@ -12,7 +12,7 @@ type listParam struct {
 }
 
 // @Summary 分类列表
-// @Tags    bill
+// @Tags    每日记账
 // @Accept  json
 // @Produce json
 // @Param   page         query    int    false "page"
