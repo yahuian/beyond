@@ -238,19 +238,18 @@ const PieChart = (param) => {
     data,
     angleField: 'value',
     colorField: 'key',
-    radius: 0.9,
+    legend: true,
+    appendPadding: 10,
     label: {
-      type: 'inner',
-      offset: '-30%',
-      content: ({ percent }) => `${(percent * 100).toFixed(0)}%`,
-      style: {
-        fontSize: 14,
-        textAlign: 'center',
-      },
+      type: 'spider',
+      content: '{name} {percentage} {value}元',
     },
     interactions: [
       {
         type: 'element-active',
+      },
+      {
+        type: 'pie-legend-active',
       },
     ],
   };
@@ -258,6 +257,4 @@ const PieChart = (param) => {
   return <Pie {...config} />;
 };
 
-// BUG 页面缩放后词云图会变白
-// TODO 饼图支持下钻（名称二级饼图）
 // TODO 日期选择框选第二个图标会立刻刷新
