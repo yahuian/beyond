@@ -63,24 +63,34 @@ const routers = [
 export default function App() {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(true);
+  const [left, setLeft] = useState(76);
 
   return (
     <Layout style={{ minHeight: '100vh', }}>
       <Sider
-        collapsedWidth='76'
-        width='128'
+        collapsedWidth={left}
+        width={left}
         collapsible
         collapsed={collapsed}
         trigger={null}
         style={{
           background: 'white',
           borderBottomRightRadius: '20px',
-          borderTopRightRadius: '20px'
+          borderTopRightRadius: '20px',
+          overflow: 'auto',
+          height: '100vh',
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          bottom: 0,
         }}
       >
         <div
           style={{ padding: '16px 8px 8px 8px' }}
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={() => {
+            setCollapsed(!collapsed);
+            collapsed === true ? setLeft(128) : setLeft(76)
+          }}
         >
           {
             collapsed ? <img src={logo} alt='logo.png' height='60px'></img> :
@@ -96,7 +106,12 @@ export default function App() {
         ></Menu>
       </Sider>
       <Layout className="site-layout">
-        <Content style={{ margin: '16px 16px' }}>
+        <Content
+          style={{
+            margin: '16px 16px',
+            marginLeft: 16 + left,
+          }}
+        >
           <div
             className="site-layout-background"
             style={{ padding: 24, minHeight: 360, borderRadius: '25px' }}
@@ -117,5 +132,4 @@ export default function App() {
 };
 
 // TODO 适配移动端
-// TODO 侧边栏固定不动
 // TODO 侧边栏支持开关，排序
