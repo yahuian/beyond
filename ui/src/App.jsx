@@ -75,8 +75,8 @@ export default function App() {
         trigger={null}
         style={{
           background: 'white',
-          borderBottomRightRadius: '20px',
-          borderTopRightRadius: '20px',
+          borderBottomRightRadius: '25px',
+          borderTopRightRadius: '25px',
           overflow: 'auto',
           height: '100vh',
           position: 'fixed',
@@ -108,13 +108,12 @@ export default function App() {
       <Layout className="site-layout">
         <Content
           style={{
-            margin: '16px 16px',
             marginLeft: 16 + left,
           }}
         >
           <div
             className="site-layout-background"
-            style={{ padding: 24, minHeight: 360, borderRadius: '25px' }}
+            style={{ padding: '0px 24px 24px 24px', minHeight: 360 }}
           >
             <Routes>
               {

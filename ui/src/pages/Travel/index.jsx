@@ -17,6 +17,12 @@ export default function Travel() {
       defaultActiveKey="details"
       destroyInactiveTabPane
       size='large'
+      tabBarStyle={{
+        position: 'sticky',
+        top: '0',
+        zIndex: '999',
+        background: 'white',
+      }}
     >
       <TabPane tab={<span>< EnvironmentTwoTone />地图</span>} key="details">
         <Map />

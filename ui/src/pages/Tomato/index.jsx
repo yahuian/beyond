@@ -28,6 +28,12 @@ export default function Tomato() {
       destroyInactiveTabPane
       size='large'
       onTabClick={(v) => setParam({ ...param, tab: v })}
+      tabBarStyle={{
+        position: 'sticky',
+        top: '0',
+        zIndex: '999',
+        background: 'white',
+      }}
     >
       <TabPane tab={<span>< ScheduleTwoTone />计划</span>} key="plan">
         <Plan

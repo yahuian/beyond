@@ -17,6 +17,12 @@ export default function Bill() {
       defaultActiveKey="details"
       destroyInactiveTabPane
       size='large'
+      tabBarStyle={{
+        position: 'sticky',
+        top: '0',
+        zIndex: '999',
+        background: 'white',
+      }}
     >
       <TabPane tab={<span><AccountBookTwoTone />明细</span>} key="details">
         <Details />

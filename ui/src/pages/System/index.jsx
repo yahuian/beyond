@@ -14,6 +14,12 @@ export default function System() {
       defaultActiveKey="contact"
       destroyInactiveTabPane
       size='large'
+      tabBarStyle={{
+        position: 'sticky',
+        top: '0',
+        zIndex: '999',
+        background: 'white',
+      }}
     >
       <TabPane tab={<span><PhoneTwoTone />联系我们</span>} key="contact">
         <Typography>
