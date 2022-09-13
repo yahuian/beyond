@@ -1,5 +1,5 @@
 import { React, useState } from 'react';
-import { BrowserRouter, NavLink, Routes, Route, Navigate } from 'react-router-dom';
+import { NavLink, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import {
   MoneyCollectTwoTone,
@@ -61,44 +61,61 @@ const routers = [
 ]
 
 export default function App() {
+  const location = useLocation();
   const [collapsed, setCollapsed] = useState(true);
+
   return (
-    <BrowserRouter>
-      <Layout style={{ minHeight: '100vh', }}>
-        <Sider
-          collapsedWidth='76' width='128'
-          collapsible collapsed={collapsed}
-          trigger={null}
-          style={{
-            background: 'white',
-            borderBottomRightRadius: '20px',
-            borderTopRightRadius: '20px'
-          }}
+    <Layout style={{ minHeight: '100vh', }}>
+      <Sider
+        collapsedWidth='76'
+        width='128'
+        collapsible
+        collapsed={collapsed}
+        trigger={null}
+        style={{
+          background: 'white',
+          borderBottomRightRadius: '20px',
+          borderTopRightRadius: '20px'
+        }}
+      >
+        <div
+          style={{ padding: '16px 8px 8px 8px' }}
+          onClick={() => setCollapsed(!collapsed)}
         >
-          <div style={{ padding: '16px 8px 8px 8px' }} onClick={() => setCollapsed(!collapsed)}>
-            {
-              collapsed ? <img src={logo} alt='logo.png' height='60px'></img> :
-                <div style={{ padding: 8 }}><img src={word} alt='logo.png' height='60px'></img></div>
-            }
+          {
+            collapsed ? <img src={logo} alt='logo.png' height='60px'></img> :
+              <div style={{ padding: 8 }}><img src={word} alt='logo.png' height='60px'></img></div>
+          }
+        </div>
+        <Menu
+          theme="light"
+          defaultSelectedKeys={[routers[0].key]}
+          mode="inline"
+          items={routers}
+          selectedKeys={[location.pathname]}
+        ></Menu>
+      </Sider>
+      <Layout className="site-layout">
+        <Content style={{ margin: '16px 16px' }}>
+          <div
+            className="site-layout-background"
+            style={{ padding: 24, minHeight: 360, borderRadius: '25px' }}
+          >
+            <Routes>
+              {
+                routers.map((p) => {
+                  return <Route key={p.key} path={p.key} element={p.component}></Route>
+                })
+              }
+              <Route path='*' element={<Navigate to={routers[0].key} />} />
+            </Routes>
           </div>
-          <Menu theme="light" defaultSelectedKeys={[routers[0].key]} mode="inline" items={routers}></Menu>
-        </Sider>
-        <Layout className="site-layout">
-          <Content style={{ margin: '16px 16px' }}>
-            <div className="site-layout-background" style={{ padding: 24, minHeight: 360, borderRadius: '25px' }}>
-              <Routes>
-                {routers.map((p) => { return (<Route key={p.key} path={p.key} element={p.component}></Route>) })}
-                <Route path='*' element={<Navigate to={routers[0].key} />} />
-              </Routes>
-            </div>
-          </Content>
-        </Layout>
+        </Content>
       </Layout>
-    </BrowserRouter >
+    </Layout>
   );
 };
 
 // TODO 适配移动端
 // TODO 侧边栏固定不动
 // TODO 侧边栏支持开关，排序
-// BUG 直接在地址栏输入路由，左侧导航栏未高亮显示
