@@ -6,6 +6,7 @@ import {
   SettingTwoTone,
   CameraTwoTone,
   CarryOutTwoTone,
+  LikeTwoTone,
 } from '@ant-design/icons';
 import './App.css';
 import Bill from './pages/Bill';
@@ -14,6 +15,7 @@ import logo from './assets/logo.png'
 import word from './assets/logo_word.png'
 import Travel from './pages/Travel';
 import Tomato from './pages/Tomato';
+import Habit from './pages/Habit';
 
 const { Content, Sider } = Layout;
 
@@ -25,6 +27,14 @@ const routers = [
       <NavLink to="/tomato">番茄任务</NavLink>
     ),
     component: <Tomato />
+  },
+  {
+    key: '/habit',
+    icon: <LikeTwoTone />,
+    label: (
+      <NavLink to="/habit">习惯打卡</NavLink>
+    ),
+    component: <Habit />
   },
   // {
   //   key: '/news',
