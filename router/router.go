@@ -10,6 +10,7 @@ import (
 	"github.com/yahuian/beyond/config"
 	"github.com/yahuian/beyond/service/bill"
 	"github.com/yahuian/beyond/service/file"
+	"github.com/yahuian/beyond/service/habit"
 	"github.com/yahuian/beyond/service/tomato"
 	"github.com/yahuian/beyond/service/travel"
 	"github.com/yahuian/gox/errorx"
@@ -34,7 +35,7 @@ func Init() error {
 	// 注册前端页面
 	r.Use(static.Serve("/", static.LocalFile("./dist", false)))
 	r.LoadHTMLFiles("./dist/index.html")
-	pages := []string{"bill", "travel", "news", "system", "tomato"}
+	pages := []string{"bill", "travel", "news", "system", "tomato", "habit"}
 	for _, v := range pages {
 		r.GET(v, func(c *gin.Context) {
 			c.HTML(http.StatusOK, "index.html", nil)
@@ -50,6 +51,7 @@ func Init() error {
 		travel.Router, // 旅行地图
 		file.Router,
 		tomato.Router, // 番茄任务
+		habit.Router,  //习惯打卡
 	}
 	for _, f := range routers {
 		f(api)

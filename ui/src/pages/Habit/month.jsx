@@ -1,4 +1,4 @@
-import { React, useState } from 'react'
+import { React, useState, useEffect } from 'react'
 import {
   Calendar,
   Card,
@@ -10,6 +10,7 @@ import {
   Modal,
   Form,
   Button,
+  InputNumber,
 } from 'antd';
 import {
   EditOutlined,
@@ -19,41 +20,29 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 import moment from 'moment';
+import { DateQueryFormat } from '../../utils/date';
+import { request } from '../../utils/request';
 
 export default function Month() {
+  const [refresh, setRefresh] = useState(false);
+  const [data, setData] = useState([]);
+
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
 
-  const data = [
-    {
-      id: 1,
-      created_at: '2022-09-12',
-      name: '💪',
-      unit: '个',
-      number: '20',
-    },
-    {
-      id: 2,
-      created_at: '2022-09-12',
-      name: '🛹',
-      unit: 'h',
-      number: '2',
-    },
-    {
-      id: 3,
-      created_at: '2022-09-13',
-      name: '🏃‍♂️',
-      unit: 'km',
-      number: '10',
-    },
-    {
-      id: 4,
-      created_at: '2022-09-10',
-      name: '🏃‍♂️',
-      unit: 'km',
-      number: '20',
-    }
-  ]
+  useEffect(() => {
+    request.get(`/habit`, {
+      params: {
+        "created_at": [
+          moment(new Date()).startOf('month').format(DateQueryFormat),
+          moment(new Date()).endOf('month').format(DateQueryFormat)
+        ]
+      },
+    }).then(function (response) {
+      setData(response.data.data);
+    })
+    // eslint-disable-next-line
+  }, [refresh]);
 
   // 从所有 data 中筛选出 date 当天的数据
   const filterData = (date) => {
@@ -93,7 +82,7 @@ export default function Month() {
                       <Popconfirm
                         title="确定要删除今天的打卡记录吗？"
                         onConfirm={() => {
-                          console.log(filterData(selected).map((v) => v.id))
+                          onDelete(filterData(selected).map((v) => v.id))
                         }}
                         okText="Yes"
                         cancelText="No"
@@ -109,6 +98,7 @@ export default function Month() {
                         <EditOutlined key="edit" onClick={() => {
                           form.setFieldsValue({
                             'habit': filterData(selected),
+                            'created_at': selected,
                           });
                           setVisible(true);
                         }} />
@@ -126,14 +116,42 @@ export default function Month() {
   }
 
   const onCreate = (values) => {
-    console.log(values)
+    request.post(`/habit`, JSON.stringify(values), {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (response) {
+      setVisible(false);
+      setRefresh(!refresh);
+    });
   }
+
+  const onDelete = (ids) => {
+    const payload = JSON.stringify({ 'ids': ids });
+    request.delete(`/habit`, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: payload,
+    }).then(function (response) {
+      setRefresh(!refresh);
+    });
+  };
+
+  const onEdit = (values) => {
+    request.put(`/habit`, JSON.stringify(values), {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (response) {
+      setVisible(false);
+      setRefresh(!refresh);
+    });
+  };
 
   return <div>
     <Calendar
-      onSelect={(date) => {
-        setSelected(date)
-      }}
+      onSelect={(date) => setSelected(date)}
       dateFullCellRender={dateFullCellRender}
       headerRender={({ value, type, onChange, onTypeChange }) => {
         return <DatePicker
@@ -152,12 +170,14 @@ export default function Month() {
       form={form}
       visible={visible}
       onCreate={onCreate}
+      onEdit={onEdit}
       onCancel={() => setVisible(false)}
+      selected={selected}
     />
   </div>
 }
 
-const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
+const FormCom = ({ form, visible, onCreate, onEdit, onCancel, selected }) => {
   return (
     <Modal
       visible={visible}
@@ -169,12 +189,17 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
         form
           .validateFields()
           .then((values) => {
-            values['id'] === undefined ? onCreate(values) : onEdit(values)
+            values.habit.map((v) => {
+              v.created_at = selected
+              return v
+            })
+            values['created_at'] === undefined ? onCreate(values) : onEdit(values)
           })
           .catch((info) => {
             console.log('Validate Failed:', info);
           });
       }}
+      width='19%'
     >
       <Form
         form={form}
@@ -198,9 +223,14 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
                         required: true,
                         message: '名称是必填项',
                       },
+                      {
+                        type: 'string',
+                        max: 10,
+                        message: '最多可输入10个字符'
+                      }
                     ]}
                   >
-                    <Input placeholder="例如：跑步" />
+                    <Input placeholder="如：跑步" style={{ width: 100 }} />
                   </Form.Item>
                   <Form.Item
                     {...restField}
@@ -212,7 +242,7 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
                       },
                     ]}
                   >
-                    <Input placeholder="例如：5" />
+                    <InputNumber placeholder="如：5" />
                   </Form.Item>
                   <Form.Item
                     {...restField}
@@ -222,9 +252,14 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
                         required: true,
                         message: '单位是必填项',
                       },
+                      {
+                        type: 'string',
+                        max: 10,
+                        message: '最多可输入10个字符'
+                      }
                     ]}
                   >
-                    <Input placeholder="例如：km" />
+                    <Input placeholder="如：km" style={{ width: 90 }} />
                   </Form.Item>
                   <MinusCircleOutlined onClick={() => remove(name)} />
                 </Space>
@@ -237,6 +272,11 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel }) => {
             </>
           )}
         </Form.List>
+        <Form.Item
+          name='created_at'
+        >
+          <Input hidden />
+        </Form.Item>
       </Form>
     </Modal >
   );

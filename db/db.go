@@ -41,6 +41,7 @@ func Connect() error {
 		Area{}, Travel{},
 		File{},
 		TomatoTask{}, TomatoPlan{},
+		Habit{},
 	}
 	for _, v := range schemas {
 		if err := conn.AutoMigrate(v); err != nil {

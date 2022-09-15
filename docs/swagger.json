@@ -802,6 +802,186 @@
                 }
             }
         },
+        "/habit": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "习惯打卡"
+                ],
+                "summary": "打卡列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "size",
+                        "name": "size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id[]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "created_at",
+                        "name": "created_at[]",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/db.Habit"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "习惯打卡"
+                ],
+                "summary": "更新打卡",
+                "parameters": [
+                    {
+                        "description": "request payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/habit.updateParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/db.Habit"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "习惯打卡"
+                ],
+                "summary": "添加打卡",
+                "parameters": [
+                    {
+                        "description": "request payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/habit.createParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/db.Habit"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "习惯打卡"
+                ],
+                "summary": "删除打卡",
+                "parameters": [
+                    {
+                        "description": "request payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ctx.IDList"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ctx.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/tomato/plan": {
             "get": {
                 "consumes": [
@@ -1533,6 +1713,29 @@
                 }
             }
         },
+        "db.Habit": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                },
+                "number": {
+                    "description": "数量",
+                    "type": "integer"
+                },
+                "unit": {
+                    "description": "单位",
+                    "type": "string"
+                }
+            }
+        },
         "db.TomatoPlan": {
             "type": "object",
             "properties": {
@@ -1726,6 +1929,63 @@
                 "type": {
                     "type": "string",
                     "maxLength": 20
+                }
+            }
+        },
+        "habit.Base": {
+            "type": "object",
+            "required": [
+                "created_at",
+                "name",
+                "number",
+                "unit"
+            ],
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 10
+                },
+                "number": {
+                    "type": "integer"
+                },
+                "unit": {
+                    "type": "string",
+                    "maxLength": 10
+                }
+            }
+        },
+        "habit.createParam": {
+            "type": "object",
+            "required": [
+                "habit"
+            ],
+            "properties": {
+                "habit": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/habit.Base"
+                    }
+                }
+            }
+        },
+        "habit.updateParam": {
+            "type": "object",
+            "required": [
+                "created_at",
+                "habit"
+            ],
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "habit": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/habit.Base"
+                    }
                 }
             }
         },

@@ -106,6 +106,22 @@ definitions:
         description: 使用者 ID
         type: integer
     type: object
+  db.Habit:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        description: 名称
+        type: string
+      number:
+        description: 数量
+        type: integer
+      unit:
+        description: 单位
+        type: string
+    type: object
   db.TomatoPlan:
     properties:
       cost:
@@ -240,6 +256,45 @@ definitions:
     required:
     - id
     - money
+    type: object
+  habit.Base:
+    properties:
+      created_at:
+        type: string
+      name:
+        maxLength: 10
+        type: string
+      number:
+        type: integer
+      unit:
+        maxLength: 10
+        type: string
+    required:
+    - created_at
+    - name
+    - number
+    - unit
+    type: object
+  habit.createParam:
+    properties:
+      habit:
+        items:
+          $ref: '#/definitions/habit.Base'
+        type: array
+    required:
+    - habit
+    type: object
+  habit.updateParam:
+    properties:
+      created_at:
+        type: string
+      habit:
+        items:
+          $ref: '#/definitions/habit.Base'
+        type: array
+    required:
+    - created_at
+    - habit
     type: object
   ledger.createParam:
     properties:
@@ -887,6 +942,114 @@ paths:
       summary: 上传
       tags:
       - 文件
+  /habit:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/ctx.IDList'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ctx.Response'
+      summary: 删除打卡
+      tags:
+      - 习惯打卡
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: size
+        in: query
+        name: size
+        type: integer
+      - description: id
+        in: query
+        name: id[]
+        type: integer
+      - description: created_at
+        in: query
+        name: created_at[]
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/db.Habit'
+                  type: array
+              type: object
+      summary: 打卡列表
+      tags:
+      - 习惯打卡
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/habit.createParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/db.Habit'
+              type: object
+      summary: 添加打卡
+      tags:
+      - 习惯打卡
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/habit.updateParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/db.Habit'
+              type: object
+      summary: 更新打卡
+      tags:
+      - 习惯打卡
   /tomato/plan:
     delete:
       consumes:
