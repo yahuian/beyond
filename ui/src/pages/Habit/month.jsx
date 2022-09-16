@@ -30,19 +30,21 @@ export default function Month() {
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
 
+  const [month, setMonth] = useState(new Date());
+
   useEffect(() => {
     request.get(`/habit`, {
       params: {
         "created_at": [
-          moment(new Date()).startOf('month').format(DateQueryFormat),
-          moment(new Date()).endOf('month').format(DateQueryFormat)
+          moment(month).startOf('month').format(DateQueryFormat),
+          moment(month).endOf('month').format(DateQueryFormat)
         ]
       },
     }).then(function (response) {
       setData(response.data.data);
     })
     // eslint-disable-next-line
-  }, [refresh]);
+  }, [refresh, month]);
 
   // 从所有 data 中筛选出 date 当天的数据
   const filterData = (date) => {
@@ -55,7 +57,7 @@ export default function Month() {
   const dateFullCellRender = (date) => {
     return (
       // 非当前月的天不显示
-      !date.isSame(new Date(), "month") ? '' :
+      !date.isSame(month, "month") ? '' :
         <Card
           hoverable
           size="small"
@@ -151,6 +153,10 @@ export default function Month() {
 
   return <div>
     <Calendar
+      validRange={[
+        moment(month).startOf('month'),
+        moment(month).endOf('month'),
+      ]}
       onSelect={(date) => setSelected(date)}
       dateFullCellRender={dateFullCellRender}
       headerRender={({ value, type, onChange, onTypeChange }) => {
@@ -159,9 +165,10 @@ export default function Month() {
           allowClear={false}
           format='YYYY-MM'
           picker="month"
-          defaultValue={value}
-          onChange={(v) => {
-            console.log(v.format('YYYY-MM'))
+          value={value}
+          onChange={(newMonth) => {
+            onChange(newMonth);
+            setMonth(newMonth);
           }}
         />;
       }}
