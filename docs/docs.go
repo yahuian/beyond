@@ -992,6 +992,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/habit/chart": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "习惯打卡"
+                ],
+                "summary": "折线图",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "year eg:2022",
+                        "name": "year",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ctx.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/habit.base"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/tomato/plan": {
             "get": {
                 "consumes": [
@@ -1964,6 +2010,23 @@ const docTemplate = `{
                 "unit": {
                     "type": "string",
                     "maxLength": 10
+                }
+            }
+        },
+        "habit.base": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "sum": {
+                    "type": "number"
+                },
+                "unit": {
+                    "type": "string"
                 }
             }
         },

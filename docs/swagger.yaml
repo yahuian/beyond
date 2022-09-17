@@ -275,6 +275,17 @@ definitions:
     - number
     - unit
     type: object
+  habit.base:
+    properties:
+      date:
+        type: string
+      name:
+        type: string
+      sum:
+        type: number
+      unit:
+        type: string
+    type: object
   habit.createParam:
     properties:
       habit:
@@ -1048,6 +1059,33 @@ paths:
                   $ref: '#/definitions/db.Habit'
               type: object
       summary: 更新打卡
+      tags:
+      - 习惯打卡
+  /habit/chart:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: year eg:2022
+        in: query
+        name: year
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/ctx.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/habit.base'
+                  type: array
+              type: object
+      summary: 折线图
       tags:
       - 习惯打卡
   /tomato/plan:

@@ -206,7 +206,7 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel, selected }) => {
             console.log('Validate Failed:', info);
           });
       }}
-      width='19%'
+      width="360px"
     >
       <Form
         form={form}
@@ -272,7 +272,12 @@ const FormCom = ({ form, visible, onCreate, onEdit, onCancel, selected }) => {
                 </Space>
               ))}
               <Form.Item>
-                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                <Button
+                  style={{ width: 300 }}
+                  type="dashed"
+                  onClick={() => add()}
+                  block
+                  icon={<PlusOutlined />}>
                   增加习惯
                 </Button>
               </Form.Item>

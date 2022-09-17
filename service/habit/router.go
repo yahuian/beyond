@@ -12,5 +12,7 @@ func Router(e *gin.RouterGroup) {
 		h.GET("", ctx.Handle(List))
 		h.PUT("", ctx.Handle(Update))
 		h.DELETE("", ctx.Handle(Delete))
+
+		h.GET("/chart", ctx.Handle(Chart))
 	}
 }
