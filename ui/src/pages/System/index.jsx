@@ -3,7 +3,6 @@ import { Tabs, Typography, Image } from 'antd';
 import {
   PhoneTwoTone,
 } from '@ant-design/icons';
-import redbook from '../../assets/redbook.png'
 
 const { TabPane } = Tabs;
 const { Title, Paragraph, Link } = Typography;
@@ -30,11 +29,6 @@ export default function System() {
           <Title level={4}>BUG</Title>
           <Paragraph>
             发现 BUG 了 (⊙o⊙) ？劳烦在<Link href="https://github.com/YahuiAn/beyond/issues">此处</Link>反馈~
-          </Paragraph>
-          <Title level={4}>资讯</Title>
-          <Paragraph>
-            关注作者，获取更多产品使用小技巧~<br />
-            <Image width={300} src={redbook} style={{ padding: '8px 0px 8px 0px' }} />
           </Paragraph>
         </Typography>
       </TabPane>

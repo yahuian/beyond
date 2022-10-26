@@ -117,7 +117,7 @@ definitions:
         type: string
       number:
         description: 数量
-        type: integer
+        type: number
       unit:
         description: 单位
         type: string
@@ -265,7 +265,7 @@ definitions:
         maxLength: 10
         type: string
       number:
-        type: integer
+        type: number
       unit:
         maxLength: 10
         type: string

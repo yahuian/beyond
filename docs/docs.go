@@ -1784,7 +1784,7 @@ const docTemplate = `{
                 },
                 "number": {
                     "description": "数量",
-                    "type": "integer"
+                    "type": "number"
                 },
                 "unit": {
                     "description": "单位",
@@ -2005,7 +2005,7 @@ const docTemplate = `{
                     "maxLength": 10
                 },
                 "number": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "unit": {
                     "type": "string",

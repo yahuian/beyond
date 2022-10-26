@@ -79,6 +79,10 @@ export default function Details() {
           <Typography.Link onClick={() => {
             // fix: Uncaught TypeError: date.clone is not a function
             record['created_at'] = moment(record['created_at']);
+
+            // 如果值为空，record 中 key 将不存在，导致编辑一个有值的行取消后再编辑一个空白的行，会发现空白的被值覆盖
+            form.resetFields();
+
             form.setFieldsValue(record);
             setVisible(true);
           }}>

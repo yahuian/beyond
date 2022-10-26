@@ -10,7 +10,7 @@ import (
 
 type Base struct {
 	Name      string    `json:"name" validate:"required,max=10"`
-	Number    int       `json:"number" validate:"required"`
+	Number    float64   `json:"number" validate:"required"`
 	Unit      string    `json:"unit" validate:"required,max=10"`
 	CreatedAt time.Time `json:"created_at" validate:"required"`
 }
