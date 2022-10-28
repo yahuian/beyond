@@ -377,13 +377,18 @@ const ClockCom = ({ clock, setClock, unit, incClock }) => {
   const total = unit;
   const [second, setSecond] = useState(total);
   const timerId = useRef();
+  const [paused, setPaused] = useState(false);
 
-  if (clock && !timerId.current) {
+  const start = () => {
     const id = setInterval(() => {
       // console.log('timer')
-      setSecond(pre => pre - 1)
+      setSecond(pre => pre - 1);
     }, 1000);
     timerId.current = id;
+  };
+
+  if (clock && !timerId.current) {
+    start();
   };
 
   if (second <= 0) {
@@ -424,7 +429,19 @@ const ClockCom = ({ clock, setClock, unit, incClock }) => {
               clear()
             }}
           >确认</Button>
-          : ''
+          : !paused ?
+            <Button
+              onClick={() => {
+                clearInterval(timerId.current);
+                setPaused(true);
+              }}
+            >暂停</Button>
+            : <Button
+              onClick={() => {
+                start();
+                setPaused(false);
+              }}
+            >继续</Button>
       }
     >
       <Progress
