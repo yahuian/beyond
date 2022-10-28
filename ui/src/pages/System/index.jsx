@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tabs, Typography, Image } from 'antd';
+import { Tabs, Typography } from 'antd'
 import {
   PhoneTwoTone,
 } from '@ant-design/icons';

@@ -399,6 +399,7 @@ const ClockCom = ({ clock, setClock, unit, incClock }) => {
     setClock(false);
     timerId.current = null;
     setSecond(total);
+    setPaused(false);
   }
 
   return (
