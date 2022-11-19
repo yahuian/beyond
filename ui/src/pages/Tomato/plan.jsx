@@ -112,8 +112,8 @@ export default function Plan({ setParam }) {
       />
       <List
         grid={{
-          gutter: 16,
-          column: 4,
+          gutter: 8,
+          column: 3,
         }}
         pagination={{
           onChange: (page, size) => {
